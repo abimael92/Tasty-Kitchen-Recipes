@@ -1,0 +1,57 @@
+<section class='hero'>
+	<video autoplay loop muted playsinline class='hero-video'>
+		<source src='./hero.mp4' type='video/mp4' />
+
+		Your browser does not support the video tag.
+	</video>
+
+	<div class='container'>
+		<h1>Warm, Sweet, and Delicious</h1>
+		<p>Indulge in the most delightful cinnamon rolls, made with love.</p>
+		<a href='/menu' class='cta-button'>View Menu</a>
+	</div>
+</section>
+
+<style>
+	.hero {
+		position: relative;
+		height: 60vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		color: var(--text);
+		overflow: hidden;
+	}
+
+	.hero-video {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.container {
+		position: relative;
+		z-index: 1;
+		background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+		padding: 2rem;
+		border-radius: 8px;
+		color: white; /* Ensures readability */
+	}
+
+	.container p {
+		margin-bottom: 50px; /* Adds space between paragraph and button */
+	}
+
+	.cta-button {
+		background: #d2691e; /* Cinnamon brown */
+		color: white;
+		margin: 15rem;
+		padding: 1rem 2rem;
+		font-size: 1.2rem;
+		border-radius: 8px;
+		text-decoration: none;
+	}
+</style>

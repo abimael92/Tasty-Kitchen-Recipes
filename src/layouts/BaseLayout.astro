@@ -1,0 +1,160 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
+import GlobalStyles from '../styles/global.css';
+
+const {
+	title = 'Funny Rolls - Delicious Cinnamon Rolls',
+	description = 'Experience the best handcrafted cinnamon rolls with Funny Rolls.',
+	privacyPolicy = '/privacy-policy',
+} = Astro.props || {};
+---
+
+<!doctype html>
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width, initial-scale=1' />
+		<title>{title}</title>
+		<meta name='description' content={description} />
+		<link rel='stylesheet' href={GlobalStyles} />
+		<link
+			rel='stylesheet'
+			href='https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500&display=swap'
+		/>
+		<link rel='icon' href='/favicon.ico' />
+	</head>
+	<body>
+		<!-- Cookie Banner -->
+		<CookieBanner />
+		<Header />
+
+		<!-- Main Content -->
+		<main>
+			<article class='markdown'>
+				<slot />
+			</article>
+		</main>
+
+		<Footer />
+
+		<!-- Theme Toggle Button -->
+		<button class='theme-toggle' id='theme-toggle'>Toggle Theme</button>
+
+		<style>
+			/* Global Styles */
+			:root {
+				--background-light: #fff;
+				--background-dark: #222;
+				--text-light: #222;
+				--text-dark: #fff;
+			}
+
+			[data-theme='light'] {
+				background-color: var(--background-light);
+				color: var(--text-light);
+			}
+
+			[data-theme='dark'] {
+				background-color: var(--background-dark);
+				color: var(--text-dark);
+			}
+
+			/* Cookie Banner Styling */
+			.cookie-banner {
+				position: fixed;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				background-color: #333;
+				color: white;
+				padding: 10px;
+				text-align: center;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.cookie-banner button {
+				background-color: #d2691e;
+				color: white;
+				border: none;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+
+			.cookie-banner button:hover {
+				background-color: #b2562d;
+			}
+
+			/* Theme Toggle Button Styling */
+			.theme-toggle {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				background-color: #333;
+				color: white;
+				padding: 10px 20px;
+				cursor: pointer;
+				border: none;
+				border-radius: 5px;
+			}
+
+			.theme-toggle:hover {
+				background-color: #555;
+			}
+			/* Global markdown styling */
+			.markdown-content {
+				margin: 5rem;
+				padding: 10px;
+			}
+
+			/* You can target markdown content globally across the site */
+			article.markdown {
+				margin: 3rem;
+				padding: 10px;
+			}
+		</style>
+
+		<!-- Client-side Script -->
+		<script type='module'>
+			if (typeof window !== 'undefined') {
+				const isDarkMode = localStorage.getItem('theme') === 'dark';
+				const cookieAccepted =
+					localStorage.getItem('cookieAccepted') === 'true';
+
+				// Toggle Theme function
+				const toggleTheme = () => {
+					const newTheme = isDarkMode ? 'light' : 'dark';
+					localStorage.setItem('theme', newTheme);
+					document.documentElement.setAttribute('data-theme', newTheme);
+				};
+
+				// Accept Cookies function
+				const acceptCookies = () => {
+					localStorage.setItem('cookieAccepted', 'true');
+					document.getElementById('cookie-banner').style.display = 'none';
+				};
+
+				// Set initial theme on page load
+				document.documentElement.setAttribute(
+					'data-theme',
+					isDarkMode ? 'dark' : 'light'
+				);
+
+				// Handle the button clicks
+				document
+					.getElementById('theme-toggle')
+					.addEventListener('click', toggleTheme);
+
+				if (!cookieAccepted) {
+					document.getElementById('cookie-banner').style.display = 'flex';
+					document
+						.getElementById('accept-cookies')
+						.addEventListener('click', acceptCookies);
+				}
+			}
+		</script>
+	</body>
+</html>

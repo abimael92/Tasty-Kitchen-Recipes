@@ -1,0 +1,33 @@
+---
+import Navbar from './Navbar.astro';
+import Logo from './Logo.astro';
+---
+
+<header class='header'>
+	<div class='container'>
+		<Logo />
+		<Navbar />
+	</div>
+</header>
+
+<style>
+	.header {
+		background: #8b4513; /* Warm brown */
+		color: #fff;
+		padding: 1rem 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	.container {
+		width: 90%;
+		margin: 0 auto;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.logo {
+		background: none;
+	}
+</style>

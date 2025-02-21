@@ -1,0 +1,125 @@
+---
+import twitterIcon from '../assets/socialmedia/twitter-icon.svg?url';
+import githubIcon from '../assets/socialmedia/github-icon.svg?url';
+import linkedinIcon from '../assets/socialmedia/linkedin-icon.svg?url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class='footer'>
+	<div class='container'>
+		<div class='footer-top'>
+			<div class='footer-section'>
+				<h3>About Us</h3>
+				<p>
+					We build high-performance web applications with modern technologies
+					like Astro.
+				</p>
+			</div>
+			<div class='footer-section'>
+				<h3>Quick Links</h3>
+				<ul>
+					<li><a href='/'>Home</a></li>
+					<li><a href='/about'>About</a></li>
+					<li><a href='/contact'>Contact</a></li>
+				</ul>
+			</div>
+			<div class='footer-section'>
+				<h3>Follow Us</h3>
+				<ul class='social-links'>
+					<li>
+						<a href='#' aria-label='Twitter'>
+							<img src={twitterIcon} alt='Twitter' width='24' height='24' />
+							<!-- Twitter -->
+						</a>
+					</li>
+					<li>
+						<a href='#' aria-label='GitHub'>
+							<img src={githubIcon} alt='GitHub' width='24' height='24' />
+							<!-- GitHub -->
+						</a>
+					</li>
+					<li>
+						<a href='#' aria-label='LinkedIn'>
+							<img src={linkedinIcon} alt='LinkedIn' width='24' height='24' />
+							<!-- LinkedIn -->
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class='footer-bottom'>
+			<p>&copy; {year} Your Company. All rights reserved.</p>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		background: #222;
+		color: #fff;
+		padding: 2rem 1rem;
+	}
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+	.footer-top {
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		gap: 2rem;
+	}
+
+	.footer-section {
+		display: flex;
+		flex-direction: column; /* Aligns content vertically */
+		align-items: center; /* Centers the content horizontally */
+		gap: 8px; /* Adds space between the title and icons */
+	}
+
+	.footer-section h3 {
+		margin-bottom: 1rem;
+		font-size: 1.2rem;
+	}
+	.footer-section ul {
+		list-style: none;
+		padding: 0;
+	}
+	.footer-section ul li {
+		margin: 0.5rem 0;
+	}
+	.footer-section a {
+		color: #bbb;
+		text-decoration: none;
+	}
+	.footer-section a:hover {
+		color: #fff;
+	}
+
+	.footer-bottom {
+		margin-top: 2rem;
+		text-align: center;
+		font-size: 0.9rem;
+		border-top: 1px solid #444;
+		padding-top: 1rem;
+	}
+	.social-links {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	.social-links li {
+		list-style: none;
+	}
+
+	.social-links a {
+		display: block;
+		text-align: center;
+	}
+
+	.social-links img {
+		margin-bottom: 8px; /* Adjust the spacing between the icon and the text */
+	}
+</style>
