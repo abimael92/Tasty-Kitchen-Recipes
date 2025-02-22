@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title='Page Not Found'>
+	<section class='error-page'>
+		<h1>Oops! Page Not Found</h1>
+		<p>
+			The page you're looking for doesn't exist. Try going back to <a href='/'
+				>home</a
+			>.
+		</p>
+	</section>
+
+	<style>
+		.error-page {
+			text-align: center;
+			padding: 3rem;
+		}
+		a {
+			color: #d2691e;
+			font-weight: bold;
+			text-decoration: none;
+		}
+	</style>
+</BaseLayout>

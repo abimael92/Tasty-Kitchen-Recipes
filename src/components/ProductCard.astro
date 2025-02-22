@@ -1,0 +1,51 @@
+---
+const { image, name, description } = Astro.props;
+---
+
+<div class='product-card'>
+	<img src={image} alt={name} class='product-image' />
+	<h3>{name}</h3>
+	<p class='description'>{description}</p>
+	<button class='view-recipe-btn'>View Recipe</button>
+</div>
+
+<style>
+	.product-card {
+		background: white;
+		border-radius: 10px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+		padding: 1.5rem;
+		text-align: center;
+		max-width: 250px;
+		transition:
+			transform 0.2s ease,
+			box-shadow 0.3s ease;
+	}
+	.product-card:hover {
+		transform: translateY(-5px);
+		box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+	}
+	.product-image {
+		width: 100%;
+		border-radius: 10px;
+		height: auto;
+	}
+	.view-recipe-btn {
+		background: #d2691e;
+		color: white;
+		padding: 0.8rem;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-weight: bold;
+		margin-top: 1rem;
+	}
+	.view-recipe-btn:hover {
+		background: #a0522d;
+	}
+	.description {
+		color: #555;
+		font-size: 1rem;
+		margin: 1rem 0;
+	}
+</style>

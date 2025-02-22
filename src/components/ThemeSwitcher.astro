@@ -1,0 +1,69 @@
+---
+let isDarkMode = localStorage.getItem('theme') === 'dark';
+
+function toggleTheme() {
+	isDarkMode = !isDarkMode;
+	localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+	document.documentElement.setAttribute(
+		'data-theme',
+		isDarkMode ? 'dark' : 'light'
+	);
+}
+---
+
+<!doctype html>
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta name='viewport' content='width=device-width, initial-scale=1' />
+		<title>Theme Switcher</title>
+		<style>
+			:root {
+				--background-light: #fff;
+				--background-dark: #222;
+				--text-light: #222;
+				--text-dark: #fff;
+			}
+
+			[data-theme='light'] {
+				background-color: var(--background-light);
+				color: var(--text-light);
+			}
+
+			[data-theme='dark'] {
+				background-color: var(--background-dark);
+				color: var(--text-dark);
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				transition:
+					background-color 0.3s ease,
+					color 0.3s ease;
+			}
+
+			.theme-toggle {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				background-color: #333;
+				color: white;
+				padding: 10px 20px;
+				cursor: pointer;
+				border: none;
+				border-radius: 5px;
+			}
+
+			.theme-toggle:hover {
+				background-color: #555;
+			}
+		</style>
+	</head>
+	<body>
+		<button class='theme-toggle' onclick='toggleTheme()'>Toggle Theme</button>
+
+		Toggle Theme
+	</body>
+	<h1>Welcome to the Theme Switcher!</h1>
+	<p>Click the button to toggle between light and dark themes.</p>
+</html>
