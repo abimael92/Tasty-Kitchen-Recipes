@@ -1,13 +1,9 @@
 ---
-import AuthProvider from '../components/AuthProvider.jsx';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import FeaturedProducts from '../components/FeaturedProducts.astro';
 ---
 
-<AuthProvider>
-	<BaseLayout title='Home'>
-		<Hero />
-		<FeaturedProducts />
-	</BaseLayout>
-</AuthProvider>
+<BaseLayout title='Home'>
+	<Hero />
+</BaseLayout>
