@@ -6,25 +6,38 @@ import Logo from './Logo.astro';
 <header class='header'>
 	<div class='container'>
 		<Logo />
+		<h1 class='blog-title'>Tasty Kitchen Tales</h1>
 		<Navbar />
 	</div>
 </header>
 
 <style>
 	.header {
-		background: #8b4513; /* Warm brown */
-		color: #fff;
-		padding: 1rem 0;
+		background: #f4a261; /* Warm  */
+		background-color: var(--color-header); /* Warm Amber */
+		color: var(--color-light); /* Light color for text */
+		padding: var(--spacing-medium) 0;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
+
 	.container {
 		width: 90%;
 		margin: 0 auto;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+	}
+	.blog-title {
+		font-size: 2rem;
+		font-weight: bold;
+		color: #fff;
+		font-family: 'Lora', serif; /* Elegant, readable serif font */
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adds a soft shadow effect */
+		margin: 0;
 	}
 
 	.logo {

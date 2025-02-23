@@ -1,18 +1,51 @@
 :root {
-    --primary: #D2691E;
-    --secondary: #A0522D;
-    --background: #F5E6C8;
-    --text: #5A3E36;
-    --font-family: "Poppins", sans-serif;
-  }
+  --color-primary: #FF6347;
+  --color-secondary: #6B8E23;
+  --color-accent: #FFD700;
+  --color-light: #F8F9FA;
+  --color-dark: #343A40;
+  --color-background: #FFFFFF;
+  --color-link: #007BFF;
+  --font-heading: 'Merriweather', serif;
+  --font-body: 'Roboto', sans-serif;
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 32px;
+  --border-radius: 8px;
+  --color-header: #D15C35; /* Warm Amber for the header */
+}
 
-  body {
-    font-family: var(--font-family);
-    background: var(--background);
-    color: var(--text);
-    margin: 0;
-    padding: 0;
-  }
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  outline: 5px solid var(--color-accent);
+  color: var(--color-dark);
+  margin: 4px;
+
+}
+
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  color: var(--color-primary);
+}
+
+button {
+  background-color: var(--color-primary);
+  color: var(--color-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-medium);
+  font-size: 1rem;
+}
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
 
 /* Global markdown styling */
 body article.markdown {
@@ -22,4 +55,45 @@ body article.markdown {
 
 article.markdown h1 {
   font-size: 2.5rem; /* Adjust the size as needed */
+}
+
+/* Recipe Image */
+.recipe img {
+  max-width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  height: 200px;
+  width: 100%;
+}
+
+/* Recipe Title */
+.recipe h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 10px;
+  color: var(--primary); /* Title color */
+}
+
+/* Recipe Card Hover Effects */
+.recipe:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Ingredients and Instructions */
+.recipe ul {
+  padding-left: 20px;
+}
+
+.recipe ul li {
+  list-style-type: disc;
+  margin: 5px 0;
+  color: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .recipe h2 {
+    font-size: 1.25rem;
+  }
 }

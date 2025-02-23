@@ -1,0 +1,38 @@
+---
+import ProductCard from './ProductCard.astro';
+
+const featuredProducts = [
+	{
+		image: '/cinnamon1.jpg',
+		name: 'Classic Roll',
+		price: '3.99',
+		description: 'A timeless favorite.',
+	},
+	{
+		image: '/cinnamon2.jpg',
+		name: 'Chocolate Roll',
+		price: '4.49',
+		description: 'Drizzled with rich chocolate.',
+	},
+];
+---
+
+<section class='featured'>
+	<h2>Customer Favorites</h2>
+	<div class='product-grid'>
+		{featuredProducts.map((product) => <ProductCard {...product} />)}
+	</div>
+</section>
+
+<style>
+	.featured {
+		text-align: center;
+		padding: 3rem;
+	}
+	.product-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 2rem;
+		justify-items: center;
+	}
+</style>

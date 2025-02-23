@@ -1,13 +1,24 @@
+
+
 export const theme = {
     colors: {
-        primary: "#8B4513", // Brown
-        secondary: "#D2691E", // Cinnamon
-        accent: "#FFD700", // Golden Yellow
-        light: "#FFF8E1", // Light Beige
-        dark: "#5C2D1E", // Dark Brown
+        primary: "#FF6347", // Tomato 
+        secondary: "#6B8E23",
+        accent: "#FFD700",
+        light: "#F8F9FA", // Light Gray
+        dark: "#343A40", // Charcoal Gray
+        background: "#FFFFFF",
+        link: "#007BFF", // Bright Blue
+        header: "#D15C35",
     },
     fonts: {
-        heading: "'Playfair Display', serif",
-        body: "'Poppins', sans-serif",
-    }
-};
+        heading: "'Merriweather', serif",
+        body: "'Roboto', sans-serif",
+    },
+    spacing: {
+        small: "8px",
+        medium: "16px",
+        large: "32px",
+    },
+    borderRadius: "8px",
+}
