@@ -1,0 +1,112 @@
+---
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { client } from '../lib/sanity.js';
+
+const recipesDir = path.resolve('src/content/recipes');
+
+// Local markdown recipes
+const localRecipes = fs.readdirSync(recipesDir).map((file) => {
+	const filePath = path.join(recipesDir, file);
+	const content = fs.readFileSync(filePath, 'utf-8');
+	const { data } = matter(content);
+
+	return {
+		title: data.title,
+		ingredients: data.ingredients,
+		image: data.image,
+		instructions: data.instructions,
+	};
+});
+
+// Sanity recipes (optional fallback)
+let sanityRecipes = [];
+try {
+	sanityRecipes = await client.fetch(`
+		*[_type == "recipe"]{
+			_id,
+			title,
+			ingredients,
+			instructions,
+			"image": image.asset->url,
+			"video": video.asset->url
+		}
+	`);
+} catch (e) {
+	console.error('Sanity fetch failed:', e.message);
+}
+
+// Combine both
+const recipes = [...localRecipes, ...sanityRecipes];
+---
+
+<BaseLayout title='Recipes'>
+	<button onclick='history.back()' class='back-button'>Back</button>
+
+	<h1>Delicious Recipes</h1>
+
+	<div class='recipes'>
+		{
+			recipes.map((recipe, i) => (
+				<div class='recipe' key={recipe.title || recipe._id || i}>
+					{recipe.image && <img src={recipe.image} alt={recipe.title} />}
+					<h2>{recipe.title}</h2>
+					<ul>
+						{(Array.isArray(recipe.ingredients)
+							? recipe.ingredients
+							: recipe.ingredients?.split?.('\n') || []
+						).map((ingredient) => (
+							<li>{ingredient}</li>
+						))}
+					</ul>
+					<p>{recipe.instructions}</p>
+					{recipe.video && (
+						<video controls width='100%'>
+							<source src={recipe.video} type='video/mp4' />
+						</video>
+					)}
+				</div>
+			))
+		}
+	</div>
+</BaseLayout>
+
+<style>
+	.back-button {
+		background: #d2691e;
+		color: white;
+		padding: 10px 15px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		margin: 15px;
+		display: inline-block;
+	}
+
+	.recipes {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		gap: 20px;
+		padding: 20px;
+	}
+
+	.recipe {
+		border: 1px solid #ccc;
+		padding: 20px;
+		border-radius: 8px;
+		background-color: var(--background-light);
+		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	.recipe img {
+		width: 100%;
+		height: auto;
+		border-radius: 5px;
+	}
+
+	.recipe h2 {
+		margin-top: 10px;
+	}
+</style>
