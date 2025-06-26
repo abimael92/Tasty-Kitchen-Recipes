@@ -10,6 +10,7 @@ export const theme = {
         background: "#FFFFFF",
         link: "#007BFF", // Bright Blue
         header: "#D15C35",
+        bgcolor: '#f08080'
     },
     fonts: {
         heading: "'Merriweather', serif",

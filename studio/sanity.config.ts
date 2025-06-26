@@ -5,7 +5,7 @@ import {schemaTypes} from './schemas'
 
 export default defineConfig({
   name: 'default',
-  title: 'Tasty Kitchen Tales',
+  title: 'Tasty Kitchen Recipes',
 
   projectId: 'n1dow9eo',
   dataset: 'production',
