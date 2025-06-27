@@ -2,11 +2,13 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { client } from '../lib/sanity.js';
 
 const recipesDir = path.resolve('src/content/recipes');
-const recipes = fs.readdirSync(recipesDir).map((file) => {
+
+// Load local markdown recipes
+const localRecipes = fs.readdirSync(recipesDir).map((file) => {
 	const filePath = path.join(recipesDir, file);
 	const content = fs.readFileSync(filePath, 'utf-8');
 	const { data } = matter(content);
@@ -18,6 +20,26 @@ const recipes = fs.readdirSync(recipesDir).map((file) => {
 		instructions: data.instructions,
 	};
 });
+
+// Load Sanity recipes
+let sanityRecipes = [];
+try {
+	sanityRecipes = await client.fetch(`
+		*[_type == "recipe"]{
+			_id,
+			title,
+			ingredients,
+			instructions,
+			"image": image.asset->url,
+			"video": video.asset->url
+		}
+	`);
+} catch (e) {
+	console.error('Failed to fetch Sanity recipes:', e.message);
+}
+
+// Combine both
+const recipes = [...localRecipes, ...sanityRecipes];
 ---
 
 <BaseLayout title='Recipes'>
@@ -27,16 +49,24 @@ const recipes = fs.readdirSync(recipesDir).map((file) => {
 
 	<div class='recipes'>
 		{
-			recipes.map((recipe) => (
-				<div class='recipe' key={recipe.title}>
-					<img src={recipe.image} alt={recipe.title} />
+			recipes.map((recipe, i) => (
+				<div class='recipe' key={recipe.title || i}>
+					{recipe.image && <img src={recipe.image} alt={recipe.title} />}
 					<h2>{recipe.title}</h2>
 					<ul>
-						{recipe.ingredients.map((ingredient) => (
+						{(Array.isArray(recipe.ingredients)
+							? recipe.ingredients
+							: recipe.ingredients?.split?.('\n') || []
+						).map((ingredient) => (
 							<li>{ingredient}</li>
 						))}
 					</ul>
 					<p>{recipe.instructions}</p>
+					{recipe.video && (
+						<video controls width='100%'>
+							<source src={recipe.video} type='video/mp4' />
+						</video>
+					)}
 				</div>
 			))
 		}
