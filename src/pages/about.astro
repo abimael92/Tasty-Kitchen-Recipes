@@ -63,4 +63,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	.about-us ul li {
 		font-size: 1rem;
 	}
+
+	@media (max-width: 600px) {
+		.about-us {
+			padding: 2rem 1rem;
+		}
+
+		.about-us h1 {
+			font-size: 1.8rem;
+		}
+
+		.about-us h2 {
+			font-size: 1.5rem;
+		}
+
+		.about-us p,
+		.about-us ul li {
+			font-size: 0.9rem;
+		}
+	}
 </style>
