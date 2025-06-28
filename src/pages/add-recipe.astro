@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title='Add Recipe'>
+	<div
+		class='max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-300'
+	>
+		<div class='recipe-form-wrapper'>
+			<h1>Add a New Recipe</h1>
+			<form id='recipeForm' enctype='multipart/form-data' class='space-y-6'>
+				<div>
+					<label
+						for='title'
+						class='block mb-3 font-semibold text-gray-800 text-lg'
+					>
+						Title <span class='text-red-600'>*</span>
+					</label>
+					<input
+						type='text'
+						id='title'
+						name='title'
+						required
+						placeholder='E.g., Cinnamon Rolls'
+						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
+						focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition'
+					/>
+				</div>
+
+				<div>
+					<label
+						for='ingredients'
+						class='block mb-3 font-semibold text-gray-800 text-lg'
+					>
+						Ingredients <span class='text-red-600'>*</span>
+					</label>
+					<textarea
+						id='ingredients'
+						name='ingredients'
+						rows='6'
+						required
+						placeholder='List ingredients, one per line'
+						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
+						resize-y focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition font-mono'
+					></textarea>
+				</div>
+
+				<div>
+					<label
+						for='instructions'
+						class='block mb-3 font-semibold text-gray-800 text-lg'
+					>
+						Instructions <span class='text-red-600'>*</span>
+					</label>
+					<textarea
+						id='instructions'
+						name='instructions'
+						rows='8'
+						required
+						placeholder='Step-by-step instructions'
+						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
+						resize-y focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition font-mono'
+					></textarea>
+				</div>
+
+				<div>
+					<label
+						for='image'
+						class='block mb-3 font-semibold text-gray-800 text-lg'
+					>
+						Image (optional)
+					</label>
+					<input
+						type='file'
+						id='image'
+						name='image'
+						accept='image/*'
+						class='block w-full text-gray-700 font-medium'
+					/>
+				</div>
+
+				<div>
+					<label
+						for='video'
+						class='block mb-3 font-semibold text-gray-800 text-lg'
+					>
+						Video (optional)
+					</label>
+					<input
+						type='file'
+						id='video'
+						name='video'
+						accept='video/mp4,video/webm'
+						class='block w-full text-gray-700 font-medium'
+					/>
+				</div>
+
+				<button
+					type='submit'
+					class='w-full bg-primary text-white py-4 rounded-xl font-bold text-xl hover:bg-primary-dark shadow-lg
+					transition-colors duration-300 ease-in-out focus:ring-4 focus:ring-primary/60'
+				>
+					Submit Recipe
+				</button>
+			</form>
+
+			<div id='formStatus' class='mt-6 text-center text-lg'></div>
+		</div>
+	</div>
+
+	<style>
+		:root {
+			--primary-color: #d2691e;
+			--primary-color-dark: #b25418;
+		}
+		.text-primary {
+			color: var(--primary-color);
+		}
+		.bg-primary {
+			background-color: var(--primary-color);
+		}
+		.bg-primary-dark {
+			background-color: var(--primary-color-dark);
+		}
+	</style>
+
+	<script>
+		document
+			.getElementById('recipeForm')
+			.addEventListener('submit', async (e) => {
+				e.preventDefault();
+				const form = e.target;
+				const formData = new FormData(form);
+				const statusEl = document.getElementById('formStatus');
+
+				statusEl.textContent = 'Submitting...';
+				statusEl.style.color = 'var(--primary-color)';
+
+				try {
+					const res = await fetch('/api/submit-recipe', {
+						method: 'POST',
+						body: formData,
+					});
+					const data = await res.json();
+					if (res.ok) {
+						statusEl.textContent = '✅ Recipe submitted successfully!';
+						statusEl.style.color = 'green';
+						form.reset();
+					} else {
+						statusEl.textContent = `❌ Error: ${data.message}`;
+						statusEl.style.color = 'red';
+					}
+				} catch {
+					statusEl.textContent = '❌ Failed to submit recipe.';
+					statusEl.style.color = 'red';
+				}
+			});
+
+		// Auto-insert bullets into ingredients textarea
+		document.getElementById('ingredients').addEventListener('input', (e) => {
+			const lines = e.target.value.split('\n');
+			e.target.value = lines
+				.map((line) => (line.startsWith('•') ? line : `• ${line}`))
+				.join('\n');
+		});
+
+		// Auto-insert numbered steps into instructions textarea
+		document.getElementById('instructions').addEventListener('input', (e) => {
+			const lines = e.target.value.split('\n');
+			e.target.value = lines
+				.map((line, i) =>
+					line.match(/^\d+\.\s+/) ? line : `${i + 1}. ${line}`
+				)
+				.join('\n');
+		});
+	</script>
+</BaseLayout>
