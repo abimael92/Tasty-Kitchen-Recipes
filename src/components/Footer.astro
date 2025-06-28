@@ -123,4 +123,47 @@ const year = new Date().getFullYear();
 	.social-links img {
 		margin-bottom: 8px; /* Adjust the spacing between the icon and the text */
 	}
+
+	@media (max-width: 768px) {
+		.footer {
+			padding: 1rem 0.5rem;
+		}
+		.container {
+			max-width: 600px;
+			margin: 0;
+		}
+		.footer-top {
+			gap: 0;
+		}
+		.footer-section {
+			gap: 0.5px; /* Adds space between the title and icons */
+		}
+		.footer-top {
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+		}
+
+		.footer-section {
+			width: 100%;
+			align-items: center;
+			margin: 0;
+			padding: 0;
+		}
+
+		.footer-section h3 {
+			font-size: 1.1rem;
+			margin: 0;
+		}
+
+		.social-links {
+			justify-content: center;
+			gap: 1.5rem;
+		}
+
+		.footer-bottom {
+			font-size: 0.85rem;
+			padding-top: 1rem;
+		}
+	}
 </style>
