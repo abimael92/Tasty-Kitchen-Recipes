@@ -6,8 +6,11 @@
 	</video>
 
 	<div class='container'>
-		<h1>Warm, Sweet, and Delicious</h1>
-		<p>Indulge in the most delightful cinnamon rolls, made with love.</p>
+		<h1>Fresh, Simple, and Tasty</h1>
+		<p>
+			Explore step-by-step recipes, cooking tips, and meal ideas to make
+			delicious dishes every day.
+		</p>
 		<a href='/recipes' class='cta-button'>View Menu</a>
 	</div>
 </section>
@@ -22,6 +25,7 @@
 		text-align: center;
 		color: var(--text);
 		overflow: hidden;
+		padding: 0 1rem; /* add horizontal padding for small screens */
 	}
 
 	.hero-video {
@@ -32,27 +36,53 @@
 		height: 100%;
 		object-fit: cover;
 	}
+
 	.container {
 		position: relative;
 		z-index: 1;
-		background: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+		background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
 		padding: 2rem;
 		border-radius: 8px;
-		color: white; /* Ensures readability */
+		color: white;
+		max-width: 600px;
+		margin: 0 auto;
 	}
 
 	.container p {
-		margin-bottom: 50px; /* Adds space between paragraph and button */
+		margin: 1.5rem 4rem; /* reduce spacing below paragraph */
+		padding: 1rem 4rem;
+		font-size: 1.15rem;
 	}
 
 	.cta-button {
-		/* background: #d2691e; Cinnamon brown */
 		background-color: var(--color-primary);
 		color: var(--color-light);
 		border-radius: var(--border-radius);
-		margin: 15rem;
+		margin: 0 auto;
 		padding: 1rem 2rem;
 		font-size: 1.2rem;
 		text-decoration: none;
+		display: inline-block;
+	}
+
+	/* Responsive tweaks */
+	@media (max-width: 600px) {
+		.hero {
+			height: 40vh;
+		}
+
+		.container {
+			padding: 1rem;
+			max-width: 90%;
+		}
+
+		.container p {
+			margin-bottom: 1rem;
+		}
+
+		.cta-button {
+			font-size: 1rem;
+			padding: 0.75rem 1.5rem;
+		}
 	}
 </style>
