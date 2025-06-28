@@ -3,7 +3,7 @@
 export const theme = {
     colors: {
         primary: "#FF6347", // Tomato 
-        secondary: "#6B8E23",
+        secondary: "#DB7093",
         accent: "#FFD700",
         light: "#F8F9FA", // Light Gray
         dark: "#343A40", // Charcoal Gray
