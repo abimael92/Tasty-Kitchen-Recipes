@@ -1,6 +1,6 @@
 :root {
   --color-primary: #FF6347;
-  --color-secondary: #6B8E23;
+  --color-secondary: #C14E39;
   --color-accent: #FFD700;
   --color-light: #F8F9FA;
   --color-dark: #343A40;
@@ -27,6 +27,7 @@ body {
 h1, h2, h3 {
   font-family: var(--font-heading);
   color: var(--color-primary);
+  font-size: 2.2rem;
 }
 
 button {
@@ -186,8 +187,118 @@ form button[type="submit"] {
 
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+  .recipes-grid {
+    display: block;
+    padding: 1rem;
+  }
+
+  .recipe-card {
+    margin-bottom: var(--spacing-large);
+  }
+
+  .recipe h2 {
+    font-size: 1.25rem;
+  }
+
+  .ingredients-list,
+  .instructions-list {
+    font-size: 0.9rem;
+    max-height: 100px;
+  }
+
+  .toggle-content:not(.expanded) {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .toggle-content.expanded {
+    max-height: 1000px;
+    overflow: visible;
+  }
+
+  .mobile-only-toggle {
+    display: block;
+    text-align: center;
+    margin-top: var(--spacing-small);
+  }
+
+  .mobile-only-toggle button {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .recipe-form-wrapper {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .recipe h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .recipe-form-wrapper {
+    padding: 1rem; /* smaller padding on mobile */
+  }
+
+  .recipes-grid {
+    display: block; /* stack recipe cards vertically */
+    margin: 0 1rem;
+  }
+
+  .recipe-card {
+    margin-bottom: 1.5rem;
+  }
+
+  form button[type="submit"] {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  /* Inputs full width and easier tap targets */
+  input[type="text"],
+  textarea,
+  input[type="file"] {
+    font-size: 1rem;
+  }
+}
+
+
 @media (max-width: 600px) {
   .recipe h2 {
     font-size: 1.25rem;
+  }
+
+  .recipe-form-wrapper {
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .recipes-grid {
+    display: block;
+    margin: 0 1rem;
+  }
+
+  .recipe-card {
+    margin-bottom: 1.5rem;
+  }
+
+  form button[type="submit"] {
+    font-size: 1rem;
+    padding: 12px;
+  }
+
+  input[type="text"],
+  textarea,
+  input[type="file"] {
+    font-size: 1rem;
+    padding: var(--spacing-small);
   }
 }

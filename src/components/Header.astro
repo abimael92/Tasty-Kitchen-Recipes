@@ -5,42 +5,79 @@ import Logo from './Logo.astro';
 
 <header class='header'>
 	<div class='container'>
-		<Logo />
-		<h1 class='blog-title'>Tasty Kitchen Recipes</h1>
+		<div class='header-top'>
+			<Logo />
+			<h1 class='blog-title'>Tasty Kitchen Recipes</h1>
+		</div>
 		<Navbar />
 	</div>
 </header>
 
 <style>
 	.header {
-		background: #f4a261; /* Warm  */
-		background-color: var(--color-header); /* Warm Amber */
-		color: var(--color-light); /* Light color for text */
+		background-color: var(--color-header);
+		color: var(--color-light);
 		padding: var(--spacing-medium) 0;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
 	}
 
 	.container {
 		width: 90%;
 		margin: 0 auto;
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
 		align-items: center;
 	}
-	.blog-title {
-		font-size: 2rem;
-		font-weight: bold;
-		color: #fff;
-		font-family: 'Lora', serif; /* Elegant, readable serif font */
-		letter-spacing: 1px;
-		text-transform: uppercase;
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Adds a soft shadow effect */
-		margin: 0;
+
+	.header-top {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--spacing-small);
 	}
 
-	.logo {
-		background: none;
+	.blog-title {
+		font-size: 1.8rem;
+		font-weight: bold;
+		font-family: 'Lora', serif;
+		color: #fff;
+		text-transform: uppercase;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		margin: 0;
+		padding: 0 30px;
+		text-align: center;
+	}
+
+	/* Navbar overrides for spacing */
+	nav.navbar {
+		margin-top: var(--spacing-small);
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	/* Desktop layout */
+	@media (min-width: 768px) {
+		.container {
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.blog-title {
+			font-size: 1.8rem;
+			padding: 0;
+		}
+
+		.header-top {
+			flex-direction: row;
+			align-items: center;
+			gap: var(--spacing-medium);
+		}
+
+		nav.navbar {
+			margin-top: 0;
+			justify-content: flex-end;
+			width: auto;
+		}
 	}
 </style>

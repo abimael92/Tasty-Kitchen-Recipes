@@ -3,14 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { client } from '../lib/sanity.js';
 
-// Load local markdown recipes through Content Collections
 const localRecipes = (await getCollection('recipes')).map((entry) => ({
 	...entry.data,
 	id: entry.id,
 	slug: entry.slug,
 }));
 
-// Load Sanity recipes
 let sanityRecipes = [];
 try {
 	sanityRecipes = await client.fetch(`
@@ -28,14 +26,15 @@ try {
 	console.error('Failed to fetch Sanity recipes:', e.message);
 }
 
-// Combine both sources
 const recipes = [...localRecipes, ...sanityRecipes];
 ---
 
 <BaseLayout title='Recipes'>
 	<div class='header-buttons'>
 		<button onclick='history.back()' class='back-button'>Back</button>
-		<a href='/add-recipe' class='add-recipe-button'>➕ Add New Recipe</a>
+		<a href='/add-recipe' class='add-recipe-button'>
+			<span class='plus-icon'>+</span> Add New Recipe
+		</a>
 	</div>
 
 	<h1>Delicious Recipes</h1>
@@ -58,45 +57,42 @@ const recipes = [...localRecipes, ...sanityRecipes];
 						<h2>{recipe.title}</h2>
 
 						<div class='recipe-details'>
-							<h3>Ingredients</h3>
-							<p class='ingredients-list'>
-								{(Array.isArray(recipe.ingredients)
-									? recipe.ingredients
-									: recipe.ingredients?.split?.('\n') || []
-								)
-									.filter(Boolean)
-									.map((ingredient, i) => (
-										<span key={i}>
-											{ingredient}
-											<br />
-										</span>
-									))}
-							</p>
+							<div class='toggle-content'>
+								<h3>Ingredients</h3>
+								<p class='ingredients-list'>
+									{(Array.isArray(recipe.ingredients)
+										? recipe.ingredients
+										: recipe.ingredients?.split?.('\n') || []
+									)
+										.filter(Boolean)
+										.map((ingredient, i) => (
+											<span key={i}>
+												{ingredient}
+												<br />
+											</span>
+										))}
+								</p>
 
-							<h3>Instructions</h3>
-							<p class='instructions-list'>
-								{(Array.isArray(recipe.instructions)
-									? recipe.instructions
-									: recipe.instructions?.split?.('\n') || []
-								)
-									.filter(Boolean)
-									.map((step, i) => (
-										<span key={i}>
-											{step}
-											<br />
-										</span>
-									))}
-							</p>
-						</div>
-
-						{/* {recipe.video && (
-							<div class='video-container'>
-								<video controls width='100%'>
-									<source src={recipe.video} type='video/mp4' />
-									Your browser does not support the video tag.
-								</video>
+								<h3>Instructions</h3>
+								<p class='instructions-list'>
+									{(Array.isArray(recipe.instructions)
+										? recipe.instructions
+										: recipe.instructions?.split?.('\n') || []
+									)
+										.filter(Boolean)
+										.map((step, i) => (
+											<span key={i}>
+												{step}
+												<br />
+											</span>
+										))}
+								</p>
 							</div>
-						)} */}
+
+							<div class='mobile-only-toggle'>
+								<button class='mobile-toggle-button'>View More</button>
+							</div>
+						</div>
 					</div>
 				</article>
 			))
@@ -105,10 +101,9 @@ const recipes = [...localRecipes, ...sanityRecipes];
 </BaseLayout>
 
 <style>
-	/* Base styles */
 	:root {
 		--primary-color: #d2691e;
-		--secondary-color: #28a745;
+		--secondary-color: #c14e39;
 		--light-bg: #fff6f6;
 		--border-color: #f5c6c6;
 		--text-color: #5a2e2e;
@@ -146,6 +141,13 @@ const recipes = [...localRecipes, ...sanityRecipes];
 		color: white;
 	}
 
+	.plus-icon {
+		color: white;
+		font-weight: bold;
+		margin-right: 0.3rem;
+		font-size: 1.5rem;
+	}
+
 	.back-button:hover,
 	.add-recipe-button:hover {
 		transform: translateY(-2px);
@@ -169,16 +171,14 @@ const recipes = [...localRecipes, ...sanityRecipes];
 		max-width: 1400px;
 	}
 
-	/* Recipe card */
 	.recipe-card {
-		display: flex;
-		flex-direction: column;
+		background: white;
 		border: 1px solid var(--border-color);
 		border-radius: 12px;
 		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 		overflow: hidden;
-		transition: transform 0.3s ease;
-		background: white;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.recipe-card:hover {
@@ -196,7 +196,18 @@ const recipes = [...localRecipes, ...sanityRecipes];
 		padding: 15px;
 		display: flex;
 		flex-direction: column;
-		flex-grow: 1;
+	}
+
+	/* Toggle content visible by default (desktop) */
+	.toggle-content {
+		max-height: none;
+		overflow: visible;
+		transition: max-height 0.3s ease;
+	}
+
+	/* Hide toggle button on desktop */
+	.mobile-only-toggle {
+		display: none;
 	}
 
 	.recipe-content h2 {
@@ -265,16 +276,58 @@ const recipes = [...localRecipes, ...sanityRecipes];
 		border-radius: 4px;
 	}
 
-	/* Responsive adjustments */
+	/* Mobile styles */
 	@media (max-width: 768px) {
+		.recipe-card img {
+			width: 100%;
+			height: 160px;
+			object-fit: cover;
+		}
 		.recipes-grid {
 			grid-template-columns: 1fr;
 			padding: 10px;
 		}
 
-		.header-buttons {
-			flex-direction: column;
-			align-items: flex-start;
+		/* Hide ingredients + instructions initially on mobile */
+		.toggle-content {
+			max-height: 0;
+			overflow: hidden;
+		}
+		/* When expanded */
+		.toggle-content.expanded {
+			max-height: 1000px;
+			overflow: visible;
+		}
+
+		/* Show toggle button on mobile */
+		.mobile-only-toggle {
+			display: block;
+			margin-top: 10px;
+			text-align: center;
+		}
+
+		.mobile-only-toggle button {
+			background-color: var(--primary-color);
+			color: white;
+			border: none;
+			padding: 0.5rem 1rem;
+			border-radius: 5px;
+			font-weight: bold;
+			cursor: pointer;
 		}
 	}
 </style>
+
+<script is:inline>
+	document.addEventListener('click', (e) => {
+		if (e.target.classList.contains('mobile-toggle-button')) {
+			const content = e.target
+				.closest('.recipe-details')
+				.querySelector('.toggle-content');
+			content.classList.toggle('expanded');
+			e.target.textContent = content.classList.contains('expanded')
+				? 'View Less'
+				: 'View More';
+		}
+	});
+</script>

@@ -1,11 +1,19 @@
 ---
 const { image, name, description } = Astro.props;
+let expanded = false;
 ---
 
 <div class='product-card'>
 	<img src={image} alt={name} class='product-image' />
-	<h3>{name}</h3>
-	<p class='description'>{description}</p>
+	<h3>{name}34</h3>
+	<p class={`description ${expanded ? 'expanded' : ''}`}>{description}</p>
+	{
+		!expanded && description.length > 120 && (
+			<button class='toggle-btn' onClick={() => (expanded = true)}>
+				View More
+			</button>
+		)
+	}
 	<button class='view-recipe-btn'>View Recipe</button>
 </div>
 
@@ -30,7 +38,8 @@ const { image, name, description } = Astro.props;
 		border-radius: 10px;
 		height: auto;
 	}
-	.view-recipe-btn {
+	.view-recipe-btn,
+	.toggle-btn {
 		background: #d2691e;
 		color: white;
 		padding: 0.8rem;
@@ -40,12 +49,36 @@ const { image, name, description } = Astro.props;
 		font-weight: bold;
 		margin-top: 1rem;
 	}
-	.view-recipe-btn:hover {
+	.view-recipe-btn:hover,
+	.toggle-btn:hover {
 		background: #a0522d;
 	}
 	.description {
 		color: #555;
 		font-size: 1rem;
 		margin: 1rem 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+	.description.expanded {
+		-webkit-line-clamp: unset;
+		overflow: visible;
+	}
+
+	@media (max-width: 600px) {
+		.product-card {
+			max-width: 100%;
+			padding: 1rem;
+			margin: 0 auto;
+		}
+
+		.view-recipe-btn,
+		.toggle-btn {
+			width: 100%;
+			font-size: 1rem;
+			padding: 0.75rem;
+		}
 	}
 </style>
