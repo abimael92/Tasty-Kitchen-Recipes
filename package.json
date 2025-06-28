@@ -1,5 +1,5 @@
 {
-  "name": "astro-bakery-blog",
+  "name": "tasty-kitchen-recipes",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -11,10 +11,12 @@
   "dependencies": {
     "@sanity/client": "^7.6.0",
     "@sanity/image-url": "^1.1.0",
-    "astro": "^5.3.0",
     "busboy": "^1.6.0",
     "formidable": "^3.5.4",
     "gray-matter": "^4.0.3",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "astro": "^5.10.1"
   }
 }
