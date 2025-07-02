@@ -1,0 +1,28 @@
+---
+const { ingredients = [] } = Astro.props;
+const items = Array.isArray(ingredients)
+	? ingredients
+	: ingredients?.split?.('\n') || [];
+---
+
+<ul class='checklist'>
+	{
+		items.filter(Boolean).map((item, i) => (
+			<li key={i}>
+				<input type='checkbox' /> {item}
+			</li>
+		))
+	}
+</ul>
+<style>
+	.checklist {
+		list-style: none;
+		padding: 0;
+	}
+	.checklist li {
+		margin: 0.5rem 0;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+</style>
