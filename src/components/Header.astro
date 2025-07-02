@@ -1,14 +1,19 @@
 ---
 import Navbar from './Navbar.astro';
 import Logo from './Logo.astro';
+import LanguageSelector from './LanguageSelector.astro';
+import { t } from '../utils/i18n'; // Use the translation function instead of direct imports
+
+const { currentLocale } = Astro;
 ---
 
 <header class='header'>
 	<div class='container'>
 		<div class='header-top'>
 			<Logo />
-			<h1 class='blog-title'>Tasty Kitchen Recipes</h1>
+			<h1 class='blog-title'>{t('title', currentLocale)}</h1>
 		</div>
+		<LanguageSelector />
 		<Navbar />
 	</div>
 </header>
