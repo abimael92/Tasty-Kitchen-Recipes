@@ -10,14 +10,19 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/react": "^4.3.0",
     "@sanity/client": "^7.6.0",
     "@sanity/image-url": "^1.1.0",
     "busboy": "^1.6.0",
     "formidable": "^3.5.4",
     "gray-matter": "^4.0.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "solid-js": "^1.9.7",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@astrojs/solid-js": "^5.1.0",
     "@astrojs/vercel": "^8.2.0",
     "astro": "^5.10.1"
   }
