@@ -13,24 +13,43 @@ function acceptCookies() {
 
 {
 	showBanner && (
-		<div id='cookie-banner' class='cookie-banner'>
-			<div class='cookie-content'>
-				<h3 class='cookie-title'>
-					<img src='/cookie.svg' alt='Cookie Icon' class='cookie-icon' />
-					We use cookies
-				</h3>
-				<div class='cookie-text'>
-					<p>
-						We use cookies to improve your experience.
-						<br />
-						By using our site, you agree to our
-						<a href='/privacy-policy'>privacy policy</a>.
-						<br />
-						<button onClick={acceptCookies}>Got it!</button>
-					</p>
-				</div>
-			</div>
-		</div>
+	<div id='cookie-banner' class='cookie-banner' style='display: none'>
+  <div class='cookie-content'>
+    <h3 class='cookie-title'>
+      <img src='/cookie.svg' alt='Cookie Icon' class='cookie-icon' />
+      We use cookies
+    </h3>
+    <div class='cookie-text'>
+      <p>
+        We use cookies to improve your experience.
+        <br />
+        By using our site, you agree to our
+        <a href='/privacy-policy'>privacy policy</a>.
+        <br />
+        <button id='cookie-accept'>Got it!</button>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  // Check cookies and show banner if needed
+  if (typeof window !== 'undefined') {
+    const banner = document.getElementById('cookie-banner');
+    const accepted = localStorage.getItem('cookiesAccepted');
+    
+    if (!accepted) {
+      banner.style.display = 'block';
+    }
+
+    document.getElementById('cookie-accept').addEventListener('click', () => {
+      localStorage.setItem('cookiesAccepted', 'true');
+      banner.style.display = 'none';
+    });
+  }
+</script>
+
+<!-- Keep all your existing styles -->
 	)
 }
 
