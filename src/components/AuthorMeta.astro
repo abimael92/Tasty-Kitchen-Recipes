@@ -1,0 +1,29 @@
+---
+const { name, date, avatar } = Astro.props;
+
+const displayName = name?.trim() ? name : 'Anonymous Chef';
+const displayDate = date?.trim() ? date : 'Unknown date';
+const avatarSrc = avatar?.trim() || '/images/illustration-of-a-chef.webp';
+---
+
+<div class='author-meta'>
+	<img src={avatarSrc} alt={displayName} class='avatar' />
+	<div>
+		<strong>{displayName}</strong>
+		<div>{displayDate}</div>
+	</div>
+</div>
+
+<style>
+	.author-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+	.avatar {
+		width: 80px;
+		height: 80px;
+		border-radius: 50%;
+	}
+</style>

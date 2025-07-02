@@ -1,0 +1,32 @@
+{
+    "title": "Tasty Kitchen Recipes",
+    "language": "Language",
+    "home": {
+        "title": "Tasty Kitchen Recipes",
+        "nav": {
+            "home": "Home",
+            "recipes": "Recipes",
+            "about": "About"
+        }
+    },
+    "hero": {
+        "title": "Fresh, Simple, and Tasty",
+        "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",
+        "cta": "View Recipes"
+    },
+    "footer": {
+        "about": {
+            "title": "About Us",
+            "description": "We are passionate about sharing the best recipes, tips, and tricks.\n\nOur goal is to provide quick and easy recipes that everyone can enjoy."
+        },
+        "links": {
+            "title": "Quick Links",
+            "home": "Home",
+            "about": "About"
+        },
+        "follow": {
+            "title": "Follow Us"
+        },
+        "rights": "All rights reserved."
+    }
+}

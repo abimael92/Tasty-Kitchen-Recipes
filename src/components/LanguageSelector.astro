@@ -1,0 +1,53 @@
+---
+const { url } = Astro;
+// Get current locale from URL path (more reliable method)
+const pathLocale = url.pathname.split('/')[1];
+const currentLocale = pathLocale === 'en' ? 'en' : 'es';
+const locales = ['es', 'en'];
+---
+
+<select id='language-selector' value={currentLocale}>
+	{
+		locales.map((locale) => (
+			<option value={locale} selected={locale === currentLocale}>
+				{locale === 'es' ? 'Español' : 'English'}
+			</option>
+		))
+	}
+</select>
+
+<script is:inline>
+	// Ensure the select value matches current locale on load
+	document.getElementById('language-selector').value =
+		window.location.pathname.startsWith('/en') ? 'en' : 'es';
+
+	document
+		.getElementById('language-selector')
+		.addEventListener('change', (e) => {
+			const newLocale = e.target.value;
+			const currentPath = window.location.pathname;
+
+			// Handle root path case
+			if (currentPath === '/' || currentPath === '/en') {
+				window.location.href = newLocale === 'es' ? '/' : '/en';
+				return;
+			}
+
+			// Handle other paths
+			const pathWithoutLocale = currentPath.replace(/^\/(en|es)/, '');
+			window.location.href =
+				newLocale === 'es' ? pathWithoutLocale : `/en${pathWithoutLocale}`;
+		});
+</script>
+
+<style>
+	select {
+		font-size: 1rem;
+		padding: 0.4rem 0.6rem;
+		border-radius: 6px;
+		border: 1px solid var(--color-dark);
+		background: rgba(0, 0, 0, 0.7);
+		color: white;
+		cursor: pointer;
+	}
+</style>

@@ -42,7 +42,7 @@ const recipes = [...localRecipes, ...sanityRecipes];
 	<div class='recipes-grid'>
 		{
 			recipes.map((recipe) => (
-				<article class='recipe-card'>
+				<a href={`/recipes/${recipe.slug ?? ''}`} class='recipe-card'>
 					{recipe.image && (
 						<img
 							src={recipe.image}
@@ -94,7 +94,7 @@ const recipes = [...localRecipes, ...sanityRecipes];
 							</div>
 						</div>
 					</div>
-				</article>
+				</a>
 			))
 		}
 	</div>

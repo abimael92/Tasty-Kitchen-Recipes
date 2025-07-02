@@ -1,0 +1,32 @@
+{
+    "title": "Recetas de Cocina Sabrosas",
+    "language": "Idioma",
+    "home": {
+        "title": "Recetas de Cocina Sabrosas",
+        "nav": {
+            "home": "Inicio",
+            "recipes": "Recetas",
+            "about": "Acerca de"
+        }
+    },
+    "hero": {
+        "title": "Fresco, Simple y Delicioso",
+        "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
+        "cta": "Ver Recetas"
+    },
+    "footer": {
+        "about": {
+            "title": "Sobre Nosotros",
+            "description": "Nos apasiona compartir las mejores recetas, consejos y trucos.\n\nNuestro objetivo es ofrecer recetas rápidas y fáciles que todos puedan disfrutar."
+        },
+        "links": {
+            "title": "Enlaces Rápidos",
+            "home": "Inicio",
+            "about": "Acerca de"
+        },
+        "follow": {
+            "title": "Síguenos"
+        },
+        "rights": "Todos los derechos reservados."
+    }
+}

@@ -1,0 +1,18 @@
+---
+const { calories, servings } = Astro.props;
+
+const displayCalories = calories?.trim() || 'Coming soon';
+const displayServings = servings?.trim() || 'Coming soon';
+---
+
+<div class='nutrition'>
+	<p><strong>Calories:</strong> {displayCalories}</p>
+	<p><strong>Servings:</strong> {displayServings}</p>
+</div>
+<style>
+	.nutrition p {
+		margin: 0.25rem 0;
+		font-size: 0.95rem;
+		color: #555;
+	}
+</style>

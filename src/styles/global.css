@@ -4,7 +4,7 @@
   --color-accent: #FFD700;
   --color-light: #F8F9FA;
   --color-dark: #343A40;
-  --color-background: #FFFFFF;
+  --color-background:  linear-gradient(135deg, #f8f9fa 0%, #ff6347 100%);
   --color-link: #007BFF;
   --font-heading: 'Merriweather', serif;
   --font-body: 'Roboto', sans-serif;
@@ -24,11 +24,21 @@ body {
 
 }
 
-h1, h2, h3 {
+h1,
+ h3 {
   font-family: var(--font-heading);
   color: var(--color-primary);
   font-size: 2.2rem;
 }
+
+ h2, h4 {
+  font-family: var(--font-heading);
+  color: var(--color-secondary);
+  font-size: 2.25rem;
+}
+
+
+
 
 button {
   background-color: var(--color-primary);
@@ -186,6 +196,31 @@ form button[type="submit"] {
 }
 
 
+
+
+
+.star {
+  font-size: var(--star-size);
+  width: var(--star-size);
+  height: var(--star-size);
+  line-height: 1;
+  user-select: none;
+  position: relative;
+  display: inline-block;
+}
+.star .empty, .star .filled {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+
+
+
+
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .recipes-grid {
@@ -242,6 +277,7 @@ form button[type="submit"] {
     font-size: 1.25rem;
   }
 }
+
 
 @media (max-width: 600px) {
   .recipe-form-wrapper {
