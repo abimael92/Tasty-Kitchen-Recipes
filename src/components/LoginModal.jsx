@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { t } from '../utils/i18n';
 
 export default function LoginModal({
 	isOpen,
@@ -6,6 +7,7 @@ export default function LoginModal({
 	onLogin,
 	error,
 	loading,
+	locale,
 }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -44,7 +46,7 @@ export default function LoginModal({
 				}}
 				onClick={(e) => e.stopPropagation()}
 			>
-				<h2 style={{ marginTop: 0 }}>Login</h2>
+				<h2 style={{ marginTop: 0 }}>{t('auth.login', locale)}</h2>
 
 				{error && (
 					<div
@@ -65,7 +67,7 @@ export default function LoginModal({
 					style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
 				>
 					<div>
-						<label htmlFor='email'>Email:</label>
+						<label htmlFor='email'>{t('auth.email', locale)}</label>
 						<input
 							type='email'
 							id='email'
@@ -78,7 +80,7 @@ export default function LoginModal({
 					</div>
 
 					<div>
-						<label htmlFor='password'>Password:</label>
+						<label htmlFor='password'>{t('auth.password', locale)}</label>
 						<input
 							type='password'
 							id='password'
@@ -92,28 +94,32 @@ export default function LoginModal({
 					</div>
 
 					<div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-						<button
-							type='button'
-							onClick={onClose}
-							disabled={loading}
-							style={{
-								padding: '0.5rem 1rem',
-								backgroundColor: '#f0f0f0',
-								border: '1px solid #ccc',
-								borderRadius: '4px',
-								cursor: 'pointer',
-								flex: 1,
-								opacity: loading ? 0.7 : 1,
-							}}
-						>
-							Cancel
-						</button>
+						{!loading && (
+							<button
+								type='button'
+								onClick={onClose}
+								disabled={loading}
+								style={{
+									padding: '0.5rem 1rem',
+									backgroundColor: 'var(--color-dark)',
+									border: '1px solid #ccc',
+									borderRadius: '4px',
+									cursor: 'pointer',
+									flex: 1,
+									opacity: loading ? 0.7 : 1,
+								}}
+							>
+								{t('auth.cancel', locale) || 'Cancel'}
+							</button>
+						)}
 						<button
 							type='submit'
 							disabled={loading}
 							style={{
 								padding: '0.5rem 1rem',
-								backgroundColor: loading ? '#ccc' : 'var(--color-accent)',
+								backgroundColor: loading
+									? 'var(--color-secondary)'
+									: 'var(--color-primary)',
 								color: 'white',
 								border: 'none',
 								borderRadius: '4px',
@@ -121,7 +127,9 @@ export default function LoginModal({
 								flex: 1,
 							}}
 						>
-							{loading ? 'Logging in...' : 'Login'}
+							{loading
+								? t('auth.loggingIn', locale) || 'Logging in...'
+								: t('auth.login', locale)}
 						</button>
 					</div>
 				</form>
