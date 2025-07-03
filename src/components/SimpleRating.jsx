@@ -16,7 +16,14 @@ export default function SimpleRating() {
 				<div class={styles.rating}>
 					<h4 class={styles.heading}> RATE THIS RECIPE</h4>
 					{[1, 2, 3, 4, 5].map((star) => (
-						<button onClick={() => setRating(star)} class={styles.ratingButton}>
+						<button
+							onClick={() => {
+								setRating(star);
+								alert(`You clicked star ${star}`);
+								console.log(`Star ${star} clicked`);
+							}}
+							class={styles.ratingButton}
+						>
 							<svg
 								width='48'
 								height='48'
