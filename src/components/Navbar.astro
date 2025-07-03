@@ -1,6 +1,6 @@
 ---
 import { t } from '../utils/i18n';
-
+import LoginWrapper from '../components/LoginWrapper.jsx';
 const { currentLocale } = Astro;
 ---
 
@@ -9,6 +9,9 @@ const { currentLocale } = Astro;
 		<li><a href='/'>{t('home.nav.home', currentLocale)}</a></li>
 		<li><a href='/recipes'>{t('home.nav.recipes', currentLocale)}</a></li>
 		<li><a href='/about'>{t('home.nav.about', currentLocale)}</a></li>
+		<li>
+			<LoginWrapper client:load />
+		</li>
 	</ul>
 </nav>
 

@@ -62,17 +62,23 @@ const { currentLocale } = Astro;
 		color: var(--color-dark, #343a40);
 		display: flex;
 		flex-direction: column;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	.content-wrapper {
-		flex: 1 0 auto;
-		max-width: 1200px;
+		width: 100%;
+		max-width: 1280px;
 		margin: 0 auto;
-		padding: 3rem 2rem;
-		background: linear-gradient(135deg, #fff0f0 0%, #ffe5d9 70%, #fef9f8 100%);
-		border-radius: var(--border-radius, 8px);
-		box-shadow: 0 8px 24px rgba(197, 134, 123, 0.15);
-		transition: background 0.3s ease;
+		padding: 4rem 2rem;
+		/* background-color: #fef4f2;
+		background: var(--color-background); */
+
+		/* border-radius: var(--border-radius, 12px);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+		transition:
+			box-shadow 0.3s ease,
+			background-color 0.3s ease; */
 	}
 
 	@media (max-width: 768px) {
