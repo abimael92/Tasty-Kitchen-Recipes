@@ -9,6 +9,8 @@ const { currentLocale } = Astro;
 		<li><a href='/'>{t('home.nav.home', currentLocale)}</a></li>
 		<li><a href='/recipes'>{t('home.nav.recipes', currentLocale)}</a></li>
 		<li><a href='/about'>{t('home.nav.about', currentLocale)}</a></li>
+	</ul>
+	<ul>
 		<li>
 			<LoginWrapper client:load />
 		</li>
