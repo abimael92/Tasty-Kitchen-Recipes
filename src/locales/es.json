@@ -9,6 +9,16 @@
             "about": "Acerca de"
         }
     },
+    "auth": {
+        "login": "Iniciar sesión",
+        "logout": "Cerrar sesión",
+        "welcome": "Bienvenido",
+        "user": "Usuario",
+        "cancel": "Cancelar",
+        "loggingIn": "Iniciando sesión...",
+        "email": "Correo electrónico",
+        "password": "Contraseña"
+    },
     "hero": {
         "title": "Fresco, Simple y Delicioso",
         "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
