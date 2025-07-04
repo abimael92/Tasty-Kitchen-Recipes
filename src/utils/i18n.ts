@@ -1,16 +1,19 @@
 import en from '../locales/en.json';
 import es from '../locales/es.json';
 
-const translations = { en, es };
+const translations: Record<string, any> = {
+	en,
+	es,
+};
 
-export function t(key: string, locale: 'en' | 'es'): string {
-	const keys = key.split('.');
-	let value: any = translations[locale];
+export function t(key: string, locale: string = 'es'): string {
+	const parts = key.split('.');
+	let result: any = translations[locale];
 
-	for (const k of keys) {
-		value = value?.[k];
-		if (value === undefined) break;
+	for (const part of parts) {
+		if (!result || !result.hasOwnProperty(part)) return key;
+		result = result[part];
 	}
 
-	return value || key;
+	return typeof result === 'string' ? result : key;
 }

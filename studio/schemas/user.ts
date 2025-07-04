@@ -1,12 +1,20 @@
-// studio/schemas/user.ts
 export default {
   name: 'user',
   title: 'User',
   type: 'document',
   fields: [
-    {name: 'uid', title: 'User ID', type: 'string', required: true},
+    {name: 'uid', title: 'User ID', type: 'string'},
     {name: 'name', title: 'Name', type: 'string'},
+    {name: 'lastname', title: 'Lastname', type: 'string'},
     {name: 'email', title: 'Email', type: 'string'},
+    {name: 'role', title: 'Role', type: 'string'},
+    {name: 'bio', title: 'Bio', type: 'text'},
+    {name: 'location', title: 'Location', type: 'string'},
+    {name: 'phone', title: 'Phone', type: 'string'},
+    {name: 'dietPreference', type: 'string'},
+    {name: 'allergies', type: 'array', of: [{type: 'string'}]},
+    {name: 'preferredCuisine', type: 'array', of: [{type: 'string'}]},
+    {name: 'joinedAt', title: 'Joined At', type: 'datetime'},
     {name: 'profileImage', title: 'Profile Image', type: 'image'},
   ],
 }

@@ -139,7 +139,21 @@ textarea {
   font-size: 1rem;
   color: var(--color-dark);
   background-color: var(--color-light);
-  border: 2px solid var(--color-secondary);
+  /* border: 2px solid var(--color-secondary); */
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-medium);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+select{
+  width: 100%;
+  padding: var(--spacing-medium);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-dark);
+  background-color: var(--color-light);
+  /* border: 2px solid var(--color-secondary); */
   border-radius: var(--border-radius);
   margin-bottom: var(--spacing-medium);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -195,6 +209,20 @@ form button[type="submit"] {
   color: var(--color-light);
 }
 
+.form-row {
+  display: flex;
+  gap: var(--spacing-medium);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-medium);
+}
+
+.form-row > div {
+  flex: 1 1 48%;
+  min-width: 150px;
+  box-sizing: border-box;
+}
+
+
 
 
 
@@ -216,6 +244,38 @@ form button[type="submit"] {
   pointer-events: none;
 }
 
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-form-transition {
+  animation: fadeSlide 0.35s ease-in-out;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+
+
+
+.auth-form-wrapper {
+  overflow: hidden;
+  max-height: 800px;
+  transition: max-height 0.5s ease, opacity 0.3s ease;
+  opacity: 1;
+}
+
+.auth-form-wrapper.collapsed {
+  max-height: 350px; /* set to at least the login form height */
+  opacity: 0.9;
+  transition: max-height 0.5s ease, opacity 0.3s ease;
+}
 
 
 

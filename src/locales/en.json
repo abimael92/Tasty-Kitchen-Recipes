@@ -9,6 +9,16 @@
             "about": "About"
         }
     },
+    "auth": {
+        "login": "Login",
+        "logout": "Logout",
+        "welcome": "Welcome",
+        "user": "User",
+        "cancel": "Cancel",
+        "loggingIn": "Logging in...",
+        "email": "Email",
+        "password": "Password"
+    },
     "hero": {
         "title": "Fresh, Simple, and Tasty",
         "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",

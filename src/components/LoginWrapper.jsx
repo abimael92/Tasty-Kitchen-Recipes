@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import LoginModal from './LoginModal';
+import { t } from '../utils/i18n';
 
-export default function LoginWrapper() {
+export default function LoginWrapper({ locale }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 
-	// Check for existing session on mount
 	useEffect(() => {
 		const userData = localStorage.getItem('userData');
 		if (userData) {
@@ -31,7 +31,7 @@ export default function LoginWrapper() {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Accept: 'application/json', // Explicitly accept JSON response
+					Accept: 'application/json',
 				},
 				body: JSON.stringify({ email, password }),
 			});
@@ -42,7 +42,6 @@ export default function LoginWrapper() {
 				throw new Error(data.error || 'Login failed');
 			}
 
-			// Store user data and update state
 			localStorage.setItem(
 				'userData',
 				JSON.stringify({
@@ -51,10 +50,7 @@ export default function LoginWrapper() {
 					token: data.token,
 				})
 			);
-			setUser({
-				uid: data.uid,
-				email: data.email,
-			});
+			setUser({ uid: data.uid, email: data.email });
 			setIsLoggedIn(true);
 			setIsModalOpen(false);
 		} catch (err) {
@@ -66,7 +62,6 @@ export default function LoginWrapper() {
 	};
 
 	const logout = () => {
-		console.log('Logging out...');
 		localStorage.removeItem('userData');
 		setUser(null);
 		setIsLoggedIn(false);
@@ -80,7 +75,9 @@ export default function LoginWrapper() {
 		<>
 			{isLoggedIn ? (
 				<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-					<span>Welcome, {user?.email || 'User'}!</span>
+					<span>
+						{t('auth.welcome', locale)}, {user?.email || t('auth.user', locale)}
+					</span>
 					<button
 						onClick={logout}
 						style={{
@@ -93,7 +90,7 @@ export default function LoginWrapper() {
 							textDecoration: 'underline',
 						}}
 					>
-						(Logout)
+						({t('auth.logout', locale)})
 					</button>
 				</div>
 			) : (
@@ -107,12 +104,9 @@ export default function LoginWrapper() {
 						font: 'inherit',
 						padding: 0,
 						transition: 'color 0.2s ease',
-						':hover': {
-							color: 'var(--color-accent)',
-						},
 					}}
 				>
-					Login ▼
+					{t('auth.login', locale)} ▼
 				</button>
 			)}
 
