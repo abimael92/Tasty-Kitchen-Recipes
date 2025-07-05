@@ -13,16 +13,11 @@ const { currentLocale } = Astro;
 	<div class='container'>
 		<h1>{t('hero.title', currentLocale)}</h1>
 		<p>{t('hero.subtitle', currentLocale)}</p>
-		<a
-			href={`/${currentLocale === 'es' ? '' : 'en'}/recipes`}
-			class='cta-button'
-		>
+		<a href='/recipes' class='cta-button'>
 			{t('hero.cta', currentLocale)}
 		</a>
 	</div>
 </section>
-
-<!-- Keep your existing styles -->
 
 <style>
 	.hero {
