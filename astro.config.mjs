@@ -5,9 +5,10 @@ import react from '@astrojs/react';
 // Remove the firebaseConfig from here - it should be in environment variables only
 
 export default defineConfig({
+    site: 'http://localhost:4321',
     output: 'server',
     adapter: vercel({
-        // Remove edgeMiddleware if not using Edge Functions
+
         functions: {
             includeFiles: [
                 'src/lib/**/*.ts'
@@ -26,8 +27,6 @@ export default defineConfig({
     },
 
     vite: {
-        // Remove the process.env.FIREBASE_CONFIG definition
-        // It should come from your actual environment variables
 
         optimizeDeps: {
             include: [

@@ -18,10 +18,10 @@ const firebaseConfig = {
 };
 
 const sanity = createClient({
-	projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+	projectId: import.meta.env.SANITY_PROJECT_ID,
 	dataset: 'production',
 	apiVersion: '2023-07-01',
-	token: import.meta.env.VITE_SANITY_API_TOKEN,
+	token: import.meta.env.SANITY_API_TOKEN,
 	useCdn: false,
 });
 

@@ -9,6 +9,8 @@ export default function LoginModal({
 	error,
 	loading,
 	locale,
+	isRegistering,
+	setIsRegistering,
 }) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -21,8 +23,6 @@ export default function LoginModal({
 	const [dietPreference, setDietPreference] = useState('');
 	const [allergies, setAllergies] = useState('');
 	const [preferredCuisine, setPreferredCuisine] = useState('');
-
-	const [isRegistering, setIsRegistering] = useState(false);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -144,7 +144,7 @@ export default function LoginModal({
 											value={name}
 											onChange={(e) => setName(e.target.value)}
 											style={{ width: '100%', padding: '0.5rem' }}
-											required
+											required={isRegistering}
 										/>
 									</div>
 
@@ -155,7 +155,7 @@ export default function LoginModal({
 											value={lastname}
 											onChange={(e) => setLastname(e.target.value)}
 											style={{ width: '100%', padding: '0.5rem' }}
-											required
+											required={isRegistering}
 										/>
 									</div>
 
@@ -258,7 +258,7 @@ export default function LoginModal({
 											value={role}
 											onChange={(e) => setRole(e.target.value)}
 											style={{ width: '100%', padding: '0.5rem' }}
-											required
+											required={isRegistering}
 										>
 											<option value=''>Select Role</option>
 											<option value='client'>Client</option>
