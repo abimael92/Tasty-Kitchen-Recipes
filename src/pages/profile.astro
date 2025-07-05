@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UserProfileWrapper from '../components/UserProfileWrapper.jsx';
+import { t } from '../utils/i18n';
+const { currentLocale } = Astro;
+---
+
+<BaseLayout title={t('profile.pageTitle', currentLocale)}>
+	<UserProfileWrapper locale={currentLocale} client:only='react' />
+</BaseLayout>
