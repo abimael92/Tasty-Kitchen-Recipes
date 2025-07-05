@@ -5,22 +5,27 @@ import { t } from '../utils/i18n';
 export default function LoginWrapper({ locale }) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const [isRegistering, setIsRegistering] = useState(false);
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		const userData = localStorage.getItem('userData');
-		if (userData) {
-			try {
-				const parsedData = JSON.parse(userData);
-				setUser(parsedData);
-				setIsLoggedIn(true);
-			} catch (err) {
-				console.error('Failed to parse user data:', err);
-				logout();
+		async function loadUser() {
+			const userData = localStorage.getItem('userData');
+			if (userData) {
+				try {
+					const parsed = JSON.parse(userData);
+					const fullUser = await fetchUserProfile(parsed.uid, parsed.token);
+					setUser(fullUser);
+					setIsLoggedIn(true);
+				} catch (err) {
+					console.error(err);
+					logout();
+				}
 			}
 		}
+		loadUser();
 	}, []);
 
 	const handleLogin = async (email, password) => {
@@ -50,7 +55,10 @@ export default function LoginWrapper({ locale }) {
 					token: data.token,
 				})
 			);
-			setUser({ uid: data.uid, email: data.email });
+
+			const fullUser = await fetchUserProfile(data.uid, data.token);
+			setUser(fullUser);
+
 			setIsLoggedIn(true);
 			setIsModalOpen(false);
 		} catch (err) {
@@ -61,22 +69,79 @@ export default function LoginWrapper({ locale }) {
 		}
 	};
 
+	const handleRegister = async (userData) => {
+		try {
+			setLoading(true);
+			setError('');
+			const response = await fetch('/api/registerUser', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json',
+				},
+				body: JSON.stringify(userData),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.error || 'Registration failed');
+			}
+
+			// Optionally auto-login or just close modal
+			setIsRegistering(false);
+			setIsModalOpen(false);
+		} catch (err) {
+			console.error('Registration error:', err);
+			setError(err.message || 'Registration failed. Please try again.');
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	const logout = () => {
 		localStorage.removeItem('userData');
 		setUser(null);
 		setIsLoggedIn(false);
+		setLoading(false);
+		setError('');
 	};
+
+	async function fetchUserProfile(uid, token) {
+		try {
+			const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+			if (!res.ok)
+				throw new Error(`Failed to fetch user profile: ${res.status}`);
+			return await res.json();
+		} catch (err) {
+			throw new Error(err.message || 'Network error fetching profile');
+		}
+	}
 
 	if (loading) {
 		return <div>Loading...</div>;
 	}
 
+	console.log(user);
 	return (
 		<>
 			{isLoggedIn ? (
 				<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
 					<span>
-						{t('auth.welcome', locale)}, {user?.email || t('auth.user', locale)}
+						{t('auth.welcome', locale)},{' '}
+						<a
+							href='/profile'
+							style={{
+								textDecoration: 'underline',
+								color: 'var(--color-primary)',
+							}}
+						>
+							{user?.name && user?.lastname
+								? `${user.name} ${user.lastname}`
+								: user?.email || t('auth.user', locale)}
+						</a>
 					</span>
 					<button
 						onClick={logout}
@@ -114,11 +179,16 @@ export default function LoginWrapper({ locale }) {
 				isOpen={isModalOpen}
 				onClose={() => {
 					setIsModalOpen(false);
+					setIsRegistering(false);
 					setError('');
 				}}
 				onLogin={handleLogin}
+				onRegister={handleRegister}
 				error={error}
 				loading={loading}
+				locale={locale}
+				isRegistering={isRegistering}
+				setIsRegistering={setIsRegistering}
 			/>
 		</>
 	);
