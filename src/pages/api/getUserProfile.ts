@@ -20,16 +20,17 @@ export const GET: APIRoute = async ({ request }) => {
 		}
 
 		const query = `*[_type == "user" && uid == $uid][0]{
-      name,
-      lastname,
-      email,
-      role,
-      bio,
-      location,
-      phone,
-      dietPreference,
-      allergies,
-      preferredCuisine
+		_id,
+		name,
+		lastname,
+		email,
+		role,
+		bio,
+		location,
+		phone,
+		dietPreference,
+		allergies,
+		preferredCuisine
     }`;
 
 		const user = await sanity.fetch(query, { uid });
