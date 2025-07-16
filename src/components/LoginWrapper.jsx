@@ -124,7 +124,6 @@ export default function LoginWrapper({ locale }) {
 		return <div>Loading...</div>;
 	}
 
-	console.log(user);
 	return (
 		<>
 			{isLoggedIn ? (
