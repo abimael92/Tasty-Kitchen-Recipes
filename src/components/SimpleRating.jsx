@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Star } from './Star';
 
 export const SimpleRating = ({
-	totalratings,
+	totalRatings,
 	getCurrentRatings,
 	defaultRating,
 }) => {
@@ -23,7 +23,7 @@ export const SimpleRating = ({
 
 	return (
 		<div className='ratings'>
-			{Array.from({ length: totalratings }).map((_, index) => (
+			{Array.from({ length: totalRatings }).map((_, index) => (
 				<span key={index} onClick={(e) => handleOnClick(e, index)}>
 					<Star width={getWidth(index)} size={48} />
 				</span>

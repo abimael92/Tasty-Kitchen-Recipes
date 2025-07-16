@@ -16,7 +16,7 @@ export const RatingStars = ({ rating = 0, total = 5, size = 24 }) => {
 			</div>
 			<span className='rating-value'>{rating.toFixed(1)}</span>
 
-			<style jsx>{`
+			<style>{`
 				.rating-wrapper {
 					display: flex;
 					align-items: center;
