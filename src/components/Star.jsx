@@ -1,4 +1,4 @@
-export default function Star({ width = 0, size = 100 }) {
+export const Star = ({ width = 0, size = 24 }) => {
 	// Safely calculate width percentage (0-100)
 	const fillWidth = Math.min(100, Math.max(0, width * 100));
 
@@ -21,7 +21,7 @@ export default function Star({ width = 0, size = 100 }) {
 					position: 'absolute',
 					width: '100%',
 					height: '100%',
-					backgroundColor: '#DDDDDD',
+					// backgroundColor: '#DDDDDD',
 					zIndex: 0,
 				}}
 			/>
@@ -50,4 +50,4 @@ export default function Star({ width = 0, size = 100 }) {
 			</div>
 		</div>
 	);
-}
+};

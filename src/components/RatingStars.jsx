@@ -1,6 +1,6 @@
-import Star from './Star';
+import { Star } from './Star';
 
-export default function RatingStars({ rating = 0, total = 5, size = 24 }) {
+export const RatingStars = ({ rating = 0, total = 5, size = 24 }) => {
 	const getWidth = (index) => {
 		if (index >= rating) return 0;
 		return Math.min(1, rating - index);
@@ -58,4 +58,4 @@ export default function RatingStars({ rating = 0, total = 5, size = 24 }) {
 			`}</style>
 		</div>
 	);
-}
+};
