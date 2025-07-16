@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
 			const stored = localStorage.getItem('userData');
 			if (!stored) {
 				setLoading(false);
-				console.log('No stored user data');
 				return;
 			}
 
@@ -36,10 +35,9 @@ export function AuthProvider({ children }) {
 				}
 
 				const fullUser = await res.json();
-				// Attach token from stored data to fullUser for convenience
 				fullUser.token = parsed.token;
+
 				setUser(fullUser);
-				console.log('Loaded user profile:', fullUser);
 			} catch (err) {
 				console.error('Error loading user profile:', err);
 				localStorage.removeItem('userData');
