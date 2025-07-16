@@ -4,13 +4,15 @@ import { getCollection } from 'astro:content';
 import { client } from '../../lib/sanity.js';
 
 import AuthorMeta from '../../components/AuthorMeta.astro';
-import { RatingStars } from '../../components/RatingStars.jsx';
+import RecipeRatingDisplay from '../../components/RecipeRatingDisplay';
 import NutritionInfo from '../../components/NutritionInfo.astro';
 import RecipeChecklist from '../../components/RecipeChecklist.astro';
 import CommentsSection from '../../components/CommentsSection.astro';
 import RecipeTags from '../../components/RecipeTags.astro';
+import AuthFavoriteWrapper from '../../components/AuthFavoriteWrapper';
 
-import InteractiveRating from '../../components/InteractiveRating.jsx';
+import AuthRatingWrapper from '../../components/AuthRatingWrapper.jsx';
+
 import { SimpleRating } from '../../components/SimpleRating.jsx';
 
 const { slug } = Astro.params;
@@ -26,15 +28,16 @@ try {
 	// Fetch Sanity recipe by slug
 	const sanityRecipe = await client.fetch(
 		`*[_type == "recipe" && slug.current == $slug][0]{
-      title,
-      ingredients,
-      instructions,
-      "image": image.asset->url,
-      "video": video.asset->url,
-      calories,
-      tags,
-      servings,
-      rating
+		_id,
+		title,
+		ingredients,
+		instructions,
+		"image": image.asset->url,
+		"video": video.asset->url,
+		calories,
+		tags,
+		servings,
+		rating
     }`,
 		{ slug }
 	);
@@ -62,6 +65,8 @@ try {
 			</div>
 
 			<article class='recipe-view'>
+				<AuthFavoriteWrapper recipeId={recipe._id} client:load />
+
 				{recipe.image && (
 					<img src={recipe.image} alt={recipe.title} class='hero-img' />
 				)}
@@ -74,7 +79,8 @@ try {
 					/>
 				</div>
 				<div class='meta-rating-tags'>
-					<RatingStars rating={3.2} size={48} />
+					<RecipeRatingDisplay recipeId={recipe._id} client:load />
+
 					<RecipeTags tags={recipe.tags} />
 				</div>
 				<section class='section'>
@@ -110,19 +116,7 @@ try {
 					</p>
 				</section>
 
-				<div
-					class='rating'
-					style={{
-						display: 'flex',
-						flexDirection: 'row', // row instead of column
-						alignItems: 'center', // vertical centering
-						justifyContent: 'center', // horizontal centering
-						gap: '1rem',
-					}}
-				>
-					<h4 class='heading'>RATE THIS RECIPE</h4>
-					<InteractiveRating client:load />
-				</div>
+				<AuthRatingWrapper recipeId={recipe._id} client:load />
 			</article>
 		</BaseLayout>
 	) : (
