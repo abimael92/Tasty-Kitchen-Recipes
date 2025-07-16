@@ -4,14 +4,14 @@ import { getCollection } from 'astro:content';
 import { client } from '../../lib/sanity.js';
 
 import AuthorMeta from '../../components/AuthorMeta.astro';
-import RatingStars from '../../components/RatingStars.jsx';
+import { RatingStars } from '../../components/RatingStars.jsx';
 import NutritionInfo from '../../components/NutritionInfo.astro';
 import RecipeChecklist from '../../components/RecipeChecklist.astro';
 import CommentsSection from '../../components/CommentsSection.astro';
 import RecipeTags from '../../components/RecipeTags.astro';
 
 import InteractiveRating from '../../components/InteractiveRating.jsx';
-import SimpleRating from '../../components/SimpleRating.jsx';
+import { SimpleRating } from '../../components/SimpleRating.jsx';
 
 const { slug } = Astro.params;
 
@@ -52,13 +52,20 @@ try {
 {
 	recipe ? (
 		<BaseLayout title={recipe.title}>
+			<div class='header-buttons'>
+				<button onclick='history.back()' class='back-button'>
+					Back
+				</button>
+				<button onclick='window.print()' class='add-recipe-button'>
+					<span class='plus-icon'>+</span> Print Recipe
+				</button>
+			</div>
+
 			<article class='recipe-view'>
 				{recipe.image && (
 					<img src={recipe.image} alt={recipe.title} class='hero-img' />
 				)}
-
 				<h1>{recipe.title}</h1>
-
 				<div class='meta-row'>
 					<AuthorMeta name={recipe.chef} date={recipe.date} />
 					<NutritionInfo
@@ -66,12 +73,10 @@ try {
 						servings={recipe.servings}
 					/>
 				</div>
-
 				<div class='meta-rating-tags'>
 					<RatingStars rating={3.2} size={48} />
 					<RecipeTags tags={recipe.tags} />
 				</div>
-
 				<section class='section'>
 					<h2>Ingredients</h2>
 					<p>
@@ -88,7 +93,6 @@ try {
 							))}
 					</p>
 				</section>
-
 				<section class='section'>
 					<h2>Instructions</h2>
 					<p>
@@ -106,14 +110,19 @@ try {
 					</p>
 				</section>
 
-				<SimpleRating client:load />
-
-				{recipe.video && (
-					<section class='video-wrapper'>
-						<h2>Video</h2>
-						<video controls src={recipe.video} />
-					</section>
-				)}
+				<div
+					class='rating'
+					style={{
+						display: 'flex',
+						flexDirection: 'row', // row instead of column
+						alignItems: 'center', // vertical centering
+						justifyContent: 'center', // horizontal centering
+						gap: '1rem',
+					}}
+				>
+					<h4 class='heading'>RATE THIS RECIPE</h4>
+					<InteractiveRating client:load />
+				</div>
 			</article>
 		</BaseLayout>
 	) : (
@@ -124,6 +133,15 @@ try {
 }
 
 <style>
+	:root {
+		--primary-color: #d2691e;
+		--secondary-color: #c14e39;
+		--light-bg: #fff6f6;
+		--border-color: #f5c6c6;
+		--text-color: #5a2e2e;
+		--scroll-thumb: #f08080;
+		--scroll-track: #ffecec;
+	}
 	.recipe-view {
 		width: 100%;
 		margin: 2.5rem auto;
@@ -247,6 +265,47 @@ try {
 		transition: background 0.2s ease;
 	}
 
+	.container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.rating {
+		display: flex;
+		gap: 2rem;
+		font-weight: 800;
+		font-size: 0.9rem;
+		color: #2c3e50;
+		background: linear-gradient(135deg, #fe9f8e 0%, #f8f9fa 100%);
+		padding: 0px 12px;
+		margin: 3rem auto;
+		/* border: 5px solid var(--color-accent); */
+		border-radius: 20px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		user-select: none;
+		transition:
+			background 0.3s ease,
+			box-shadow 0.3s ease;
+	}
+	.heading {
+		color: #333;
+		font-weight: 800;
+		text-align: center;
+		font-size: 1.8rem;
+	}
+	.ratingButton {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 0;
+		outline: none;
+	}
+
+	.rating:hover {
+		background: linear-gradient(135deg, #f8f9fa 0%, #fe9f8e 100%);
+		/* box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8); */
+		cursor: default;
+	}
 	.video-wrapper {
 		margin-top: var(--spacing-large);
 		padding: var(--spacing-medium);
@@ -255,9 +314,166 @@ try {
 		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
 	}
 
+	/* Header buttons */
+	.header-buttons {
+		display: flex;
+		gap: 15px;
+		margin: 15px;
+	}
+
+	.back-button,
+	.add-recipe-button {
+		padding: 10px 15px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-weight: bold;
+		text-decoration: none;
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+	}
+
+	.back-button {
+		background: var(--primary-color);
+		color: white;
+	}
+
+	.add-recipe-button {
+		background: var(--secondary-color);
+		color: white;
+	}
+
+	.plus-icon {
+		color: white;
+		font-weight: bold;
+		margin-right: 0.3rem;
+		font-size: 1.5rem;
+	}
+
+	.back-button:hover,
+	.add-recipe-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	}
+
 	video {
 		width: 100%;
 		border-radius: var(--border-radius);
 		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+	}
+
+	@media print {
+		/* Hide all elements by default */
+		body * {
+			visibility: hidden;
+		}
+
+		/* Show only the recipe content */
+		.recipe-view,
+		.recipe-view * {
+			visibility: visible;
+		}
+
+		/* Position the recipe content properly */
+		.recipe-view {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			margin: 0;
+			padding: 20px;
+			box-shadow: none;
+			background: white !important;
+		}
+
+		/* Hide interactive elements */
+		.header-buttons,
+		.rating,
+		.comments-section,
+		button {
+			display: none !important;
+		}
+
+		/* Adjust images for print */
+		.hero-img {
+			max-width: 90% !important;
+			height: auto !important;
+			max-height: 300px !important;
+			page-break-inside: avoid;
+		}
+
+		/* Improve text readability */
+		h1,
+		h2,
+		p,
+		span {
+			color: black !important;
+			font-family: 'Times New Roman', serif !important;
+		}
+
+		/* Remove background colors and shadows */
+		.meta-row,
+		.meta-rating-tags,
+		.section {
+			background: white !important;
+			box-shadow: none !important;
+			border: none !important;
+			padding: 0 !important;
+			margin: 1rem 0 !important;
+		}
+
+		/* Ensure proper page breaks */
+		.section {
+			page-break-inside: avoid;
+		}
+
+		/* Author and nutrition info */
+		.meta-row {
+			display: flex !important;
+			justify-content: space-between !important;
+		}
+
+		/* Remove rating stars */
+		.rating-wrapper {
+			display: none !important;
+		}
+	}
+
+	@media print {
+		.meta-rating-tags .tags {
+			display: none !important;
+		}
+		/* Tags styling - plain text version */
+		.meta-rating-tags {
+			display: flex !important;
+			flex-direction: column !important;
+			align-items: center !important;
+			gap: 0.5rem !important;
+			background: none !important;
+			box-shadow: none !important;
+			padding: 0 !important;
+		}
+
+		.meta-rating-tags .tags {
+			display: flex !important;
+			flex-wrap: wrap !important;
+			justify-content: center !important;
+			gap: 0.5rem !important;
+		}
+
+		.meta-rating-tags .tag {
+			all: initial !important;
+			display: inline !important;
+			color: black !important;
+			font-size: 12pt !important;
+			font-family: inherit !important;
+			padding: 0 !important;
+			margin: 0 !important;
+		}
+
+		.meta-rating-tags .tag:not(:last-child)::after {
+			content: ', ';
+		}
 	}
 </style>
