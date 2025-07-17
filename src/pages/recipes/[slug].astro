@@ -71,6 +71,27 @@ try {
 					<img src={recipe.image} alt={recipe.title} class='hero-img' />
 				)}
 				<h1>{recipe.title}</h1>
+				<div class='social-share'>
+					<a
+						href={`https://wa.me/?text=${encodeURIComponent(recipe.title + ' ' + Astro.url)}`}
+						target='_blank'
+					>
+						WhatsApp
+					</a>
+					<a
+						href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.url)}`}
+						target='_blank'
+					>
+						Pinterest
+					</a>
+					<a
+						href={`https://twitter.com/share?url=${encodeURIComponent(Astro.url)}&text=${encodeURIComponent(recipe.title)}`}
+						target='_blank'
+					>
+						Twitter
+					</a>
+				</div>
+
 				<div class='meta-row'>
 					<AuthorMeta name={recipe.chef} date={recipe.date} />
 					<NutritionInfo
@@ -349,6 +370,25 @@ try {
 	.add-recipe-button:hover {
 		transform: translateY(-2px);
 		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	}
+
+	.social-share {
+		margin-top: 2rem;
+		display: flex;
+		gap: 10px;
+	}
+
+	.social-share a {
+		background-color: #f08080;
+		color: white;
+		padding: 8px 12px;
+		border-radius: 5px;
+		text-decoration: none;
+		font-weight: bold;
+	}
+
+	.social-share a:hover {
+		background-color: #d2691e;
 	}
 
 	video {
