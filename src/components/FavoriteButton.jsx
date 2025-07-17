@@ -12,11 +12,15 @@ export default function FavoriteButton({ recipeId }) {
 			if (!user) return;
 
 			try {
-				const res = await fetch(`/api/get-favorites?userId=${user._id}`);
+				const res = await fetch('/api/get-favorites', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ userId: user._id }),
+				});
 				const data = await res.json();
 
 				if (Array.isArray(data?.recipes)) {
-					setIsFavorite(data.recipes.includes(recipeId));
+					setIsFavorite(data.recipes.some((r) => r._id === recipeId));
 				}
 			} catch (error) {
 				console.error('Failed to fetch favorites:', error);
