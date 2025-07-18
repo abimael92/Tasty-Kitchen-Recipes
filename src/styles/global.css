@@ -79,10 +79,14 @@ article.markdown h1 {
 
 /* Recipe Title */
 .recipe h2 {
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   font-weight: bold;
   margin-top: 10px;
   color: var(--primary); /* Title color */
+  font-size: clamp(0.5rem, 1vw + 1rem, 2rem);
+  
+  white-space: nowrap;    
+  max-width: 300px;
 }
 
 /* Recipe Card Hover Effects */
