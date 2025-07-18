@@ -3,6 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { client } from '../lib/sanity.js';
 
+const { currentLocale } = Astro;
+
 const localRecipes = (await getCollection('recipes')).map((entry) => ({
 	...entry.data,
 	id: entry.id,
@@ -26,7 +28,11 @@ try {
 	console.error('Failed to fetch Sanity recipes:', e.message);
 }
 
-const recipes = [...localRecipes, ...sanityRecipes];
+// const recipes = [...localRecipes, ...sanityRecipes];
+const recipes = [...sanityRecipes];
+
+const isSpanish = currentLocale?.startsWith('es');
+const splitRegex = isSpanish ? /\s(y|con)\s/i : /\s(and|with)\s/i;
 ---
 
 <BaseLayout title='Recipes'>
@@ -54,7 +60,21 @@ const recipes = [...localRecipes, ...sanityRecipes];
 					)}
 
 					<div class='recipe-content'>
-						<h2>{recipe.title}</h2>
+						<h2>
+							{recipe.title.split(splitRegex).map((part, i) => (
+								<span key={i}>
+									{i % 2 === 1 ? (
+										<>
+											{part.trim()}
+											<br />
+										</>
+									) : (
+										// even index = normal text
+										part.trim()
+									)}
+								</span>
+							))}
+						</h2>
 
 						<div class='recipe-details'>
 							<div class='toggle-content'>
@@ -237,6 +257,7 @@ const recipes = [...localRecipes, ...sanityRecipes];
 		margin: 5px 0;
 		max-height: 150px;
 		overflow-y: auto;
+		color: var(--text-color);
 	}
 
 	.ingredients-list {

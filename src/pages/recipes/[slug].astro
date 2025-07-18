@@ -60,7 +60,18 @@ try {
 					Back
 				</button>
 				<button onclick='window.print()' class='add-recipe-button'>
-					<span class='plus-icon'>+</span> Print Recipe
+					<span class='print-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							width='20'
+							height='20'
+							fill='currentColor'
+							viewBox='0 0 24 24'
+						>
+							<path d='M19 8H5V3h14v5zm0 2c1.1 0 2 .9 2 2v6h-4v3H7v-3H3v-6c0-1.1.9-2 2-2h14zm-4 7v3h-6v-3h6z' />
+						</svg>
+					</span>
+					Print Recipe
 				</button>
 			</div>
 
@@ -75,20 +86,58 @@ try {
 					<a
 						href={`https://wa.me/?text=${encodeURIComponent(recipe.title + ' ' + Astro.url)}`}
 						target='_blank'
+						class='app-icon whatsapp'
 					>
-						WhatsApp
+						<span class='icon'>
+							{' '}
+							<svg
+								xmlns='http://www.w3.org/2000/svg'
+								viewBox='0 0 32 32'
+								width='24'
+								height='24'
+								fill='currentColor'
+							>
+								<path d='M16.013 2.986c-7.352 0-13.314 5.963-13.314 13.314 0 2.354.611 4.635 1.777 6.656l-1.914 5.568 5.789-1.883c1.978 1.08 4.215 1.65 6.662 1.65 7.35 0 13.312-5.963 13.312-13.314 0-7.352-5.963-13.315-13.313-13.315zm0 24.395c-2.131 0-4.216-.574-6.041-1.662l-.433-.26-3.434 1.118 1.14-3.326-.281-.472c-1.127-1.893-1.723-4.059-1.723-6.26 0-6.671 5.428-12.1 12.1-12.1 6.67 0 12.1 5.429 12.1 12.1 0 6.67-5.429 12.099-12.1 12.099zm6.568-8.893c-.362-.181-2.146-1.06-2.479-1.179-.333-.12-.576-.18-.819.182s-.939 1.179-1.151 1.424c-.211.242-.39.271-.752.09-.362-.181-1.528-.563-2.911-1.794-1.075-.96-1.799-2.144-2.01-2.506-.211-.362-.023-.558.158-.738.163-.162.362-.422.543-.633.181-.211.242-.362.363-.604.12-.241.06-.454-.03-.635-.09-.18-.818-1.969-1.121-2.692-.294-.708-.594-.612-.819-.623-.212-.009-.453-.011-.694-.011s-.635.09-.968.453c-.333.362-1.271 1.242-1.271 3.023 0 1.781 1.303 3.505 1.485 3.747.181.241 2.566 3.922 6.225 5.498.869.375 1.547.599 2.076.768.872.278 1.666.239 2.292.145.698-.104 2.146-.875 2.448-1.719.301-.845.301-1.57.211-1.719-.091-.15-.33-.241-.694-.422z' />
+							</svg>
+						</span>
+						<span class='label'>WhatsApp</span>
 					</a>
 					<a
 						href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.url)}`}
 						target='_blank'
+						class='app-icon pinterest'
 					>
-						Pinterest
+						<span class='icon'>
+							{' '}
+							<svg
+								xmlns='http://www.w3.org/2000/svg'
+								viewBox='0 0 24 24'
+								width='24'
+								height='24'
+								fill='currentColor'
+							>
+								<path d='M12 0C5.37 0 0 5.37 0 12c0 4.75 3.06 8.79 7.36 10.31-.1-.88-.18-2.23.04-3.2.2-.86 1.29-5.47 1.29-5.47s-.33-.65-.33-1.62c0-1.52.88-2.65 1.98-2.65.94 0 1.39.71 1.39 1.56 0 .95-.6 2.38-.9 3.71-.26 1.1.56 2 1.65 2 1.98 0 3.49-2.09 3.49-5.1 0-2.67-1.92-4.53-4.66-4.53-3.18 0-5.05 2.38-5.05 4.84 0 .95.36 1.98.81 2.54.09.11.1.21.07.33-.08.36-.25 1.12-.29 1.28-.05.21-.17.25-.4.15-1.5-.7-2.44-2.89-2.44-4.66 0-3.78 2.75-7.27 7.94-7.27 4.17 0 7.4 2.98 7.4 6.96 0 4.14-2.61 7.47-6.24 7.47-1.22 0-2.37-.63-2.76-1.38l-.75 2.85c-.27 1.03-1.01 2.32-1.5 3.1 1.13.35 2.32.55 3.57.55 6.63 0 12-5.37 12-12S18.63 0 12 0z' />
+							</svg>
+						</span>
+						<span class='label'>Pinterest</span>
 					</a>
 					<a
 						href={`https://twitter.com/share?url=${encodeURIComponent(Astro.url)}&text=${encodeURIComponent(recipe.title)}`}
 						target='_blank'
+						class='app-icon twitter'
 					>
-						Twitter
+						<span class='icon'>
+							<svg
+								xmlns='http://www.w3.org/2000/svg'
+								viewBox='0 0 24 24'
+								width='24'
+								height='24'
+								fill='currentColor'
+							>
+								<path d='M4 4h3.5l5 7 5-7H21l-7 9.5L21 20h-3.5l-5-7-5 7H3l7-9.5L4 4Z' />
+							</svg>
+						</span>
+						<span class='label'>Twitter</span>
 					</a>
 				</div>
 
@@ -106,34 +155,81 @@ try {
 				</div>
 				<section class='section'>
 					<h2>Ingredients</h2>
-					<p>
-						{(Array.isArray(recipe.ingredients)
-							? recipe.ingredients
-							: recipe.ingredients?.split?.('\n') || []
-						)
-							.filter(Boolean)
-							.map((ingredient, i) => (
-								<span key={i}>
-									{ingredient}
-									<br />
-								</span>
-							))}
+					<p class='ingredients-list'>
+						{(() => {
+							let makeNextBold = false;
+							return (
+								Array.isArray(recipe.ingredients)
+									? recipe.ingredients
+									: recipe.ingredients?.split('\n') || []
+							).map((line, i) => {
+								const trimmed = line.trim();
+								console.log(trimmed);
+
+								if (trimmed === '') {
+									// Empty line: insert <br> and flag next line to be bold
+									makeNextBold = true;
+									return <br key={i} />;
+								}
+
+								// Render line, bold if flagged
+								const content = makeNextBold ? (
+									<strong>{line.split('.'[1])}</strong>
+								) : (
+									line
+								);
+
+								makeNextBold = false; // reset flag after using
+
+								return (
+									<span key={i}>
+										{content}
+										<br />
+									</span>
+								);
+							});
+						})()}
 					</p>
 				</section>
 				<section class='section'>
 					<h2>Instructions</h2>
-					<p>
-						{(Array.isArray(recipe.instructions)
-							? recipe.instructions
-							: recipe.instructions?.split?.('\n') || []
-						)
-							.filter(Boolean)
-							.map((step, i) => (
-								<span key={i}>
-									{step}
-									<br />
-								</span>
-							))}
+					<p class='instructions-list'>
+						{(() => {
+							let numberingEnabled = true;
+							let stepNumber = 1;
+
+							return (
+								Array.isArray(recipe.instructions)
+									? recipe.instructions
+									: recipe.instructions?.split('\n') || []
+							).map((line, i) => {
+								const trimmed = line.trim();
+
+								// If line is just "1.", "2.", etc.
+								if (/^\d+\.$/.test(trimmed)) {
+									numberingEnabled = false;
+									return <br key={i} />;
+								}
+
+								let content = line;
+
+								if (numberingEnabled) {
+									content = `${line}`;
+									stepNumber++;
+								}
+
+								if (trimmed !== '') {
+									numberingEnabled = true;
+								}
+
+								return (
+									<span key={i}>
+										{content}
+										<br />
+									</span>
+								);
+							});
+						})()}
 					</p>
 				</section>
 
@@ -159,13 +255,13 @@ try {
 	}
 	.recipe-view {
 		width: 100%;
-		margin: 2.5rem auto;
+		margin: 0.5rem auto;
 		padding: var(--spacing-large);
 		color: var(--color-dark);
 		border-radius: var(--border-radius);
 		display: flex;
 		flex-direction: column;
-		gap: 3rem;
+		gap: 1rem;
 		font-family: var(--font-body);
 		background-color: #fff;
 		box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
@@ -359,7 +455,7 @@ try {
 		color: white;
 	}
 
-	.plus-icon {
+	.print-icon {
 		color: white;
 		font-weight: bold;
 		margin-right: 0.3rem;
@@ -373,22 +469,52 @@ try {
 	}
 
 	.social-share {
-		margin-top: 2rem;
 		display: flex;
-		gap: 10px;
+		align-items: center;
+		gap: 12px;
+		margin: 0.5rem 0;
 	}
 
-	.social-share a {
-		background-color: #f08080;
-		color: white;
-		padding: 8px 12px;
-		border-radius: 5px;
-		text-decoration: none;
+	.app-icon {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 10px 15px;
+		border-radius: 8px;
 		font-weight: bold;
+		text-decoration: none;
+		color: white;
+		background-color: #ccc;
+		transition: background 0.3s ease;
 	}
 
-	.social-share a:hover {
-		background-color: #d2691e;
+	.app-icon svg {
+		width: 20px;
+		height: 20px;
+		fill: white;
+	}
+
+	.app-icon.whatsapp {
+		background-color: #25d366;
+	}
+
+	.app-icon.pinterest {
+		background-color: #e60023;
+	}
+
+	.app-icon.twitter {
+		background-color: #000000; /* black for X */
+	}
+
+	.app-icon:hover {
+		opacity: 0.8;
+	}
+
+	.share-label {
+		margin-left: auto;
+		font-weight: bold;
+		color: #555;
+		font-size: 0.9rem;
 	}
 
 	video {
