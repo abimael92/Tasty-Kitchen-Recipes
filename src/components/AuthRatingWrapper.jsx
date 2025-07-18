@@ -13,7 +13,7 @@ function InnerRating({ recipeId }) {
 				<h4 className='rating-heading'>RATE THIS RECIPE</h4>
 				<InteractiveRating recipeId={recipeId} />
 			</div>
-			<style jsx>{`
+			<style>{`
 				.rating-container {
 					display: flex;
 					flex-direction: row;

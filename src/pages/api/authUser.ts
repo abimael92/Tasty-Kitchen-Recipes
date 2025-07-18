@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { createClient } from '@sanity/client';
+import { firebaseConfig } from '../../lib/firebase';
 
 const sanity = createClient({
 	projectId: import.meta.env.SANITY_PROJECT_ID,

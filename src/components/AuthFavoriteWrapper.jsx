@@ -1,7 +1,10 @@
-// src/components/AuthFavoriteWrapper.jsx
-import React from 'react';
 import { AuthProvider } from '../context/AuthContext.jsx';
+import FavoriteButton from './FavoriteButton.jsx';
 
-export default function AuthFavoriteWrapper({ children }) {
-	return <AuthProvider>{children}</AuthProvider>;
+export default function AuthFavoriteWrapper({ recipeId }) {
+	return (
+		<AuthProvider>
+			<FavoriteButton recipeId={recipeId} />
+		</AuthProvider>
+	);
 }
