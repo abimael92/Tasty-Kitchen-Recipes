@@ -61,7 +61,7 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 
 📷 Review photo uploads
 
-🧑‍🍳 Author info, tags, servings, calories
+🧑‍🍳 Author info, tags, servings, calories 🍽
 
 🏷 Clickable tags and filters (e.g. Vegan, 15 mins)
 
