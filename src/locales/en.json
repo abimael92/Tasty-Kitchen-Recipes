@@ -12,12 +12,31 @@
     "auth": {
         "login": "Login",
         "logout": "Logout",
+        "register": "Register",
+        "registering": "Registering...",
         "welcome": "Welcome",
         "user": "User",
         "cancel": "Cancel",
         "loggingIn": "Logging in...",
         "email": "Email",
-        "password": "Password"
+        "password": "Password",
+        "haveAccount": "Already have an account?",
+        "noAccount": "Don't have an account?",
+        "createOne": "Create one",
+        "formLabels": {
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "phone": "Phone",
+            "location": "Location",
+            "shortBio": "Short Bio",
+            "dietPreference": "Diet Preference",
+            "allergies": "Allergies (comma-separated)",
+            "preferredCuisine": "Preferred Cuisines (comma-separated)",
+            "role": "Role",
+            "selectRole": "Select Role",
+            "client": "Client",
+            "chef": "Chef"
+        }
     },
     "hero": {
         "title": "Fresh, Simple, and Tasty",
