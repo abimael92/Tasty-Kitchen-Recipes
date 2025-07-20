@@ -138,7 +138,9 @@ export default function LoginModal({
 									}}
 								>
 									<div style={{ width: '250px' }}>
-										<label htmlFor='name'>First Name</label>
+										<label htmlFor='name'>
+											{t('auth.formLabels.firstName', locale)}
+										</label>
 										<input
 											id='name'
 											value={name}
@@ -149,7 +151,9 @@ export default function LoginModal({
 									</div>
 
 									<div style={{ width: '250px' }}>
-										<label htmlFor='lastname'>Last Name</label>
+										<label htmlFor='lastname'>
+											{t('auth.formLabels.lastName', locale)}
+										</label>
 										<input
 											id='lastname'
 											value={lastname}
@@ -160,7 +164,9 @@ export default function LoginModal({
 									</div>
 
 									<div style={{ width: '250px' }}>
-										<label htmlFor='phone'>Phone</label>
+										<label htmlFor='phone'>
+											{t('auth.formLabels.phone', locale)}
+										</label>
 										<input
 											id='phone'
 											value={phone}
@@ -170,7 +176,9 @@ export default function LoginModal({
 									</div>
 
 									<div style={{ width: '250px' }}>
-										<label htmlFor='location'>Location</label>
+										<label htmlFor='location'>
+											{t('auth.formLabels.location', locale)}
+										</label>
 										<input
 											id='location'
 											value={location}
@@ -194,7 +202,7 @@ export default function LoginModal({
 										}}
 										htmlFor='bio'
 									>
-										Short Bio
+										{t('auth.formLabels.shortBio', locale)}
 									</label>
 									<textarea
 										id='bio'
@@ -212,7 +220,9 @@ export default function LoginModal({
 									}}
 								>
 									<div style={{ width: '250px' }}>
-										<label htmlFor='dietPreference'>Diet Preference</label>
+										<label htmlFor='dietPreference'>
+											{t('auth.formLabels.dietPreference', locale)}
+										</label>
 										<input
 											id='dietPreference'
 											value={dietPreference}
@@ -223,7 +233,7 @@ export default function LoginModal({
 
 									<div style={{ width: '250px' }}>
 										<label htmlFor='allergies'>
-											Allergies{' '}
+											{t('auth.formLabels.allergies', locale)}
 											<span style={{ fontSize: '14px' }}>
 												(comma-separated)
 											</span>
@@ -238,7 +248,7 @@ export default function LoginModal({
 
 									<div style={{ width: '250px' }}>
 										<label htmlFor='preferredCuisine'>
-											Preferred Cuisines{' '}
+											{t('auth.formLabels.preferredCuisine', locale)}
 											<span style={{ fontSize: '14px' }}>
 												(comma-separated)
 											</span>
@@ -252,7 +262,9 @@ export default function LoginModal({
 									</div>
 
 									<div style={{ width: '270px' }}>
-										<label htmlFor='role'>Role</label>
+										<label htmlFor='role'>
+											{t('auth.formLabels.role', locale)}
+										</label>
 										<select
 											id='role'
 											value={role}
@@ -326,7 +338,7 @@ export default function LoginModal({
 					</form>
 				</div>
 
-				<p style={{ marginTop: '1rem', textAlign: 'center' }}>
+				<p style={{ marginTop: '1rem', color: '#5a2e2e', textAlign: 'center' }}>
 					{isRegistering
 						? t('auth.haveAccount', locale) || 'Already have an account?'
 						: t('auth.noAccount', locale) || "Don't have an account?"}{' '}
