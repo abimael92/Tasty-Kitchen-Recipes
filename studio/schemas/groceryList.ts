@@ -29,33 +29,13 @@ export default {
       of: [
         {
           type: 'object',
+          name: 'groceryItem', // <-- ADD THIS LINE
           fields: [
-            {
-              name: 'name',
-              title: 'Name',
-              type: 'string',
-            },
-            {
-              name: 'originalText',
-              title: 'Original Text',
-              type: 'string',
-            },
-            {
-              name: 'quantity',
-              title: 'Quantity',
-              type: 'string',
-            },
-            {
-              name: 'unit',
-              title: 'Unit',
-              type: 'string',
-            },
-            {
-              name: 'completed',
-              title: 'Completed',
-              type: 'boolean',
-              initialValue: false,
-            },
+            {name: 'name', title: 'Name', type: 'string'},
+            {name: 'originalText', title: 'Original Text', type: 'string'},
+            {name: 'quantity', title: 'Quantity', type: 'string'},
+            {name: 'unit', title: 'Unit', type: 'string'},
+            {name: 'completed', title: 'Completed', type: 'boolean', initialValue: false},
           ],
         },
       ],
