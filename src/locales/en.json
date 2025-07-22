@@ -36,7 +36,14 @@
             "selectRole": "Select Role",
             "client": "Client",
             "chef": "Chef"
-        }
+        },
+        "errors": {
+            "loginFailed": "Login failed. Please try again.",
+            "registrationFailed": "Registration failed. Please try again.",
+            "profileFetchFailed": "Failed to fetch user profile.",
+            "networkProfileFetchFailed": "Network error fetching profile."
+        },
+        "loading": "Loading..."
     },
     "hero": {
         "title": "Fresh, Simple, and Tasty",

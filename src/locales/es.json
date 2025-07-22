@@ -36,7 +36,14 @@
             "selectRole": "Selecciona un rol",
             "client": "Cliente",
             "chef": "Chef"
-        }
+        },
+        "errors": {
+            "loginFailed": "Error al iniciar sesión. Inténtalo de nuevo.",
+            "registrationFailed": "Error al registrarse. Inténtalo de nuevo.",
+            "profileFetchFailed": "No se pudo obtener el perfil de usuario.",
+            "networkProfileFetchFailed": "Error de red al obtener el perfil."
+        },
+        "loading": "Cargando..."
     },
     "hero": {
         "title": "Fresco, Simple y Delicioso",
