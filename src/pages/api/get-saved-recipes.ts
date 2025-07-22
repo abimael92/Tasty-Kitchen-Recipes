@@ -5,7 +5,6 @@ export async function GET({ url }) {
 	console.log('Received userId:', userId);
 
 	if (!userId) {
-		console.log('No userId provided');
 		return new Response(JSON.stringify({ error: 'Missing userId' }), {
 			status: 400,
 		});
@@ -15,10 +14,8 @@ export async function GET({ url }) {
 		const query = `*[_type == "savedRecipe" && user._ref == $userId]{ 
       recipe->{ title, slug, image }
     }`;
-		console.log('Running query:', query);
 
 		const recipes = await client.fetch(query, { userId });
-		console.log('Query result:', recipes);
 
 		return new Response(JSON.stringify(recipes), {
 			headers: { 'Content-Type': 'application/json' },

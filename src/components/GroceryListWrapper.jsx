@@ -1,19 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { AuthProvider } from '../context/AuthContext.jsx';
+import { GroceryListPage } from './GroceryListPage.jsx';
 
-export function GroceryListWrapper(props) {
-	const [isClient, setIsClient] = useState(false);
-
-	useEffect(() => {
-		setIsClient(true);
-	}, []);
-
-	if (!isClient) return null;
-
-	const GroceryListPage = React.lazy(() => import('./GroceryListPage.jsx'));
-
+export default function GroceryListWrapper({ recipeId }) {
 	return (
-		<React.Suspense fallback={<div>Loading...</div>}>
-			<GroceryListPage {...props} />
-		</React.Suspense>
+		<AuthProvider>
+			<GroceryListPage recipeId={recipeId} />
+		</AuthProvider>
 	);
 }

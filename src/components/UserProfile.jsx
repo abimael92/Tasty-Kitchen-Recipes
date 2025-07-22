@@ -4,7 +4,6 @@ import { t } from '../utils/i18n';
 
 export default function UserProfile({ locale }) {
 	const auth = useAuth();
-	console.log('UserProfile useAuth:', auth);
 
 	// Destructure loading, user, login, logout from auth safely
 	const loading = auth?.loading === undefined ? false : auth.loading;
@@ -62,9 +61,7 @@ export default function UserProfile({ locale }) {
 				}
 
 				const data = await res.json();
-				console.log('Fetched profile data:', data); // Add this line
 				login(data);
-				console.log('User in context after login:', auth.user); // Also check context user right after
 
 				setError('');
 			} catch (err) {
@@ -112,8 +109,6 @@ export default function UserProfile({ locale }) {
 		const item = prompt('Add Market Item');
 		if (item) setMarketItems([...marketItems, item]);
 	};
-
-	console.log('Current user from auth:', user);
 
 	return (
 		<div

@@ -54,7 +54,13 @@ export const POST: APIRoute = async ({ request }) => {
 					],
 					recipes: [
 						...(groceryList.recipes || []),
-						{ _type: 'reference', _ref: recipeId },
+						{
+							_type: 'reference',
+							_ref: recipeId,
+							_key: `recipe-${Date.now()}-${Math.random()
+								.toString(36)
+								.substr(2, 9)}`,
+						},
 					],
 				})
 				.commit();

@@ -1,8 +1,6 @@
 import React from 'react';
 
 export default function FavoritesList({ recipes }) {
-	console.log(recipes);
-	console.log(recipes.length);
 	if (!recipes.length) {
 		return <p>No favorites yet.</p>;
 	}

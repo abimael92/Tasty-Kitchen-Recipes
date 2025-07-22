@@ -3,7 +3,6 @@ import { client } from '../../lib/sanity';
 
 export async function POST({ request }) {
 	const { recipeId, rating, userId } = await request.json();
-	console.log('Received:', { recipeId, rating, userId });
 
 	if (!recipeId || !rating || !userId) {
 		return new Response(JSON.stringify({ message: 'Missing data' }), {
@@ -27,7 +26,6 @@ export async function POST({ request }) {
 					ratedAt: new Date().toISOString(),
 				})
 				.commit();
-			console.log('Rating updated:', existing._id);
 		} else {
 			// Create new rating
 			await client.create({
@@ -37,7 +35,6 @@ export async function POST({ request }) {
 				user: { _type: 'reference', _ref: userId },
 				recipe: { _type: 'reference', _ref: recipeId },
 			});
-			console.log('New rating created.');
 		}
 
 		return new Response(JSON.stringify({ success: true }), {
