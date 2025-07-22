@@ -362,7 +362,7 @@ export default function LoginModal({
 				</p>
 			</div>
 
-			<style jsx>{`
+			<style>{`
 				.modal-content {
 					display: grid;
 					grid-template-rows: auto 1fr auto;
