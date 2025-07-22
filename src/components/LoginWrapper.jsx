@@ -44,7 +44,9 @@ export default function LoginWrapper({ locale }) {
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.error || 'Login failed');
+				throw new Error(
+					data.error || t('auth.errors.loginFailed', locale) || 'Login failed'
+				);
 			}
 
 			localStorage.setItem(
@@ -63,7 +65,11 @@ export default function LoginWrapper({ locale }) {
 			setIsModalOpen(false);
 		} catch (err) {
 			console.error('Login error:', err);
-			setError(err.message || 'Login failed. Please try again.');
+			setError(
+				err.message ||
+					t('auth.errors.loginFailed', locale) ||
+					'Login failed. Please try again.'
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -85,15 +91,22 @@ export default function LoginWrapper({ locale }) {
 			const data = await response.json();
 
 			if (!response.ok) {
-				throw new Error(data.error || 'Registration failed');
+				throw new Error(
+					data.error ||
+						t('auth.errors.registrationFailed', locale) ||
+						'Registration failed'
+				);
 			}
 
-			// Optionally auto-login or just close modal
 			setIsRegistering(false);
 			setIsModalOpen(false);
 		} catch (err) {
 			console.error('Registration error:', err);
-			setError(err.message || 'Registration failed. Please try again.');
+			setError(
+				err.message ||
+					t('auth.errors.registrationFailed', locale) ||
+					'Registration failed. Please try again.'
+			);
 		} finally {
 			setLoading(false);
 		}
@@ -112,16 +125,28 @@ export default function LoginWrapper({ locale }) {
 			const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
-			if (!res.ok)
-				throw new Error(`Failed to fetch user profile: ${res.status}`);
+
+			if (!res.ok) {
+				throw new Error(
+					t('auth.errors.profileFetchFailed', locale) ||
+						`Failed to fetch user profile: ${res.status}`
+				);
+			}
+
 			return await res.json();
+
+			//
 		} catch (err) {
-			throw new Error(err.message || 'Network error fetching profile');
+			throw new Error(
+				err.message ||
+					t('auth.errors.networkProfileFetchFailed', locale) ||
+					'Network error fetching profile'
+			);
 		}
 	}
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return <div>{t('auth.loading', locale) || 'Loading...'}</div>;
 	}
 
 	return (
