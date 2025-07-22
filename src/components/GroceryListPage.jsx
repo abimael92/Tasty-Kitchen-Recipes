@@ -1,43 +1,32 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { client } from '../lib/sanity';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import LoadingIndicator from './LoadingIndicator.jsx';
 
 export const GroceryListPage = () => {
 	const [items, setItems] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-	if (typeof window === 'undefined') return null;
+	if (typeof window === 'undefined') return <LoadingIndicator />;
 
 	const { user: currentUser } = useAuth();
 
-	console.log('currentUser:', currentUser);
-	console.log('items:', items);
-	console.log('error:', error);
-
 	const fetchGroceryList = async () => {
-		if (!currentUser?.uid) {
+		if (!currentUser?._id) {
 			setLoading(false);
 			return;
 		}
 
 		try {
-			const result = await client.fetch(
-				`*[_type == "groceryList" && user._ref == $userId][0]{
-          items[]{
-            _key,
-            name,
-            originalText,
-            quantity,
-            unit,
-            completed
-          }
-        }`,
-				{ userId: currentUser.uid }
-			);
-			setItems(result?.items || []);
+			const res = await fetch(`/api/grocery-list?uid=${currentUser._id}`);
+
+			if (!res.ok) throw new Error('Failed to fetch grocery list');
+
+			const data = await res.json();
+			setItems(data);
 		} catch (err) {
-			setError(err.message);
+			console.error('Error fetching grocery list:', err);
+			setError(err.message || 'Unknown error');
 		} finally {
 			setLoading(false);
 		}
@@ -45,32 +34,38 @@ export const GroceryListPage = () => {
 
 	const toggleComplete = async (itemKey) => {
 		try {
-			const result = await client.fetch(
-				`*[_type == "groceryList" && user._ref == $userId][0]{
-          _id,
-          items
-        }`,
-				{ userId: currentUser.uid }
-			);
+			const res = await fetch('/api/toggle-item', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					userId: currentUser._id,
+					itemKey,
+				}),
+			});
 
-			if (!result) return;
+			if (!res.ok) throw new Error('Failed to update item');
 
-			const updatedItems = result.items.map((item) =>
-				item._key === itemKey ? { ...item, completed: !item.completed } : item
-			);
+			const updatedItems = await res.json();
 
-			await client.patch(result._id).set({ items: updatedItems }).commit();
 			setItems(updatedItems);
 		} catch (err) {
 			console.error('Error updating item:', err);
+			alert('Failed to update item. Please try again.');
 		}
 	};
 
 	useEffect(() => {
+		if (!currentUser?._id) {
+			console.error('User not available on load');
+
+			setLoading(false);
+			return;
+		}
 		fetchGroceryList();
 	}, [currentUser]);
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <LoadingIndicator />;
+
 	if (error) return <div>Error: {error}</div>;
 
 	return (
