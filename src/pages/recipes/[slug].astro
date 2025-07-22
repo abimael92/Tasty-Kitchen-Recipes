@@ -14,6 +14,7 @@ import AuthFavoriteWrapper from '../../components/AuthFavoriteWrapper';
 import AuthRatingWrapper from '../../components/AuthRatingWrapper.jsx';
 
 import { SimpleRating } from '../../components/SimpleRating.jsx';
+import AuthGroceryWrapper from '../../components/AuthGroceryWrapper';
 
 const { slug } = Astro.params;
 
@@ -28,16 +29,18 @@ try {
 	// Fetch Sanity recipe by slug
 	const sanityRecipe = await client.fetch(
 		`*[_type == "recipe" && slug.current == $slug][0]{
-		_id,
-		title,
-		ingredients,
-		instructions,
-		"image": image.asset->url,
-		"video": video.asset->url,
-		calories,
-		tags,
-		servings,
-		rating
+      _id,
+      title,
+      ingredients,
+      instructions,
+      "image": image.asset->url,
+      "video": video.asset->url,
+      calories,
+      tags,
+      servings,
+      rating,
+      chef,
+      date
     }`,
 		{ slug }
 	);
@@ -82,14 +85,16 @@ try {
 					<img src={recipe.image} alt={recipe.title} class='hero-img' />
 				)}
 				<h1>{recipe.title}</h1>
+
 				<div class='social-share'>
 					<a
-						href={`https://wa.me/?text=${encodeURIComponent(recipe.title + ' ' + Astro.url)}`}
+						href={`https://wa.me/?text=${encodeURIComponent(
+							recipe.title + ' ' + Astro.url
+						)}`}
 						target='_blank'
 						class='app-icon whatsapp'
 					>
 						<span class='icon'>
-							{' '}
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 32 32'
@@ -102,13 +107,15 @@ try {
 						</span>
 						<span class='label'>WhatsApp</span>
 					</a>
+
 					<a
-						href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(Astro.url)}`}
+						href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+							Astro.url
+						)}`}
 						target='_blank'
 						class='app-icon pinterest'
 					>
 						<span class='icon'>
-							{' '}
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 24 24'
@@ -121,8 +128,11 @@ try {
 						</span>
 						<span class='label'>Pinterest</span>
 					</a>
+
 					<a
-						href={`https://twitter.com/share?url=${encodeURIComponent(Astro.url)}&text=${encodeURIComponent(recipe.title)}`}
+						href={`https://twitter.com/share?url=${encodeURIComponent(
+							Astro.url
+						)}&text=${encodeURIComponent(recipe.title)}`}
 						target='_blank'
 						class='app-icon twitter'
 					>
@@ -148,11 +158,12 @@ try {
 						servings={recipe.servings}
 					/>
 				</div>
+
 				<div class='meta-rating-tags'>
 					<RecipeRatingDisplay recipeId={recipe._id} client:load />
-
 					<RecipeTags tags={recipe.tags} />
 				</div>
+
 				<section class='section'>
 					<h2>Ingredients</h2>
 					<p class='ingredients-list'>
@@ -164,23 +175,17 @@ try {
 									: recipe.ingredients?.split('\n') || []
 							).map((line, i) => {
 								const trimmed = line.trim();
-								console.log(trimmed);
-
 								if (trimmed === '') {
-									// Empty line: insert <br> and flag next line to be bold
 									makeNextBold = true;
 									return <br key={i} />;
 								}
-
-								// Render line, bold if flagged
+								// Fix bug: split('.'[1]) is wrong, replace with line.split('.')[1] or whole line
 								const content = makeNextBold ? (
-									<strong>{line.split('.'[1])}</strong>
+									<strong>{line.split('.')[1] ?? line}</strong>
 								) : (
 									line
 								);
-
-								makeNextBold = false; // reset flag after using
-
+								makeNextBold = false;
 								return (
 									<span key={i}>
 										{content}
@@ -190,13 +195,19 @@ try {
 							});
 						})()}
 					</p>
+
+					<AuthGroceryWrapper
+						ingredients={recipe.ingredients}
+						recipeId={recipe._id}
+						client:load
+					/>
 				</section>
+
 				<section class='section'>
 					<h2>Instructions</h2>
 					<p class='instructions-list'>
 						{(() => {
 							let numberingEnabled = true;
-							let stepNumber = 1;
 
 							return (
 								Array.isArray(recipe.instructions)
@@ -205,17 +216,14 @@ try {
 							).map((line, i) => {
 								const trimmed = line.trim();
 
-								// If line is just "1.", "2.", etc.
 								if (/^\d+\.$/.test(trimmed)) {
 									numberingEnabled = false;
 									return <br key={i} />;
 								}
 
 								let content = line;
-
 								if (numberingEnabled) {
 									content = `${line}`;
-									stepNumber++;
 								}
 
 								if (trimmed !== '') {
@@ -386,6 +394,8 @@ try {
 		gap: 2rem;
 		font-weight: 800;
 		font-size: 0.9rem;
+		font-size: 1.5rem;
+
 		color: #2c3e50;
 		background: linear-gradient(135deg, #fe9f8e 0%, #f8f9fa 100%);
 		padding: 0px 12px;
@@ -431,7 +441,6 @@ try {
 		gap: 15px;
 		margin: 15px;
 	}
-
 	.back-button,
 	.add-recipe-button {
 		padding: 10px 15px;
@@ -461,7 +470,6 @@ try {
 		margin-right: 0.3rem;
 		font-size: 1.5rem;
 	}
-
 	.back-button:hover,
 	.add-recipe-button:hover {
 		transform: translateY(-2px);
@@ -484,8 +492,6 @@ try {
 		font-weight: bold;
 		text-decoration: none;
 		color: white;
-		background-color: #ccc;
-		transition: background 0.3s ease;
 	}
 
 	.app-icon svg {
