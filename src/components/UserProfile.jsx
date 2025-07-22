@@ -30,7 +30,7 @@ export default function UserProfile({ locale }) {
 	// Local loading state for data fetch
 	const [localLoading, setLocalLoading] = useState(true);
 
-    useEffect(() => {
+	useEffect(() => {
 		console.log('Auth user updated:', user);
 	}, [user]);
 
@@ -88,8 +88,13 @@ export default function UserProfile({ locale }) {
 		};
 	}, []);
 
-	if (loading || localLoading)
-		return <div className='loading-spinner'>Loading...</div>;
+	if (loading || localLoading) {
+		return (
+			<div className='loading-spinner'>
+				{t('auth.loading', locale) || 'Loading...'}
+			</div>
+		);
+	}
 
 	if (error) return <p style={{ color: 'red' }}>{error}</p>;
 	if (!user)
