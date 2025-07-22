@@ -13,6 +13,7 @@ export const GroceryListPage = () => {
 
 	const fetchGroceryList = async () => {
 		if (!currentUser?._id) {
+			console.log('No user ID, stopping fetch');
 			setLoading(false);
 			return;
 		}
@@ -56,7 +57,7 @@ export const GroceryListPage = () => {
 
 	useEffect(() => {
 		if (!currentUser?._id) {
-			console.error('User not available on load');
+			// console.error('User not available on load');
 
 			setLoading(false);
 			return;
@@ -97,7 +98,7 @@ export const GroceryListPage = () => {
 				</ul>
 			)}
 
-			<style jsx>{`
+			<style>{`
 				.grocery-list-container {
 					max-width: 800px;
 					margin: 0 auto;
