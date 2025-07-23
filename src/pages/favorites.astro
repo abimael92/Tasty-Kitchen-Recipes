@@ -1,5 +1,9 @@
 ---
+// favorites.astro
 import FavoritesPage from '../components/FavoritesPage.jsx';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<FavoritesPage client:load />
+<BaseLayout title='Favorites'>
+	<FavoritesPage client:load />
+</BaseLayout>
