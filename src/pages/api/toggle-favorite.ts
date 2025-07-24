@@ -20,14 +20,11 @@ export async function POST({ request }) {
 		let updatedRecipes = existingCollection?.recipes || [];
 		const collectionId = existingCollection?._id;
 
-		// Find if recipe already in favorites
 		const index = updatedRecipes.findIndex((item) => item._ref === recipeId);
 
 		if (index >= 0) {
-			// Remove recipe from favorites
 			updatedRecipes.splice(index, 1);
 		} else {
-			// Add new favorite recipe with unique _key
 			updatedRecipes.push({
 				_type: 'reference',
 				_ref: recipeId,
@@ -36,16 +33,20 @@ export async function POST({ request }) {
 		}
 
 		if (collectionId) {
-			// Update existing collection document
 			await client
 				.patch(collectionId)
 				.set({ recipes: updatedRecipes })
 				.commit();
 		} else {
-			// Create collection doc for user with first favorite recipe
+			const user = await client.fetch(
+				`*[_type == "user" && _id == $userId][0]{ name }`,
+				{ userId }
+			);
+			const userName = user?.name || 'User';
+
 			await client.create({
 				_type: 'collection',
-				title: 'Favorites',
+				title: `${userName}'s Favorites List`,
 				user: { _type: 'reference', _ref: userId },
 				recipes: [
 					{
