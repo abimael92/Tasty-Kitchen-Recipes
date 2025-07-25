@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import LoadingIndicator from './LoadingIndicator.jsx';
+import { t } from '../utils/i18n';
 
-export const GroceryListPage = () => {
+export const GroceryListPage = ({ locale }) => {
 	const [items, setItems] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -71,10 +72,12 @@ export const GroceryListPage = () => {
 
 	return (
 		<div className='grocery-list-container'>
-			<h1>My Grocery List</h1>
-
+			<h1> {t('groceryList.title', locale) || 'My Grocery List'}</h1>
 			{items.length === 0 ? (
-				<p>Your grocery list is empty</p>
+				<p>
+					{t('groceryList.emptyMessage', locale) ||
+						'Your grocery list is empty'}
+				</p>
 			) : (
 				<ul className='grocery-items'>
 					{items.map((item) => (
@@ -89,15 +92,18 @@ export const GroceryListPage = () => {
 								className='item-checkbox'
 							/>
 							<span className='item-text'>
-								{item.quantity && `${item.quantity} `}
-								{item.unit && `${item.unit} `}
-								{item.name}
+								{item.quantity && (
+									<span className='quantity'>
+										{item.quantity}
+										{item.unit ? ` ${item.unit}` : ''}
+									</span>
+								)}
+								<span className='name'>{item.name}</span>
 							</span>
 						</li>
 					))}
 				</ul>
 			)}
-
 			<style>{`
 				.grocery-list-container {
 					max-width: 800px;
@@ -140,6 +146,14 @@ export const GroceryListPage = () => {
 				.item-text {
 					flex: 1;
 				}
+
+				.quantity {
+					font-weight: 700;
+					margin-right: 0.3rem;
+					display: inline-block;
+					vertical-align: middle;
+				}
+
 			`}</style>
 		</div>
 	);

@@ -7,5 +7,5 @@ const { currentLocale } = Astro;
 ---
 
 <BaseLayout>
-	<GroceryListWrapper client:load />
+	<GroceryListWrapper locale={currentLocale} client:load />
 </BaseLayout>

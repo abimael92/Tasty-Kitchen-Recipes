@@ -10,8 +10,6 @@ export async function POST({ request }) {
 	}
 
 	try {
-		console.log('Fetching collection for userId:', userId);
-
 		const collection = await client.fetch(
 			`*[_type == "collection" && user._ref == $userId][0]{
         _id,
@@ -25,8 +23,6 @@ export async function POST({ request }) {
       }`,
 			{ userId }
 		);
-
-		console.log('Collection fetched:', collection);
 
 		if (!collection) {
 			return new Response(JSON.stringify({ recipes: [], title: null }), {

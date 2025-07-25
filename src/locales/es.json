@@ -6,7 +6,10 @@
         "nav": {
             "home": "Inicio",
             "recipes": "Recetas",
-            "about": "Acerca de"
+            "about": "Acerca de",
+            "profile": "Perfil",
+            "favorites": "Favoritos",
+            "groceryList": "Mi Lista de Compras"
         }
     },
     "auth": {
@@ -64,5 +67,10 @@
             "title": "Síguenos"
         },
         "rights": "Todos los derechos reservados."
+    },
+    "groceryList": {
+        "title": "Mi Lista de Compras",
+        "emptyMessage": "Tu lista de compras está vacía",
+        "updateFailed": "No se pudo actualizar el artículo. Por favor, inténtalo de nuevo."
     }
 }
