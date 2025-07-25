@@ -6,7 +6,10 @@
         "nav": {
             "home": "Home",
             "recipes": "Recipes",
-            "about": "About"
+            "about": "About",
+            "profile": "Profile",
+            "favorites": "Favorites",
+            "groceryList": "My Grocery List"
         }
     },
     "auth": {
@@ -64,5 +67,10 @@
             "title": "Follow Us"
         },
         "rights": "All rights reserved."
+    },
+    "groceryList": {
+        "title": "My Grocery List",
+        "emptyMessage": "Your grocery list is empty",
+        "updateFailed": "Failed to update item. Please try again."
     }
 }
