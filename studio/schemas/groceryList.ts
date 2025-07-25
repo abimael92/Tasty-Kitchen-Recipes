@@ -44,12 +44,12 @@ export default {
   preview: {
     select: {
       userName: 'user.name',
-      itemCount: 'items.length',
+      items: 'items',
     },
-    prepare({userName, itemCount}) {
+    prepare({userName, items}) {
       return {
         title: `${userName}'s Grocery List`,
-        subtitle: `${itemCount || 0} items`,
+        subtitle: `${items?.length || 0} items`,
       }
     },
   },
