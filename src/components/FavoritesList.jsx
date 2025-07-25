@@ -23,7 +23,7 @@ export default function FavoritesList({ recipes, title }) {
 				{recipes.map(({ _id, title, image, slug }) => (
 					<a
 						key={_id}
-						href={`/recipes/${slug}`}
+						href={`/recipes/${slug.current}`}
 						style={{
 							background: 'white',
 							border: '1px solid #f5c6c6',
