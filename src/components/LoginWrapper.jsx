@@ -3,6 +3,7 @@ import LoginModal from './LoginModal';
 import { t } from '../utils/i18n';
 
 export default function LoginWrapper({ locale }) {
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [isRegistering, setIsRegistering] = useState(false);
@@ -40,27 +41,17 @@ export default function LoginWrapper({ locale }) {
 				},
 				body: JSON.stringify({ email, password }),
 			});
-
 			const data = await response.json();
-
-			if (!response.ok) {
+			if (!response.ok)
 				throw new Error(
 					data.error || t('auth.errors.loginFailed', locale) || 'Login failed'
 				);
-			}
-
 			localStorage.setItem(
 				'userData',
-				JSON.stringify({
-					uid: data.uid,
-					email: data.email,
-					token: data.token,
-				})
+				JSON.stringify({ uid: data.uid, email: data.email, token: data.token })
 			);
-
 			const fullUser = await fetchUserProfile(data.uid, data.token);
 			setUser(fullUser);
-
 			setIsLoggedIn(true);
 			setIsModalOpen(false);
 		} catch (err) {
@@ -76,9 +67,9 @@ export default function LoginWrapper({ locale }) {
 	};
 
 	const handleRegister = async (userData) => {
+		setLoading(true);
+		setError('');
 		try {
-			setLoading(true);
-			setError('');
 			const response = await fetch('/api/registerUser', {
 				method: 'POST',
 				headers: {
@@ -87,17 +78,13 @@ export default function LoginWrapper({ locale }) {
 				},
 				body: JSON.stringify(userData),
 			});
-
 			const data = await response.json();
-
-			if (!response.ok) {
+			if (!response.ok)
 				throw new Error(
 					data.error ||
 						t('auth.errors.registrationFailed', locale) ||
 						'Registration failed'
 				);
-			}
-
 			setIsRegistering(false);
 			setIsModalOpen(false);
 		} catch (err) {
@@ -118,6 +105,7 @@ export default function LoginWrapper({ locale }) {
 		setIsLoggedIn(false);
 		setLoading(false);
 		setError('');
+		setIsDropdownOpen(false);
 	};
 
 	async function fetchUserProfile(uid, token) {
@@ -125,17 +113,12 @@ export default function LoginWrapper({ locale }) {
 			const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
-
-			if (!res.ok) {
+			if (!res.ok)
 				throw new Error(
 					t('auth.errors.profileFetchFailed', locale) ||
 						`Failed to fetch user profile: ${res.status}`
 				);
-			}
-
 			return await res.json();
-
-			//
 		} catch (err) {
 			throw new Error(
 				err.message ||
@@ -145,6 +128,19 @@ export default function LoginWrapper({ locale }) {
 		}
 	}
 
+	// Close dropdown on outside click
+	React.useEffect(() => {
+		function handleClickOutside(event) {
+			if (!event.target.closest('#userDropdown')) {
+				setIsDropdownOpen(false);
+			}
+		}
+		if (isDropdownOpen) {
+			document.addEventListener('click', handleClickOutside);
+		}
+		return () => document.removeEventListener('click', handleClickOutside);
+	}, [isDropdownOpen]);
+
 	if (loading) {
 		return <div>{t('auth.loading', locale) || 'Loading...'}</div>;
 	}
@@ -152,48 +148,44 @@ export default function LoginWrapper({ locale }) {
 	return (
 		<>
 			{isLoggedIn ? (
-				<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-					<span>
-						{t('auth.welcome', locale)},{' '}
-						<a
-							href='/profile'
-							style={{
-								textDecoration: 'underline',
-								color: 'var(--color-primary)',
-							}}
-						>
-							{user?.name && user?.lastname
-								? `${user.name} ${user.lastname}`
-								: user?.email || t('auth.user', locale)}
-						</a>
-					</span>
+				<div
+					id='userDropdown'
+					style={{ position: 'relative', display: 'inline-block' }}
+				>
 					<button
-						onClick={logout}
-						style={{
-							background: 'none',
-							border: 'none',
-							color: 'inherit',
-							cursor: 'pointer',
-							font: 'inherit',
-							padding: 0,
-							textDecoration: 'underline',
-						}}
+						onClick={() => setIsDropdownOpen((prev) => !prev)}
+						className='dropdown-button'
+						aria-haspopup='true'
+						aria-expanded={isDropdownOpen}
 					>
-						({t('auth.logout', locale)})
+						{user?.name && user?.lastname
+							? `${user.name} ${user.lastname}`
+							: user?.email || t('auth.user', locale)}{' '}
+						{isDropdownOpen ? '▲' : '▼'}
 					</button>
+
+					{isDropdownOpen && (
+						<div className='dropdown-menu'>
+							<a href='/profile' className='menu-link'>
+								{t('home.nav.profile', locale) || 'Profile'}
+							</a>
+							<a href='/favorites' className='menu-link'>
+								{t('home.nav.favorites', locale) || 'Favorites'}
+							</a>
+							<a href='/grocery-list' className='menu-link'>
+								{t('home.nav.groceryList', locale) || 'My Grocery List'}
+							</a>
+							<hr />
+							<button onClick={logout} className='logout-button'>
+								{t('auth.logout', locale) || 'Logout'}
+							</button>
+						</div>
+					)}
 				</div>
 			) : (
 				<button
 					onClick={() => setIsModalOpen(true)}
-					style={{
-						background: 'none',
-						border: 'none',
-						color: 'inherit',
-						cursor: 'pointer',
-						font: 'inherit',
-						padding: 0,
-						transition: 'color 0.2s ease',
-					}}
+					className='dropdown-button'
 				>
 					{t('auth.login', locale)} ▼
 				</button>
@@ -214,6 +206,64 @@ export default function LoginWrapper({ locale }) {
 				isRegistering={isRegistering}
 				setIsRegistering={setIsRegistering}
 			/>
+
+			<style>{`
+        .dropdown-button {
+          background: none;
+          border: none;
+          color: inherit;
+          cursor: pointer;
+          font: inherit;
+          text-decoration: underline;
+          padding: 0;
+          transition: color 0.2s ease;
+        }
+
+        .dropdown-menu {
+          position: absolute;
+          top: 100%;
+          right: 0;
+          background: white;
+          border: 1px solid #ccc;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          padding: 0.5rem;
+          z-index: 1000;
+          min-width: 160px;
+          border-radius: 4px;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .menu-link {
+          text-decoration: none;
+          color: var(--color-primary);
+          padding: 0.25rem 0.5rem;
+        }
+
+        .menu-link:hover {
+          background-color: #eee;
+        }
+
+        hr {
+          margin: 0.5rem 0;
+          border-color: #eee;
+        }
+
+        .logout-button {
+          background: none;
+          border: none;
+          color: red;
+          cursor: pointer;
+          padding: 0.25rem 0.5rem;
+          text-align: left;
+          font: inherit;
+        }
+
+        .logout-button:hover {
+          background-color: #fee;
+        }
+      `}</style>
 		</>
 	);
 }
