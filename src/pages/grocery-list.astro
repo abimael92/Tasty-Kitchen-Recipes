@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GroceryListWrapper from '../components/GroceryListWrapper.jsx';
+import { t } from '../utils/i18n';
+
+const { currentLocale } = Astro;
+---
+
+<BaseLayout>
+	<GroceryListWrapper locale={currentLocale} client:load />
+</BaseLayout>
