@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
+import { parseIngredient } from '../utils/parseIngredient';
 
 export default function AddToGroceryButton({ ingredients, recipeId }) {
 	const { user } = useAuth();
@@ -14,11 +15,14 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 				const res = await fetch('/api/check-grocery', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ userId: user._id }),
+					body: JSON.stringify({
+						userId: user._id,
+						recipeId: recipeId, // Added recipeId to the request
+					}),
 				});
 				const data = await res.json();
 
-				if (Array.isArray(data?.recipes)) {
+				if (data?.success !== false && Array.isArray(data?.recipes)) {
 					setIsInList(data.recipes.some((r) => r._id === recipeId));
 				}
 			} catch (error) {
@@ -34,27 +38,66 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 		setLoading(true);
 
 		try {
-			const rawItems = Array.isArray(ingredients)
-				? ingredients.filter(Boolean)
-				: ingredients.split('\n').filter(Boolean);
+			// Safely process ingredients whether they come as array or string
+			let rawItems = [];
+			if (Array.isArray(ingredients)) {
+				rawItems = ingredients.filter(
+					(item) => item && typeof item === 'string'
+				);
+			} else if (typeof ingredients === 'string') {
+				rawItems = ingredients
+					.split('\n')
+					.map((line) => line.trim())
+					.filter((line) => line.length > 0);
+			}
 
-			await fetch('/api/toggle-grocery', {
+			console.log('Raw ingredients:', rawItems);
+
+			const parsedItems = rawItems.map((item) => {
+				try {
+					const parsed = parseIngredient(item);
+					console.log('Parsed ingredient:', parsed);
+					return {
+						name: parsed.name.toLowerCase(),
+						originalText: item,
+						quantity: parsed.quantity,
+						unit: parsed.unit,
+						completed: false,
+					};
+				} catch (error) {
+					console.error('Failed to parse ingredient:', item, error);
+					return {
+						name: item.toLowerCase(),
+						originalText: item,
+						quantity: '',
+						unit: '',
+						completed: false,
+					};
+				}
+			});
+
+			console.log('Sending to server:', parsedItems);
+
+			const response = await fetch('/api/toggle-grocery', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					userId: user._id,
 					recipeId,
-					items: rawItems.map((item) => ({
-						name: item.trim().toLowerCase(),
-						originalText: item,
-						quantity: '',
-						unit: '',
-						completed: false,
-					})),
+					items: parsedItems,
 				}),
 			});
 
-			setIsInList((prev) => !prev);
+			if (!response.ok) {
+				throw new Error('Network response was not ok');
+			}
+
+			const result = await response.json();
+			if (result.success) {
+				setIsInList((prev) => !prev);
+			} else {
+				console.error('Server error:', result.message);
+			}
 		} catch (error) {
 			console.error('Failed to update grocery list:', error);
 		} finally {
