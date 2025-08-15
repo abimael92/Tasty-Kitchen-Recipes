@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { client } from '../lib/sanity.js';
+import RecipeFilters from './RecipeFilters.astro';
 
 const { currentLocale } = Astro;
 
@@ -30,6 +31,7 @@ try {
 
 // const recipes = [...localRecipes, ...sanityRecipes];
 const recipes = [...sanityRecipes];
+let filteredRecipes = [...recipes];
 
 const isSpanish = currentLocale?.startsWith('es');
 const splitRegex = isSpanish ? /\s(y|con)\s/i : /\s(and|with)\s/i;
@@ -45,9 +47,17 @@ const splitRegex = isSpanish ? /\s(y|con)\s/i : /\s(and|with)\s/i;
 
 	<h1>Delicious Recipes</h1>
 
+	<!-- Filters component -->
+	<RecipeFilters
+		recipes={recipes}
+		onFilter={(filtered) => {
+			filteredRecipes = filtered;
+		}}
+	/>
+
 	<div class='recipes-grid'>
 		{
-			recipes.map((recipe) => (
+			filteredRecipes.map((recipe) => (
 				<a href={`/recipes/${recipe.slug ?? ''}`} class='recipe-card'>
 					{recipe.image && (
 						<img

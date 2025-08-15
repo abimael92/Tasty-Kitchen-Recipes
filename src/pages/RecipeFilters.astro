@@ -1,0 +1,87 @@
+---
+// RecipeFilters.astro
+import TextFilter from './filters/TextFilter.jsx';
+import IngredientsFilter from './filters/IngredientsFilter.jsx';
+import ChefFilter from './filters/ChefFilter.jsx';
+import TagsFilter from './filters/TagsFilter.jsx';
+import RatingFilter from './filters/RatingFilter.jsx';
+
+const { recipes, onFilter } = Astro.props;
+
+// Internal state
+let filterValues = {
+	text: '',
+	ingredients: [],
+	chef: '',
+	tags: [],
+	rating: null,
+};
+
+function handleFilterChange(key, value) {
+	filterValues[key] = value;
+
+	const filtered = recipes.filter((r) => {
+		// Text filter
+		if (
+			filterValues.text &&
+			!r.title.toLowerCase().includes(filterValues.text.toLowerCase())
+		)
+			return false;
+
+		// Ingredients filter
+		if (filterValues.ingredients.length > 0) {
+			const recipeIngredients = Array.isArray(r.ingredients)
+				? r.ingredients
+				: r.ingredients?.split('\n') || [];
+			if (
+				!filterValues.ingredients.every((i) =>
+					recipeIngredients.some((ri) =>
+						ri.toLowerCase().includes(i.toLowerCase())
+					)
+				)
+			)
+				return false;
+		}
+
+		// Chef filter
+		if (
+			filterValues.chef &&
+			r.chef?.toLowerCase() !== filterValues.chef.toLowerCase()
+		)
+			return false;
+
+		// Tags filter
+		if (
+			filterValues.tags.length > 0 &&
+			(!r.tags || !filterValues.tags.every((t) => r.tags.includes(t)))
+		)
+			return false;
+
+		// Rating filter
+		if (filterValues.rating && r.rating < filterValues.rating) return false;
+
+		return true;
+	});
+
+	onFilter(filtered);
+}
+---
+
+<div class='recipe-filters'>
+	<TextFilter onChange={(val) => handleFilterChange('text', val)} />
+	<IngredientsFilter
+		onChange={(val) => handleFilterChange('ingredients', val)}
+	/>
+	<ChefFilter onChange={(val) => handleFilterChange('chef', val)} />
+	<TagsFilter onChange={(val) => handleFilterChange('tags', val)} />
+	<RatingFilter onChange={(val) => handleFilterChange('rating', val)} />
+</div>
+
+<style>
+	.recipe-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin: 20px 0;
+	}
+</style>
