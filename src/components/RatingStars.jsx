@@ -59,3 +59,4 @@ export const RatingStars = ({ rating = 0, total = 5, size = 24 }) => {
 		</div>
 	);
 };
+

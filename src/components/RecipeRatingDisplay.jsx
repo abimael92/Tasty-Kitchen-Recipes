@@ -9,3 +9,4 @@ export default function RecipeRatingDisplay({ recipeId }) {
 
 	return <RatingStars rating={average} size={48} />;
 }
+

@@ -158,3 +158,4 @@ export const GroceryListPage = ({ locale }) => {
 		</div>
 	);
 };
+

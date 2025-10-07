@@ -48,3 +48,4 @@ export default function FavoritesFetcher() {
 
 	return <FavoritesList recipes={recipes} title={title} />;
 }
+

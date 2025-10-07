@@ -8,3 +8,4 @@ export default function GroceryListWrapper({ recipeId, locale }) {
 		</AuthProvider>
 	);
 }
+
