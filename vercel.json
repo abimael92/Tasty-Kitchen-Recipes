@@ -3,3 +3,4 @@
     "devCommand": "npm run dev",
     "installCommand": "npm install --include=dev"
 }
+// Vercel deploy config

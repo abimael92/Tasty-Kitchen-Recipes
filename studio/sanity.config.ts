@@ -16,3 +16,5 @@ export default defineConfig({
     types: schemaTypes,
   },
 })
+
+// Sanity project configuration

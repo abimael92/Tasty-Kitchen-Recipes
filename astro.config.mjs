@@ -53,3 +53,4 @@ export default defineConfig({
         }
     }
 });
+// Astro config for build setup

@@ -11,3 +11,5 @@ export default defineCliConfig({
    */
   autoUpdates: true,
 })
+
+// Sanity CLI configuration
