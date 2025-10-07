@@ -427,3 +427,4 @@ export default function UserProfile({ locale }) {
 		</div>
 	);
 }
+

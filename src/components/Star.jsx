@@ -51,3 +51,4 @@ export const Star = ({ width = 0, size = 24 }) => {
 		</div>
 	);
 };
+

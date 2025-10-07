@@ -8,3 +8,4 @@ export default function AuthGroceryWrapper({ ingredients, recipeId }) {
 		</AuthProvider>
 	);
 }
+
