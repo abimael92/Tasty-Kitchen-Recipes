@@ -65,3 +65,4 @@ export default function FavoritesList({ recipes, title }) {
 		</div>
 	);
 }
+
