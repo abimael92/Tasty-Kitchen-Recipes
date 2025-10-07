@@ -3,3 +3,4 @@ export const slugify = (str: string) =>
 		?.toLowerCase()
 		?.replace(/\s+/g, '-')
 		?.replace(/[^\w-]+/g, '');
+// Utility file
