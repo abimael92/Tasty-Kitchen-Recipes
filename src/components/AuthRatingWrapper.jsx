@@ -53,3 +53,4 @@ export default function AuthRatingWrapper({ recipeId }) {
 		</AuthProvider>
 	);
 }
+
