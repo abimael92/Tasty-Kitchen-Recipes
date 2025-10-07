@@ -67,7 +67,7 @@ function handleFilterChange(key, value) {
 }
 ---
 
-<div class='recipe-filters'>
+<div class='recipe-filters-bar'>
 	<TextFilter onChange={(val) => handleFilterChange('text', val)} />
 	<IngredientsFilter
 		onChange={(val) => handleFilterChange('ingredients', val)}
@@ -78,35 +78,75 @@ function handleFilterChange(key, value) {
 </div>
 
 <style>
-	.recipe-filters {
-		display: flex;
-		flex-wrap: wrap;
+	.recipe-filters-bar {
+		display: grid;
+		grid-template-columns: 2fr 1fr 1fr 1fr 1fr; /* text search bigger, others smaller */
 		gap: 12px;
-		margin: 24px 0;
-		justify-content: center;
+		padding: 12px 20px;
+		background-color: #fff;
+		border-radius: 15px;
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+		align-items: center;
+		max-width: 1200px;
+		margin: 20px auto;
 	}
 
-	.recipe-filters > * {
-		flex: 1 1 180px;
-		min-width: 140px;
-	}
-
-	/* Filter inputs */
-	.recipe-filters input,
-	.recipe-filters select {
+	.recipe-filters-bar input,
+	.recipe-filters-bar select {
 		width: 100%;
-		padding: 0.6rem 0.8rem;
+		padding: 0.5rem 0.8rem;
 		border-radius: 12px;
 		border: 1px solid rgba(0, 0, 0, 0.15);
-		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+		font-size: 0.95rem;
 		transition: all 0.3s ease;
-		font-family: var(--font-body);
 	}
 
-	.recipe-filters input:focus,
-	.recipe-filters select:focus {
-		border-color: var(--color-accent);
-		box-shadow: 0 0 8px var(--color-accent);
+	.recipe-filters-bar input:focus,
+	.recipe-filters-bar select:focus {
+		border-color: #ff6347;
+		box-shadow: 0 0 8px #ff6347;
 		outline: none;
+	}
+
+	/* Tags as chips inside input (optional) */
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.25rem 0.6rem;
+		border-radius: 20px;
+		background-color: #ffe6e0;
+		color: #c14e39;
+		font-size: 0.85rem;
+		margin: 2px;
+	}
+
+	.chip:hover {
+		background-color: #ff6347;
+		color: white;
+	}
+
+	/* Responsive: shrink nicely */
+	@media (max-width: 1024px) {
+		.recipe-filters-bar {
+			grid-template-columns: 1fr 1fr 1fr 1fr 1fr; /* equal width smaller screens */
+		}
+	}
+
+	@media (max-width: 768px) {
+		.recipe-filters-bar {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		.recipe-filters-bar > * {
+			flex: 1 1 48%; /* two per row on tablet */
+		}
+	}
+
+	@media (max-width: 480px) {
+		.recipe-filters-bar > * {
+			flex: 1 1 100%; /* stack fully on mobile */
+		}
 	}
 </style>
