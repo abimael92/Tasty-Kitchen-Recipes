@@ -17,3 +17,4 @@ export function t(key: string, locale: string = 'es'): string {
 
 	return typeof result === 'string' ? result : key;
 }
+// Utility file
