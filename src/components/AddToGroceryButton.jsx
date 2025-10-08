@@ -15,10 +15,7 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 				const res = await fetch('/api/check-grocery', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						userId: user._id,
-						recipeId: recipeId, // Added recipeId to the request
-					}),
+					body: JSON.stringify({ userId: user._id, recipeId }),
 				});
 				const data = await res.json();
 
@@ -38,7 +35,6 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 		setLoading(true);
 
 		try {
-			// Safely process ingredients whether they come as array or string
 			let rawItems = [];
 			if (Array.isArray(ingredients)) {
 				rawItems = ingredients.filter(
@@ -51,12 +47,9 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 					.filter((line) => line.length > 0);
 			}
 
-			console.log('Raw ingredients:', rawItems);
-
 			const parsedItems = rawItems.map((item) => {
 				try {
 					const parsed = parseIngredient(item);
-					console.log('Parsed ingredient:', parsed);
 					return {
 						name: parsed.name.toLowerCase(),
 						originalText: item,
@@ -64,8 +57,7 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 						unit: parsed.unit,
 						completed: false,
 					};
-				} catch (error) {
-					console.error('Failed to parse ingredient:', item, error);
+				} catch {
 					return {
 						name: item.toLowerCase(),
 						originalText: item,
@@ -75,8 +67,6 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 					};
 				}
 			});
-
-			console.log('Sending to server:', parsedItems);
 
 			const response = await fetch('/api/toggle-grocery', {
 				method: 'POST',
@@ -88,22 +78,18 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 				}),
 			});
 
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-
+			if (!response.ok) throw new Error('Network response was not ok');
 			const result = await response.json();
-			if (result.success) {
-				setIsInList((prev) => !prev);
-			} else {
-				console.error('Server error:', result.message);
-			}
+			if (result.success) setIsInList((prev) => !prev);
+			else console.error('Server error:', result.message);
 		} catch (error) {
 			console.error('Failed to update grocery list:', error);
 		} finally {
 			setLoading(false);
 		}
 	};
+
+	if (!user) return null;
 
 	return (
 		<button
@@ -127,4 +113,3 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 		</button>
 	);
 }
-
