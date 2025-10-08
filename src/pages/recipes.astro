@@ -29,7 +29,8 @@ try {
 	console.error('Failed to fetch Sanity recipes:', e.message);
 }
 
-const recipes = [...localRecipes, ...sanityRecipes]; // <-- merge both
+// const recipes = [...localRecipes, ...sanityRecipes];
+const recipes = [...sanityRecipes];
 const splitRegex = currentLocale?.startsWith('es')
 	? /\s(y|con)\s/i
 	: /\s(and|with)\s/i;
@@ -45,5 +46,68 @@ const splitRegex = currentLocale?.startsWith('es')
 
 	<h1>Delicious Recipes</h1>
 
+	<!-- Filters component -->
 	<RecipeList client:load recipes={recipes} splitRegex={splitRegex} />
 </BaseLayout>
+
+<style>
+	:root {
+		--primary-color: #d2691e;
+		--secondary-color: #c14e39;
+		--light-bg: #fff6f6;
+		--border-color: #f5c6c6;
+		--text-color: #5a2e2e;
+		--scroll-thumb: #f08080;
+		--scroll-track: #ffecec;
+	}
+
+	/* Header buttons */
+	.header-buttons {
+		display: flex;
+		gap: 15px;
+		margin: 15px;
+	}
+
+	.back-button,
+	.add-recipe-button {
+		padding: 10px 15px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-weight: bold;
+		text-decoration: none;
+		transition:
+			transform 0.2s,
+			box-shadow 0.2s;
+	}
+
+	.back-button {
+		background: var(--primary-color);
+		color: white;
+	}
+
+	.add-recipe-button {
+		background: var(--secondary-color);
+		color: white;
+	}
+
+	.plus-icon {
+		color: white;
+		font-weight: bold;
+		margin-right: 0.3rem;
+		font-size: 1.5rem;
+	}
+
+	.back-button:hover,
+	.add-recipe-button:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+	}
+
+	/* Main heading */
+	h1 {
+		text-align: center;
+		margin: 20px 0;
+		color: var(--primary-color);
+	}
+</style>
