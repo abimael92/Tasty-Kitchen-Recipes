@@ -37,7 +37,7 @@ export default defineConfig({
         },
 
         ssr: {
-            noExternal: ['firebase'] // Important for SSR
+            noExternal: ['firebase']
         },
 
         server: {
