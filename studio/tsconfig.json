@@ -15,5 +15,3 @@
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
-
-// Studio TypeScript config
