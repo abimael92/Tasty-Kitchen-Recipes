@@ -117,21 +117,21 @@ export default function RecipeCard({ recipe, splitRegex }) {
 
 				.recipe-image {
 					width: 100%;
-					height: 200px;
+					height: 150px;
 					object-fit: cover;
 				}
 
 				.recipe-content {
-					padding: 15px;
+					padding: 12px;
 					display: flex;
 					flex-direction: column;
 					flex-grow: 1;
 				}
 
 				.recipe-title {
-					margin: 0 0 10px;
+					margin: 0 0 8px;
 					color: #d2691e;
-					font-size: 1.3rem;
+					font-size: 1.2rem;
 				}
 
 				.recipe-details {
@@ -142,8 +142,8 @@ export default function RecipeCard({ recipe, splitRegex }) {
 				}
 
 				.recipe-details h3 {
-					margin: 10px 0 5px;
-					font-size: 1.1rem;
+					margin: 8px 0 4px;
+					font-size: 1rem;
 					color: #d2691e;
 				}
 
@@ -160,7 +160,7 @@ export default function RecipeCard({ recipe, splitRegex }) {
 					border-radius: 8px;
 					padding: 10px 15px;
 					margin: 5px 0;
-					max-height: 150px;
+					max-height: 80px;
 					overflow-y: auto;
 					color: #5a2e2e;
 					line-height: 1.5;
@@ -213,7 +213,7 @@ export default function RecipeCard({ recipe, splitRegex }) {
 
 				@media (max-width: 768px) {
 					.recipe-image {
-						height: 160px;
+						height: 120px;
 					}
 
 					.toggle-content {
