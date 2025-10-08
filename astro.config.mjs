@@ -2,8 +2,6 @@ import { defineConfig } from 'astro/config';
 import vercel from '@astrojs/vercel/serverless';
 import react from '@astrojs/react';
 
-// Remove the firebaseConfig from here - it should be in environment variables only
-
 export default defineConfig({
     site: 'http://localhost:4321',
     output: 'server',
@@ -53,4 +51,3 @@ export default defineConfig({
         }
     }
 });
-// Astro config for build setup
