@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { parseIngredient } from '../utils/parseIngredient';
+import { t } from '../utils/i18n';
 
-export default function AddToGroceryButton({ ingredients, recipeId }) {
+export default function GroceryListToggleButton({
+	ingredients,
+	recipeId,
+	currentLocale,
+}) {
 	const { user } = useAuth();
 	const [isInList, setIsInList] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -10,7 +15,6 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 	useEffect(() => {
 		const checkGroceryList = async () => {
 			if (!user) return;
-
 			try {
 				const res = await fetch('/api/check-grocery', {
 					method: 'POST',
@@ -18,33 +22,28 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 					body: JSON.stringify({ userId: user._id, recipeId }),
 				});
 				const data = await res.json();
-
-				if (data?.success !== false && Array.isArray(data?.recipes)) {
+				if (data?.success && Array.isArray(data?.recipes)) {
 					setIsInList(data.recipes.some((r) => r._id === recipeId));
 				}
-			} catch (error) {
-				console.error('Failed to check grocery list:', error);
+			} catch (err) {
+				console.error('Failed to check grocery list:', err);
 			}
 		};
-
 		checkGroceryList();
 	}, [user, recipeId]);
 
-	const toggleGroceryList = async () => {
+	const addItems = async () => {
 		if (loading || !user) return;
 		setLoading(true);
-
 		try {
 			let rawItems = [];
 			if (Array.isArray(ingredients)) {
-				rawItems = ingredients.filter(
-					(item) => item && typeof item === 'string'
-				);
+				rawItems = ingredients.filter((i) => i && typeof i === 'string');
 			} else if (typeof ingredients === 'string') {
 				rawItems = ingredients
 					.split('\n')
 					.map((line) => line.trim())
-					.filter((line) => line.length > 0);
+					.filter(Boolean);
 			}
 
 			const parsedItems = rawItems.map((item) => {
@@ -68,7 +67,7 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 				}
 			});
 
-			const response = await fetch('/api/toggle-grocery', {
+			const res = await fetch('/api/toggle-grocery', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
@@ -77,13 +76,28 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 					items: parsedItems,
 				}),
 			});
+			const data = await res.json();
+			if (data.success) setIsInList(true);
+		} catch (err) {
+			console.error('Failed to add items:', err);
+		} finally {
+			setLoading(false);
+		}
+	};
 
-			if (!response.ok) throw new Error('Network response was not ok');
-			const result = await response.json();
-			if (result.success) setIsInList((prev) => !prev);
-			else console.error('Server error:', result.message);
-		} catch (error) {
-			console.error('Failed to update grocery list:', error);
+	const removeAllItems = async () => {
+		if (loading || !user) return;
+		setLoading(true);
+		try {
+			const res = await fetch('/api/remove-grocery-recipe', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ userId: user._id, recipeId }),
+			});
+			const data = await res.json();
+			if (data.success) setIsInList(false);
+		} catch (err) {
+			console.error('Failed to remove items:', err);
 		} finally {
 			setLoading(false);
 		}
@@ -93,23 +107,31 @@ export default function AddToGroceryButton({ ingredients, recipeId }) {
 
 	return (
 		<button
-			onClick={toggleGroceryList}
+			onClick={isInList ? removeAllItems : addItems}
 			disabled={loading}
 			style={{
-				background: isInList ? '#4CAF50' : '#d2691e',
+				background: isInList ? '#e53935' : '#d2691e',
 				color: 'white',
 				padding: '0.5rem 1rem',
 				border: 'none',
 				borderRadius: '4px',
 				cursor: loading ? 'not-allowed' : 'pointer',
 				fontWeight: '600',
+				display: 'flex',
+				alignItems: 'center',
+				gap: '0.4rem',
 			}}
 		>
-			{loading
-				? 'Processing...'
-				: isInList
-				? '✓ In Your List'
-				: 'Add to Grocery List'}
+			{loading ? (
+				t('groceryList.processing', currentLocale)
+			) : isInList ? (
+				t('groceryList.removeAll', currentLocale) || 'Remove from Grocery List'
+			) : (
+				<>
+					<span className='plus-icon'>+</span>
+					{t('groceryList.addToList', currentLocale)}
+				</>
+			)}
 		</button>
 	);
 }
