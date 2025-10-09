@@ -1,7 +1,7 @@
 import { units, fractionMap, wordNumberMap } from '../constants/units';
 
 export function parseIngredient(text: string) {
-	console.log('THIS IS RAW TEST: ', text);
+	// console.log('THIS IS RAW TEST: ', text);
 
 	// Normalize the text first
 	text = text
@@ -32,7 +32,7 @@ export function parseIngredient(text: string) {
 		(match) => wordNumberMap[match.toLowerCase()] || match
 	);
 
-	console.log('Normalized text:', text);
+	// console.log('Normalized text:', text);
 
 	const parts = text.split(/\s+/).filter(Boolean);
 	let quantity = '';
@@ -87,7 +87,7 @@ export function parseIngredient(text: string) {
 		completed: false,
 	};
 
-	console.log('Parsed result:', parsed);
+	// console.log('Parsed result:', parsed);
 	return parsed;
 }
 // Utility file
