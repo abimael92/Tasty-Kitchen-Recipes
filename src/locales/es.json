@@ -71,6 +71,21 @@
     "groceryList": {
         "title": "Mi Lista de Compras",
         "emptyMessage": "Tu lista de compras está vacía",
-        "updateFailed": "No se pudo actualizar el artículo. Por favor, inténtalo de nuevo."
+        "updateFailed": "No se pudo actualizar el artículo. Por favor, inténtalo de nuevo.",
+        "processing": "Procesando...",
+        "inYourList": "✓ En Tu Lista",
+        "addToList": "Agregar a Lista de Compras"
+    },
+    "common": {
+        "back": "Atrás"
+    },
+    "recipes": {
+        "title": "Recetas Deliciosas",
+        "addNew": "Agregar Nueva Receta",
+        "print": "Imprimir Receta",
+        "ingredients": "Ingredientes",
+        "instructions": "Instrucciones",
+        "notFound": "Receta No Encontrada",
+        "notFoundMessage": "Lo sentimos, esta receta no existe."
     }
 }
