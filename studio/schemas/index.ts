@@ -4,6 +4,7 @@ import recipeRating from './recipeRating'
 import collection from './collection'
 import savedRecipe from './savedRecipe'
 import groceryList from './groceryList'
+import comment from './comment'
 import {eventType} from './eventType'
 
 export const schemaTypes = [
@@ -13,5 +14,6 @@ export const schemaTypes = [
   collection,
   groceryList,
   savedRecipe,
+  comment,
   eventType,
 ]
