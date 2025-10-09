@@ -8,11 +8,11 @@ import AuthorMeta from '../../components/AuthorMeta.astro';
 import RecipeRatingDisplay from '../../components/RecipeRatingDisplay';
 import NutritionInfo from '../../components/NutritionInfo.astro';
 import RecipeChecklist from '../../components/RecipeChecklist.astro';
-import CommentsSection from '../../components/CommentsSection.astro';
 import RecipeTags from '../../components/RecipeTags.astro';
 import AuthFavoriteWrapper from '../../components/AuthFavoriteWrapper';
 
 import AuthRatingWrapper from '../../components/AuthRatingWrapper.jsx';
+import CommentsSectionWrapper from '../../components/CommentsSectionWrapper.jsx';
 
 import { SimpleRating } from '../../components/SimpleRating.jsx';
 import AuthGroceryWrapper from '../../components/AuthGroceryWrapper';
@@ -243,6 +243,8 @@ try {
 				</section>
 
 				<AuthRatingWrapper recipeId={recipe._id} client:load />
+
+				<CommentsSectionWrapper recipeId={recipe._id} client:load />
 			</article>
 		</BaseLayout>
 	) : (
