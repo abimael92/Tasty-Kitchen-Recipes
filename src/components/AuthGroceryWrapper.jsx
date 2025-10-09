@@ -1,11 +1,10 @@
 import { AuthProvider } from '../context/AuthContext.jsx';
-import AddToGroceryButton from './AddToGroceryButton.jsx';
+import GroceryListToggleButton from './GroceryListToggleButton.jsx';
 
 export default function AuthGroceryWrapper({ ingredients, recipeId }) {
 	return (
 		<AuthProvider>
-			<AddToGroceryButton ingredients={ingredients} recipeId={recipeId} />
+			<GroceryListToggleButton ingredients={ingredients} recipeId={recipeId} />
 		</AuthProvider>
 	);
 }
-
