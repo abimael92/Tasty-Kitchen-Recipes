@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { client } from '../lib/sanity.js';
 import RecipeList from '../components/RecipeList.jsx';
+import { t } from '../utils/i18n.js';
 
 const { currentLocale } = Astro;
 
@@ -29,24 +30,25 @@ try {
 	console.error('Failed to fetch Sanity recipes:', e.message);
 }
 
-// const recipes = [...localRecipes, ...sanityRecipes];
 const recipes = [...sanityRecipes];
 const splitRegex = currentLocale?.startsWith('es')
 	? /\s(y|con)\s/i
 	: /\s(and|with)\s/i;
 ---
 
-<BaseLayout title='Recipes'>
+<BaseLayout title={t('title', currentLocale)}>
 	<div class='header-buttons'>
-		<button onclick='history.back()' class='back-button'>Back</button>
+		<button onclick='history.back()' class='back-button'
+			>{t('common.back', currentLocale)}</button
+		>
 		<a href='/add-recipe' class='add-recipe-button'>
-			<span class='plus-icon'>+</span> Add New Recipe
+			<span class='plus-icon'>+</span>
+			{t('recipes.addNew', currentLocale)}
 		</a>
 	</div>
 
-	<h1>Delicious Recipes</h1>
+	<h1>{t('recipes.title', currentLocale)}</h1>
 
-	<!-- Filters component -->
 	<RecipeList client:load recipes={recipes} splitRegex={splitRegex} />
 </BaseLayout>
 
@@ -61,7 +63,6 @@ const splitRegex = currentLocale?.startsWith('es')
 		--scroll-track: #ffecec;
 	}
 
-	/* Header buttons */
 	.header-buttons {
 		display: flex;
 		gap: 15px;
@@ -104,7 +105,6 @@ const splitRegex = currentLocale?.startsWith('es')
 		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 	}
 
-	/* Main heading */
 	h1 {
 		text-align: center;
 		margin: 20px 0;
