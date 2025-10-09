@@ -25,6 +25,16 @@ export const GroceryListPage = ({ locale }) => {
 			if (!res.ok) throw new Error('Failed to fetch grocery list');
 
 			const data = await res.json();
+
+			// 🔍 Log where each ingredient came from
+			data.forEach((item) => {
+				console.log(
+					`Ingredient: ${item.name} → From Recipe: ${
+						item.recipeTitle || item.recipeId || 'unknown'
+					}`
+				);
+			});
+
 			setItems(data);
 		} catch (err) {
 			console.error('Error fetching grocery list:', err);
@@ -158,4 +168,3 @@ export const GroceryListPage = ({ locale }) => {
 		</div>
 	);
 };
-
