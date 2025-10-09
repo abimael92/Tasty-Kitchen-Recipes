@@ -2,20 +2,27 @@ import { useState } from 'react';
 
 export default function RecipeCard({ recipe, splitRegex }) {
 	const [expanded, setExpanded] = useState(false);
+	const [activeSection, setActiveSection] = useState(null);
 
 	const toggleExpanded = () => setExpanded((prev) => !prev);
+	const toggleSection = (section) => {
+		setActiveSection(activeSection === section ? null : section);
+	};
 
 	const handleCardClick = () => {
-		// Navigate to recipe detail page when card is clicked
 		if (recipe.slug) {
 			window.location.href = `/recipes/${recipe.slug}`;
 		}
 	};
 
 	const handleButtonClick = (e) => {
-		// Stop propagation so card click doesn't trigger when button is clicked
 		e.stopPropagation();
 		toggleExpanded();
+	};
+
+	const handleSectionClick = (e, section) => {
+		e.stopPropagation();
+		toggleSection(section);
 	};
 
 	const ingredients = Array.isArray(recipe.ingredients)
@@ -53,46 +60,81 @@ export default function RecipeCard({ recipe, splitRegex }) {
 				</h2>
 
 				<div className='recipe-details'>
-					<div className={`toggle-content ${expanded ? 'expanded' : ''}`}>
-						<h3>Ingredients</h3>
-						<div className='ingredients-list'>
-							{(Array.isArray(recipe.ingredients)
-								? recipe.ingredients
-								: recipe.ingredients?.split?.('\n') || []
-							)
-								.filter(Boolean)
-								.map((ingredient, i) => (
-									<span key={i}>
+					{/* Ingredients Accordion */}
+					<div className='accordion-section'>
+						<button
+							className={`accordion-header ${
+								activeSection === 'ingredients' ? 'active' : ''
+							}`}
+							onClick={(e) => handleSectionClick(e, 'ingredients')}
+						>
+							<span>Ingredients</span>
+							<svg
+								className={`accordion-arrow ${
+									activeSection === 'ingredients' ? 'expanded' : ''
+								}`}
+								width='16'
+								height='16'
+								viewBox='0 0 16 16'
+							>
+								<path
+									fill='currentColor'
+									d='M8 12L3 7l1.4-1.4L8 9.2l3.6-3.6L13 7z'
+								/>
+							</svg>
+						</button>
+						<div
+							className={`accordion-content ${
+								activeSection === 'ingredients' ? 'expanded' : ''
+							}`}
+						>
+							<div className='ingredients-list'>
+								{ingredients.filter(Boolean).map((ingredient, i) => (
+									<div key={i} className='ingredient-item'>
 										{ingredient}
-										<br />
-									</span>
+									</div>
 								))}
-						</div>
-
-						<h3>Instructions</h3>
-						<div className='instructions-list'>
-							{(Array.isArray(recipe.instructions)
-								? recipe.instructions
-								: recipe.instructions?.split?.('\n') || []
-							)
-								.filter(Boolean)
-								.map((step, i) => (
-									<span key={i}>
-										{step}
-										<br />
-										<br />
-									</span>
-								))}
+							</div>
 						</div>
 					</div>
 
-					<div className='mobile-only-toggle'>
+					{/* Instructions Accordion */}
+					<div className='accordion-section'>
 						<button
-							className='mobile-toggle-button'
-							onClick={handleButtonClick}
+							className={`accordion-header ${
+								activeSection === 'instructions' ? 'active' : ''
+							}`}
+							onClick={(e) => handleSectionClick(e, 'instructions')}
 						>
-							{expanded ? 'View Less' : 'View More'}
+							<span>Instructions</span>
+							<svg
+								className={`accordion-arrow ${
+									activeSection === 'instructions' ? 'expanded' : ''
+								}`}
+								width='16'
+								height='16'
+								viewBox='0 0 16 16'
+							>
+								<path
+									fill='currentColor'
+									d='M8 12L3 7l1.4-1.4L8 9.2l3.6-3.6L13 7z'
+								/>
+							</svg>
 						</button>
+						<div
+							className={`accordion-content ${
+								activeSection === 'instructions' ? 'expanded' : ''
+							}`}
+						>
+							<div className='instructions-list'>
+								{instructions.filter(Boolean).map((step, i) => (
+									<div key={i} className='instruction-step'>
+										<span className='step-number'>{i + 1}.</span>
+										<span className='step-text'>{step}</span>
+									</div>
+								))}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -117,21 +159,22 @@ export default function RecipeCard({ recipe, splitRegex }) {
 
 				.recipe-image {
 					width: 100%;
-					height: 200px;
+					height: 150px;
 					object-fit: cover;
 				}
 
 				.recipe-content {
-					padding: 15px;
+					padding: 12px;
 					display: flex;
 					flex-direction: column;
 					flex-grow: 1;
 				}
 
 				.recipe-title {
-					margin: 0 0 10px;
+					margin: 0 0 8px;
 					color: #d2691e;
 					font-size: 1.3rem;
+					font-weight: 600;
 				}
 
 				.recipe-details {
@@ -139,101 +182,141 @@ export default function RecipeCard({ recipe, splitRegex }) {
 					flex-grow: 1;
 					display: flex;
 					flex-direction: column;
+					gap: 8px;
 				}
 
-				.recipe-details h3 {
-					margin: 10px 0 5px;
-					font-size: 1.1rem;
+				/* Accordion Styles */
+				.accordion-section {
+					border: 1px solid #f5c6c6;
+					border-radius: 8px;
+					overflow: hidden;
+					background: #fff6f6;
+				}
+
+				.accordion-header {
+					width: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					padding: 12px 15px;
+					background: transparent;
+					border: none;
+					cursor: pointer;
+					font-size: 1rem;
+					font-weight: 600;
 					color: #d2691e;
+					transition: background-color 0.2s;
 				}
 
-				.toggle-content {
-					max-height: none;
-					overflow: visible;
+				.accordion-header:hover {
+					background: #ffecec;
+				}
+
+				.accordion-header.active {
+					background: #ffecec;
+					border-bottom: 1px solid #f5c6c6;
+				}
+
+				.accordion-arrow {
+					transition: transform 0.3s ease;
+				}
+
+				.accordion-arrow.expanded {
+					transform: rotate(180deg);
+				}
+
+				.accordion-content {
+					max-height: 0;
+					overflow: hidden;
 					transition: max-height 0.3s ease;
 				}
 
+				.accordion-content.expanded {
+					max-height: 100px;
+					overflow-y: auto;
+				}
+
+				/* List Styles */
 				.ingredients-list,
 				.instructions-list {
-					background: #fff6f6;
-					border: 1px solid #f5c6c6;
-					border-radius: 8px;
-					padding: 10px 15px;
-					margin: 5px 0;
-					max-height: 150px;
-					overflow-y: auto;
+					padding: 15px;
+					background: white;
+				}
+
+				.ingredient-item {
+					padding: 6px 0;
+					color: #5a2e2e;
+					border-bottom: 1px solid #f0f0f0;
+					line-height: 1.4;
+				}
+
+				.ingredient-item:last-child {
+					border-bottom: none;
+				}
+
+				.instruction-step {
+					display: flex;
+					gap: 10px;
+					padding: 10px 0;
 					color: #5a2e2e;
 					line-height: 1.5;
 				}
 
-				/* Remove list styling since we're using div/span instead of ul/ol/li */
-				.ingredients-list {
-					list-style-type: none;
-					padding-left: 15px;
+				.instruction-step:not(:last-child) {
+					border-bottom: 1px solid #f0f0f0;
 				}
 
-				.instructions-list {
-					list-style-type: none;
-					padding-left: 15px;
+				.step-number {
+					font-weight: 600;
+					color: #d2691e;
+					min-width: 20px;
+				}
+
+				.step-text {
+					flex: 1;
 				}
 
 				/* Scrollbars */
-				.ingredients-list::-webkit-scrollbar,
-				.instructions-list::-webkit-scrollbar {
-					width: 8px;
+				.accordion-content.expanded::-webkit-scrollbar {
+					width: 6px;
 				}
 
-				.ingredients-list::-webkit-scrollbar-thumb,
-				.instructions-list::-webkit-scrollbar-thumb {
+				.accordion-content.expanded::-webkit-scrollbar-thumb {
 					background: #f08080;
-					border-radius: 4px;
+					border-radius: 3px;
 				}
 
-				.ingredients-list::-webkit-scrollbar-track,
-				.instructions-list::-webkit-scrollbar-track {
+				.accordion-content.expanded::-webkit-scrollbar-track {
 					background: #ffecec;
-					border-radius: 4px;
 				}
 
-				.mobile-only-toggle {
-					display: none;
-					margin-top: 10px;
-					text-align: center;
-				}
-
-				.mobile-toggle-button {
-					background-color: #d2691e;
-					color: white;
-					border: none;
-					padding: 0.5rem 1rem;
-					border-radius: 5px;
-					font-weight: bold;
-					cursor: pointer;
-				}
-
+				/* Mobile Styles */
 				@media (max-width: 768px) {
 					.recipe-image {
-						height: 160px;
+						height: 120px;
 					}
 
-					.toggle-content {
-						max-height: 0;
-						overflow: hidden;
+					.recipe-content {
+						padding: 12px;
 					}
 
-					.toggle-content.expanded {
-						max-height: 1000px;
-						overflow: visible;
+					.recipe-title {
+						font-size: 1.1rem;
+						margin-bottom: 12px;
 					}
 
-					.mobile-only-toggle {
-						display: block;
+					.accordion-header {
+						padding: 10px 12px;
+						font-size: 0.95rem;
 					}
 
 					.ingredients-list,
 					.instructions-list {
-						max-height: none;
-						overflow-y: visible;
+						padding: 12px;
+					}
+
+					.accordion-content.expanded {
+						max-height: 90px;
 					}
 				}
 			`}</style>

@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { client } from '../../lib/sanity.js';
+import { t } from '../../utils/i18n.js';
 
 import AuthorMeta from '../../components/AuthorMeta.astro';
 import RecipeRatingDisplay from '../../components/RecipeRatingDisplay';
@@ -16,7 +17,7 @@ import AuthRatingWrapper from '../../components/AuthRatingWrapper.jsx';
 import { SimpleRating } from '../../components/SimpleRating.jsx';
 import AuthGroceryWrapper from '../../components/AuthGroceryWrapper';
 
-const { slug } = Astro.params;
+const { slug, currentLocale } = Astro.params;
 
 let recipe = null;
 
@@ -60,7 +61,7 @@ try {
 		<BaseLayout title={recipe.title}>
 			<div class='header-buttons'>
 				<button onclick='history.back()' class='back-button'>
-					Back
+					{t('common.back', currentLocale)}
 				</button>
 				<button onclick='window.print()' class='add-recipe-button'>
 					<span class='print-icon'>
@@ -74,7 +75,7 @@ try {
 							<path d='M19 8H5V3h14v5zm0 2c1.1 0 2 .9 2 2v6h-4v3H7v-3H3v-6c0-1.1.9-2 2-2h14zm-4 7v3h-6v-3h6z' />
 						</svg>
 					</span>
-					Print Recipe
+					{t('recipes.print', currentLocale)}
 				</button>
 			</div>
 
@@ -165,7 +166,7 @@ try {
 				</div>
 
 				<section class='section'>
-					<h2>Ingredients</h2>
+					<h2>{t('recipes.ingredients', currentLocale)}</h2>
 					<p class='ingredients-list'>
 						{(() => {
 							let makeNextBold = false;
@@ -204,7 +205,7 @@ try {
 				</section>
 
 				<section class='section'>
-					<h2>Instructions</h2>
+					<h2>{t('recipes.instructions', currentLocale)}</h2>
 					<p class='instructions-list'>
 						{(() => {
 							let numberingEnabled = true;
@@ -245,8 +246,8 @@ try {
 			</article>
 		</BaseLayout>
 	) : (
-		<BaseLayout title='Recipe Not Found'>
-			<p>Sorry, this recipe does not exist.</p>
+		<BaseLayout title={t('recipes.notFound', currentLocale)}>
+			<p>{t('recipes.notFoundMessage', currentLocale)}</p>
 		</BaseLayout>
 	)
 }

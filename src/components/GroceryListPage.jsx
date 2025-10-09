@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import LoadingIndicator from './LoadingIndicator.jsx';
+import { deduplicateGroceryItems } from '../utils/deduplicateGroceryItems.ts';
+
 import { t } from '../utils/i18n';
 
 export const GroceryListPage = ({ locale }) => {
@@ -25,7 +27,21 @@ export const GroceryListPage = ({ locale }) => {
 			if (!res.ok) throw new Error('Failed to fetch grocery list');
 
 			const data = await res.json();
-			setItems(data);
+			const deduplicatedItems = deduplicateGroceryItems(data);
+
+			console.log('Fetched grocery list:', deduplicatedItems);
+			console.log('Raw fetched data:', data);
+			// 🔍 Log where each ingredient came from
+			data.forEach((item) => {
+				console.log(
+					`Ingredient: ${item.name} → From Recipe: ${
+						item.recipeTitle || item.recipeId || 'unknown'
+					}`
+				);
+			});
+
+			// setItems(data);
+			setItems(deduplicatedItems);
 		} catch (err) {
 			console.error('Error fetching grocery list:', err);
 			setError(err.message || 'Unknown error');
@@ -158,4 +174,3 @@ export const GroceryListPage = ({ locale }) => {
 		</div>
 	);
 };
-

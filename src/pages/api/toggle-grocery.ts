@@ -5,7 +5,7 @@ export const POST: APIRoute = async ({ request }) => {
 	try {
 		const { userId, recipeId, items } = await request.json();
 
-		// Get or create grocery list
+		// Get existing grocery list - DON'T create new one if exists
 		let groceryList = await client.fetch(
 			`*[_type == "groceryList" && user._ref == $userId][0]{
         _id,
@@ -23,14 +23,12 @@ export const POST: APIRoute = async ({ request }) => {
 				.patch(groceryList._id)
 				.set({
 					recipes: groceryList.recipes.filter((r) => r._ref !== recipeId),
-					items: groceryList.items.filter(
-						(item) => !items.some((i) => i.name === item.name)
-					),
 				})
 				.commit();
 		} else {
-			// Add recipe
+			// Add to EXISTING grocery list
 			if (!groceryList) {
+				// Only create if it doesn't exist
 				groceryList = await client.create({
 					_type: 'groceryList',
 					user: { _type: 'reference', _ref: userId },
@@ -39,6 +37,7 @@ export const POST: APIRoute = async ({ request }) => {
 				});
 			}
 
+			// Add to existing items array
 			await client
 				.patch(groceryList._id)
 				.set({
@@ -53,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
 						})),
 					],
 					recipes: [
-						...(groceryList.recipes || []),
+						...groceryList.recipes,
 						{
 							_type: 'reference',
 							_ref: recipeId,
@@ -68,6 +67,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		return new Response(JSON.stringify({ success: true }), { status: 200 });
 	} catch (e) {
+		console.error('Error:', e);
 		return new Response(JSON.stringify({ error: e.message }), { status: 500 });
 	}
 };
