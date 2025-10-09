@@ -71,6 +71,21 @@
     "groceryList": {
         "title": "My Grocery List",
         "emptyMessage": "Your grocery list is empty",
-        "updateFailed": "Failed to update item. Please try again."
+        "updateFailed": "Failed to update item. Please try again.",
+        "processing": "Processing...",
+        "inYourList": "✓ In Your List",
+        "addToList": "Add to Grocery List"
+    },
+    "common": {
+        "back": "Back"
+    },
+    "recipes": {
+        "title": "Delicious Recipes",
+        "addNew": "Add New Recipe",
+        "print": "Print Recipe",
+        "ingredients": "Ingredients",
+        "instructions": "Instructions",
+        "notFound": "Recipe Not Found",
+        "notFoundMessage": "Sorry, this recipe does not exist."
     }
 }
