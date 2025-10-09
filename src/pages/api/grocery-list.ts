@@ -6,7 +6,7 @@ export const GET: APIRoute = async ({ request }) => {
 	const userId = url.searchParams.get('uid');
 
 	if (!userId) {
-		console.log('No userId provided');
+		// console.log('No userId provided');
 		return new Response(JSON.stringify([]), { status: 400 });
 	}
 
