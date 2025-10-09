@@ -30,7 +30,7 @@ export default function UserProfile({ locale }) {
 	const [localLoading, setLocalLoading] = useState(true);
 
 	useEffect(() => {
-		console.log('Auth user updated:', user);
+		// console.log('Auth user updated:', user);
 	}, [user]);
 
 	useEffect(() => {
@@ -427,4 +427,3 @@ export default function UserProfile({ locale }) {
 		</div>
 	);
 }
-
