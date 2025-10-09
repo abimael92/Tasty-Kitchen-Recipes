@@ -2,7 +2,7 @@ import { client } from '../../lib/sanity';
 
 export async function GET({ url }) {
 	const userId = url.searchParams.get('userId');
-	console.log('Received userId:', userId);
+	// console.log('Received userId:', userId);
 
 	if (!userId) {
 		return new Response(JSON.stringify({ error: 'Missing userId' }), {
