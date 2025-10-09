@@ -74,7 +74,8 @@
         "updateFailed": "Failed to update item. Please try again.",
         "processing": "Processing...",
         "inYourList": "✓ In Your List",
-        "addToList": "Add to Grocery List"
+        "addToList": "Add to Grocery List",
+        "removeFromList": "Remove from Grocery List"
     },
     "common": {
         "back": "Back"
