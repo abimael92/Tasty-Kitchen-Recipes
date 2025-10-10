@@ -16,8 +16,18 @@ export const DELETE: APIRoute = async ({ request }) => {
 			);
 		}
 
-		// Verify the comment exists and user owns it
-		const comment = await client.getDocument(commentId);
+		console.log('🔍 Deleting comment:', { commentId, userId });
+
+		// Fetch the comment with author's uid field
+		const query = `*[_type == "comment" && _id == $commentId][0]{
+			_id,
+			author->{
+				_id,
+				uid  // This is the Firebase user ID
+			}
+		}`;
+
+		const comment = await client.fetch(query, { commentId });
 
 		if (!comment) {
 			return new Response(
@@ -29,8 +39,12 @@ export const DELETE: APIRoute = async ({ request }) => {
 			);
 		}
 
-		// Fix: Check author reference correctly
-		if (comment.author._ref !== userId) {
+		// Check if user is authorized to delete - compare with uid field
+		if (!comment.author || comment.author.uid !== userId) {
+			console.log('❌ Authorization failed:', {
+				commentAuthorUid: comment.author?.uid,
+				requestUserId: userId,
+			});
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -42,6 +56,7 @@ export const DELETE: APIRoute = async ({ request }) => {
 
 		// Delete the comment
 		await client.delete(commentId);
+		console.log('✅ Comment deleted successfully');
 
 		return new Response(
 			JSON.stringify({
@@ -51,7 +66,7 @@ export const DELETE: APIRoute = async ({ request }) => {
 			{ status: 200 }
 		);
 	} catch (error) {
-		console.error('Error deleting comment:', error);
+		console.error('❌ Error deleting comment:', error);
 		return new Response(
 			JSON.stringify({
 				success: false,

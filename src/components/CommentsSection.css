@@ -106,6 +106,7 @@
   line-height: 1.5;
   resize: vertical;
   transition: border-color 0.2s ease;
+  color: #333; /* Ensure text is visible */
 }
 
 .comment-form-textarea:focus {
@@ -247,6 +248,8 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #f5c6c6;
   transition: all 0.2s ease;
+  position: relative; /* Ensure content is visible */
+  overflow: visible; /* Don't hide any content */
 }
 
 .comment-card:hover {
@@ -291,17 +294,17 @@
 /* Comment Content */
 .comment-content-wrapper {
   position: relative;
-  margin-left: 3.25rem;
   margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .comment-content {
   font-size: 0.95rem;
   line-height: 1.5;
   white-space: pre-wrap;
-  color: var(--color-dark);
+  color: #333; /* Ensure text is visible */
   margin: 0;
-  padding-right: 2rem;
+  padding: 0.5rem 0;
 }
 
 .comment-edited-badge {
@@ -316,6 +319,7 @@
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 10;
 }
 
 .comment-menu-toggle {
@@ -327,6 +331,9 @@
   color: #6b7280;
   transition: all 0.2s ease;
   opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .comment-menu-toggle:hover {
@@ -336,7 +343,6 @@
 }
 
 .comment-menu-dropdown {
-  display: none;
   position: absolute;
   top: 100%;
   right: 0;
@@ -345,7 +351,7 @@
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 0.25rem;
-  z-index: 10;
+  z-index: 20;
   min-width: 120px;
 }
 
@@ -362,19 +368,12 @@
   font-size: 0.875rem;
   transition: all 0.2s ease;
   text-align: left;
-}
-
-.comment-menu-edit {
   color: #4b5563;
 }
 
 .comment-menu-edit:hover {
   background: #f3f4f6;
   color: var(--color-primary);
-}
-
-.comment-menu-delete {
-  color: #4b5563;
 }
 
 .comment-menu-delete:hover {
@@ -398,6 +397,7 @@
   line-height: 1.5;
   resize: vertical;
   transition: border-color 0.2s ease;
+  color: #333;
 }
 
 .edit-comment-textarea:focus {
@@ -454,6 +454,8 @@
   align-items: center;
   gap: 1rem;
   margin-top: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f0f0f0;
 }
 
 .comment-buttons {
@@ -493,8 +495,6 @@
   align-items: center;
   gap: 1rem;
   margin-top: 0.75rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid #f0f0f0;
 }
 
 .comment-replies-count {
@@ -516,9 +516,15 @@
   gap: 0.4rem;
 }
 
-.view-thread-btn:hover {
+.view-thread-btn:hover:not(:disabled) {
   background: var(--color-secondary);
   transform: translateY(-1px);
+}
+
+.view-thread-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Reply Form */
@@ -553,6 +559,7 @@
   resize: vertical;
   transition: border-color 0.2s ease;
   min-height: 80px;
+  color: #333;
 }
 
 .reply-textarea:focus {
@@ -644,31 +651,37 @@
   padding: 1rem;
 }
 
-.thread-hint {
-  margin-top: 1rem;
-  text-align: left;
-}
-
-.view-thread-hint-btn {
-  background: #fff7f4;
-  border: 2px solid var(--color-primary);
-  color: var(--color-primary);
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.9rem;
-  font-weight: 600;
-  width: 100%;
-}
-
-.view-thread-hint-btn:hover {
-  background: var(--color-primary);
-  color: white;
-}
-
 .nested-comments {
   margin-top: 1rem;
+}
+
+/* Loading State for Nested Replies */
+.nested-loading {
+  padding: 1rem;
+  text-align: center;
+  color: #6b7280;
+  font-style: italic;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+/* Ensure proper spacing for nested comments */
+.comment-thread.nested {
+  border-left: 2px solid #f3d3c4;
+  padding-left: 1rem;
+  margin-left: 1rem;
+  position: relative;
+}
+
+.comment-thread.nested::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #f3d3c4;
 }
 
 /* No Comments */
@@ -717,6 +730,55 @@
   background: #f3f4f6;
   border-radius: 0.5rem;
   animation: pulse 2s infinite;
+}
+
+/* CommentsSection.css additions */
+.comment-thread-controls {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid #f0f0f0;
+}
+
+.view-thread-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: none;
+	border: none;
+	color: #666;
+	font-size: 0.875rem;
+	cursor: pointer;
+	padding: 4px 8px;
+	border-radius: 4px;
+	transition: background-color 0.2s;
+}
+
+.view-thread-btn:hover {
+	background-color: #f5f5f5;
+}
+
+.view-thread-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.comment-replies-count {
+	font-size: 0.875rem;
+	color: #666;
+}
+
+.nested-comments {
+	margin-top: 16px;
+	margin-left: 16px;
+	padding-left: 16px;
+	border-left: 2px solid #f0f0f0;
+}
+
+.loading-nested {
+	padding: 8px;
+	text-align: center;
+	color: #666;
+	font-size: 0.875rem;
 }
 
 /* Animations */

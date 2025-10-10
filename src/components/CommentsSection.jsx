@@ -24,19 +24,88 @@ export default function CommentsSection({ recipeId }) {
 		fetchComments();
 	}, [recipeId]);
 
-	// Real-time updates
+	// Click outside handler for menus
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (!event.target.closest('.comment-menu')) {
+				const menus = document.querySelectorAll('.comment-menu-dropdown');
+				menus.forEach((menu) => (menu.style.display = 'none'));
+			}
+		};
+
+		document.addEventListener('click', handleClickOutside);
+		return () => {
+			document.removeEventListener('click', handleClickOutside);
+		};
+	}, []);
+
+	// Real-time updates handlers
 	const handleNewComment = useCallback((newComment) => {
-		// ... keep your existing handleNewComment logic
+		console.log('🆕 New comment received:', newComment);
+
+		if (newComment.parentCommentId) {
+			// This is a reply - add it to the parent comment recursively
+			const addReplyToParent = (comments, parentId, newReply) => {
+				return comments.map((comment) => {
+					if (comment._id === parentId) {
+						return {
+							...comment,
+							replies: [...(comment.replies || []), newReply],
+						};
+					}
+
+					if (comment.replies && comment.replies.length > 0) {
+						return {
+							...comment,
+							replies: addReplyToParent(comment.replies, parentId, newReply),
+						};
+					}
+
+					return comment;
+				});
+			};
+
+			setComments((prev) =>
+				addReplyToParent(prev, newComment.parentCommentId, newComment)
+			);
+		} else {
+			// This is a top-level comment
+			setComments((prev) => {
+				const exists = prev.some((c) => c._id === newComment._id);
+				if (exists) return prev;
+				const filtered = prev.filter(
+					(c) => !c.isOptimistic || c.content !== newComment.content
+				);
+				return [newComment, ...filtered];
+			});
+		}
 	}, []);
 
 	const handleCommentUpdate = useCallback((updatedComment) => {
-		// ... keep your existing handleCommentUpdate logic
+		console.log('🔄 Comment updated:', updatedComment);
+
+		// Recursively update comment
+		const updateCommentRecursive = (comments, updated) => {
+			return comments.map((comment) => {
+				if (comment._id === updated._id) {
+					return updated;
+				}
+
+				if (comment.replies && comment.replies.length > 0) {
+					return {
+						...comment,
+						replies: updateCommentRecursive(comment.replies, updated),
+					};
+				}
+
+				return comment;
+			});
+		};
+
+		setComments((prev) => updateCommentRecursive(prev, updatedComment));
 	}, []);
 
-	// Use the real-time hook
-	useCommentUpdates(recipeId, handleNewComment, handleCommentUpdate);
-
-	// Thread management
+	// Thread management functions
 	const toggleThread = (commentId) => {
 		setExpandedThreads((prev) => {
 			const newSet = new Set(prev);
@@ -53,24 +122,271 @@ export default function CommentsSection({ recipeId }) {
 		return expandedThreads.has(commentId);
 	};
 
-	// Comment actions (handleEdit, handleSaveEdit, handleDelete, etc.)
-	// ... keep your existing comment action functions
-
-	// Fetch comments function
-	const fetchComments = async () => {
-		// ... keep your existing fetchComments logic
+	// Edit comment functions
+	const handleEdit = (comment) => {
+		setEditingComment(comment._id);
+		setEditContent(comment.content);
+		// Close any open menus
+		const menus = document.querySelectorAll('.comment-menu-dropdown');
+		menus.forEach((menu) => (menu.style.display = 'none'));
 	};
 
-	// Submit comment function
+	const handleCancelEdit = () => {
+		setEditingComment(null);
+		setEditContent('');
+	};
+
+	const handleSaveEdit = async (commentId) => {
+		if (!editContent.trim()) return;
+
+		try {
+			const response = await fetch('/api/edit-comment', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					commentId: commentId,
+					userId: user._id,
+					content: editContent.trim(),
+				}),
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				setComments((prev) =>
+					prev.map((comment) =>
+						comment._id === commentId
+							? {
+									...comment,
+									content: editContent.trim(),
+									editedAt: new Date().toISOString(),
+							  }
+							: comment
+					)
+				);
+				setEditingComment(null);
+				setEditContent('');
+			} else {
+				throw new Error(data.error);
+			}
+		} catch (err) {
+			console.error('Error editing comment:', err);
+			alert('Failed to edit comment: ' + err.message);
+		}
+	};
+
+	const handleDelete = async (comment) => {
+		if (!confirm('Are you sure you want to delete this comment?')) return;
+
+		try {
+			const response = await fetch('/api/delete-comment', {
+				method: 'DELETE',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					commentId: comment._id,
+					userId: user._id,
+				}),
+			});
+
+			const data = await response.json();
+
+			if (data.success) {
+				setComments((prev) => prev.filter((c) => c._id !== comment._id));
+			} else {
+				throw new Error(data.error);
+			}
+		} catch (err) {
+			console.error('Error deleting comment:', err);
+			alert('Failed to delete comment: ' + err.message);
+		}
+	};
+
+	// Use the real-time hook
+	useCommentUpdates(recipeId, handleNewComment, handleCommentUpdate);
+
+	const fetchComments = async () => {
+		try {
+			setIsLoading(true);
+			const response = await fetch(`/api/get-comments?recipeId=${recipeId}`);
+
+			if (!response.ok) throw new Error('Failed to fetch');
+
+			const data = await response.json();
+
+			if (data.success) {
+				setComments(data.comments || []);
+			} else {
+				console.error('❌ API returned error:', data.error);
+				setError('Failed to load comments');
+			}
+		} catch (err) {
+			console.error('❌ Error fetching comments:', err);
+			setError('Failed to load comments');
+			setComments([]);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	const handleSubmitComment = async (e) => {
-		// ... keep your existing handleSubmitComment logic
+		e.preventDefault();
+
+		console.log('Submitting comment:', { newComment, replyingTo });
+		console.log('User info:', user);
+		console.log('Recipe ID:', recipeId);
+		if (!user) {
+			setError('Please login to comment');
+			return;
+		}
+
+		if (!user?._id || !recipeId) {
+			setError('Missing required user or recipe information.');
+			return;
+		}
+
+		const trimmedComment = newComment.trim();
+		if (!trimmedComment) return;
+
+		const validation = contentModerator.validateComment(trimmedComment);
+		if (!validation.isValid) {
+			setError(validation.errors[0]);
+			return;
+		}
+
+		setIsLoading(true);
+		setError('');
+
+		// Optimistic update - show comment immediately
+		const tempComment = {
+			_id: `temp-${Date.now()}`,
+			content: newComment,
+			author: {
+				_id: user._id,
+				name: user.name || '',
+				lastname: user.lastname || '',
+				email: user.email || '',
+				image: user.photoURL,
+			},
+			publishedAt: new Date().toISOString(),
+			isApproved: true, // Assume it will be approved
+			isOptimistic: true, // Flag for optimistic update
+		};
+
+		if (replyingTo) {
+			// For replies, recursively find the parent comment and add the reply
+			const addReplyToComment = (comments, parentId, newReply) => {
+				return comments.map((comment) => {
+					// If this is the parent comment, add the reply
+					if (comment._id === parentId) {
+						return {
+							...comment,
+							replies: [...(comment.replies || []), newReply],
+						};
+					}
+
+					// If this comment has replies, search recursively
+					if (comment.replies && comment.replies.length > 0) {
+						return {
+							...comment,
+							replies: addReplyToComment(comment.replies, parentId, newReply),
+						};
+					}
+
+					return comment;
+				});
+			};
+
+			setComments((prev) => addReplyToComment(prev, replyingTo, tempComment));
+		} else {
+			// For top-level comments, add to the beginning
+			setComments((prev) => [tempComment, ...prev]);
+		}
+
+		setReplyingTo(null);
+
+		try {
+			const response = await fetch('/api/submit-comment', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					content: newComment,
+					recipeId,
+					parentCommentId: replyingTo,
+					userId: user._id,
+				}),
+			});
+
+			const data = await response.json();
+
+			if (!data.success) {
+				throw new Error(data.error);
+			}
+
+			setNewComment('');
+
+			// The real comment will be added via real-time update
+		} catch (err) {
+			// Rollback optimistic update on error
+			if (replyingTo) {
+				// Recursively remove the temporary reply
+				const removeReplyFromComment = (comments, parentId, replyId) => {
+					return comments.map((comment) => {
+						// If this is the parent comment, remove the reply
+						if (comment._id === parentId) {
+							return {
+								...comment,
+								replies: (comment.replies || []).filter(
+									(reply) => reply._id !== replyId
+								),
+							};
+						}
+
+						// If this comment has replies, search recursively
+						if (comment.replies && comment.replies.length > 0) {
+							return {
+								...comment,
+								replies: removeReplyFromComment(
+									comment.replies,
+									parentId,
+									replyId
+								),
+							};
+						}
+
+						return comment;
+					});
+				};
+
+				setComments((prev) =>
+					removeReplyFromComment(prev, replyingTo, tempComment._id)
+				);
+			} else {
+				setComments((prev) =>
+					prev.filter((comment) => comment._id !== tempComment._id)
+				);
+			}
+			setError('Failed to post comment. Please try again.');
+			// Restore the comment text if it failed
+			setNewComment(tempComment.content);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleEmojiSelect = (emoji) => {
 		setNewComment((prev) => prev + emoji);
 	};
 
-	// Render comments function (simplified)
+	// Helper function for edit time checking
+	const isToday = (dateStr) => {
+		const commentDate = new Date(dateStr);
+		const now = new Date();
+		const hoursDiff =
+			(now.getTime() - commentDate.getTime()) / (1000 * 60 * 60);
+		return hoursDiff <= 24; // Allow editing within 24 hours
+	};
+
+	// Render comments function
 	const renderComments = (commentList, depth = 0) => {
 		return commentList.map((comment) => (
 			<Comment
@@ -94,6 +410,7 @@ export default function CommentsSection({ recipeId }) {
 				isThreadExpanded={isThreadExpanded}
 				toggleThread={toggleThread}
 				renderComments={renderComments}
+				isToday={isToday}
 			/>
 		));
 	};
@@ -218,7 +535,14 @@ export default function CommentsSection({ recipeId }) {
 							<p className='login-prompt-text'>
 								Please log in to join the conversation
 							</p>
-							<button className='login-comment-btn'>Log In to Comment</button>
+							<button
+								onClick={() =>
+									document.querySelector('login-modal')?.showModal()
+								}
+								className='login-comment-btn'
+							>
+								Log In to Comment
+							</button>
 						</div>
 					)}
 

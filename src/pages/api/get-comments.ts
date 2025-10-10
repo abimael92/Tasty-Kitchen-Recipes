@@ -1,20 +1,8 @@
 // src/pages/api/get-comments.ts
 import type { APIRoute } from 'astro';
-import { client } from '../../lib/sanity.ts'; // FIX THIS IMPORT
+import { client } from '../../lib/sanity.ts';
 
-// Remove this duplicate client creation
-// const sanityClient = createClient({
-//   projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-//   dataset: import.meta.env.PUBLIC_SANITY_DATASET,
-//   apiVersion: import.meta.env.PUBLIC_SANITY_API_VERSION || '2023-06-25',
-//   useCdn: import.meta.env.PUBLIC_SANITY_USE_CDN === 'true',
-// });
-
-console.log(
-	'Sanity client configured with project ID:',
-	import.meta.env.PUBLIC_SANITY_PROJECT_ID
-);
-
+// src/pages/api/get-comments.ts (Simplified)
 export const GET: APIRoute = async ({ url }) => {
 	try {
 		const recipeId = url.searchParams.get('recipeId');
@@ -25,58 +13,63 @@ export const GET: APIRoute = async ({ url }) => {
 					success: false,
 					error: 'Recipe ID is required',
 				}),
-				{
-					status: 400,
-					headers: { 'Content-Type': 'application/json' },
-				}
+				{ status: 400 }
 			);
 		}
 
-		console.log('Fetching comments for recipe:', recipeId);
+		console.log('🔍 Fetching comments for Sanity recipe ID:', recipeId);
 
-		// Simple query for testing
-		const query = `*[_type=="comment" && recipe._ref==$recipeId && !defined(parentComment)] | order(publishedAt desc){
+		// Only fetch 1 level deep initially
+		const query = `*[_type == "comment" && recipe._ref == $recipeId && !defined(parentComment)] | order(publishedAt desc){
       _id,
       content,
       publishedAt,
       isApproved,
-      author->{_id,name,lastname,email,image},
-      "replies": *[_type=="comment" && parentComment._ref==^._id]{
+      editedAt,
+      author->{
+        _id,
+        name,
+        lastname,
+        email,
+        image
+      },
+      "replies": *[_type == "comment" && parentComment._ref == ^._id] | order(publishedAt asc){
         _id,
         content,
         publishedAt,
         isApproved,
-        author->{_id,name,lastname,email,image}
+        editedAt,
+        author->{
+          _id,
+          name,
+          lastname,
+          email,
+          image
+        },
+        // Just check if there are nested replies, don't fetch them
+        "hasNestedReplies": count(*[_type == "comment" && parentComment._ref == ^._id]) > 0,
+        "nestedRepliesCount": count(*[_type == "comment" && parentComment._ref == ^._id])
       }
     }`;
 
-		// Use the imported client, not a new one
 		const comments = await client.fetch(query, { recipeId });
-		console.log('Found comments:', comments?.length || 0);
+		console.log('✅ Found comments:', comments?.length || 0);
 
 		return new Response(
 			JSON.stringify({
 				success: true,
 				comments: comments || [],
 			}),
-			{
-				status: 200,
-				headers: { 'Content-Type': 'application/json' },
-			}
+			{ status: 200 }
 		);
 	} catch (error) {
-		console.error('Error fetching comments:', error);
+		console.error('❌ Error fetching comments:', error);
 		return new Response(
 			JSON.stringify({
 				success: false,
 				error: 'Failed to fetch comments',
-				details:
-					process.env.NODE_ENV === 'development' ? error.message : undefined,
 			}),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			}
+			{ status: 500 }
 		);
 	}
 };
