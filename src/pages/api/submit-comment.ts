@@ -44,8 +44,8 @@ export const POST: APIRoute = async ({ request }) => {
 
 		// Check profanity for auto-moderation
 		const profanityCheck = contentModerator.checkForProfanity(content);
-		const requiresModeration =
-			profanityCheck.hasProfanity || validation.flags.length > 0;
+
+		const requiresModeration = !contentModerator.shouldAutoApprove(content);
 
 		// Submit to Sanity
 		const commentData = {
