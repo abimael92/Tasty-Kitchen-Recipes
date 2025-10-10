@@ -116,7 +116,8 @@ export default function GroceryListToggleButton({
 			{loading ? (
 				t('groceryList.processing', currentLocale)
 			) : isInList ? (
-				t('groceryList.removeAll', currentLocale) || 'Remove from Grocery List'
+				t('groceryList.removeFromList', currentLocale) ||
+				'Remove from Grocery List'
 			) : (
 				<>
 					<span className='plus-icon'>+</span>
