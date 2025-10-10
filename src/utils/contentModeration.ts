@@ -280,33 +280,97 @@ export class FamilyFriendlyModerator {
 		const cookingContext = [
 			'recipe',
 			'cook',
+			'cooking',
 			'bake',
+			'baking',
+			'roast',
+			'grill',
+			'fry',
+			'boil',
+			'steam',
+			'saute',
+			'simmer',
+			'broil',
 			'ingredient',
+			'ingredients',
 			'oven',
+			'stove',
 			'kitchen',
+			'pan',
+			'pot',
+			'skillet',
+			'knife',
+			'spoon',
+			'fork',
+			'plate',
+			'bowl',
 			'food',
-			'delicious',
-			'tasty',
-			'flavor',
 			'meal',
-			'dinner',
-			'lunch',
 			'breakfast',
+			'lunch',
+			'dinner',
 			'dessert',
+			'snack',
 			'appetizer',
 			'main course',
 			'side dish',
-			'baking',
-			'cooking',
+			'flavor',
+			'taste',
+			'tasty',
+			'delicious',
+			'sweet',
+			'savory',
+			'spicy',
+			'sour',
+			'bitter',
+			'umami',
+			'seasoning',
+			'salt',
+			'pepper',
+			'oil',
+			'butter',
+			'cream',
+			'cheese',
+			'sauce',
+			'marinade',
+			'herb',
+			'spice',
+			'preheat',
+			'prep',
+			'prepare',
+			'chop',
+			'slice',
+			'dice',
+			'mix',
+			'stir',
+			'whisk',
+			'fold',
+			'measure',
+			'serve',
+			'instructions',
+			'steps',
+			'recipe card',
+			'garnish',
+			'plate',
+			'cookware',
+			'utensil',
 		];
 
 		const contentWords = content.toLowerCase().split(/\s+/);
 		const cookingWordsFound = contentWords.filter((word) =>
-			cookingContext.some((cookingWord) => word.includes(cookingWord))
+			cookingContext.some(
+				(cookingWord) =>
+					word.includes(cookingWord) || cookingWord.includes(word)
+			)
 		);
 
+		// Use absolute count OR percentage - whichever is more lenient
+		const hasMinimumCookingWords = cookingWordsFound.length >= 2;
+		const hasGoodPercentage =
+			cookingWordsFound.length / contentWords.length >= 0.15;
+
 		// If less than 20% of content relates to cooking, flag as off-topic
-		return cookingWordsFound.length / contentWords.length < 0.2;
+		return !(hasMinimumCookingWords || hasGoodPercentage);
 	}
 
 	private isPotentialSpam(content: string): {
@@ -463,6 +527,29 @@ export class FamilyFriendlyModerator {
 			...analysis,
 			validationResult: validation,
 		};
+	}
+
+	shouldAutoApprove(content: string): boolean {
+		const validation = this.validateComment(content);
+		const analysis = this.analyzeContent(content);
+		const isOffTopic = this.isOffTopic(content);
+
+		console.log('🔍 Auto-approve analysis:', {
+			content: content,
+			isValid: validation.isValid,
+			severity: validation.severity,
+			isOffTopic: isOffTopic, // Add this
+			flags: validation.flags,
+		});
+
+		// Block if any high-severity issues
+		const shouldBlock =
+			!validation.isValid || // Has validation errors (empty, too long, etc.)
+			validation.severity === 'high' || // Profanity, hate speech, explicit content
+			analysis.spam.isSpam || // Is spam
+			isOffTopic; // Is off-topic
+
+		return !shouldBlock; // Return true if we should NOT block
 	}
 }
 
