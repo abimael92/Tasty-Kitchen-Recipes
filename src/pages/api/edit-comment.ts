@@ -29,8 +29,17 @@ export const PUT: APIRoute = async ({ request }) => {
 			);
 		}
 
-		// Verify the comment exists and user owns it
-		const comment = await client.getDocument(commentId);
+		// Verify the comment exists and user owns it - FIXED AUTHORIZATION
+		const query = `*[_type == "comment" && _id == $commentId][0]{
+			_id,
+			publishedAt,
+			author->{
+				_id,
+				uid  // Compare with Firebase UID
+			}
+		}`;
+
+		const comment = await client.fetch(query, { commentId });
 
 		if (!comment) {
 			return new Response(
@@ -42,7 +51,12 @@ export const PUT: APIRoute = async ({ request }) => {
 			);
 		}
 
-		if (comment.author._ref !== userId) {
+		// Check authorization using uid field
+		if (!comment.author || comment.author.uid !== userId) {
+			console.log('❌ Authorization failed:', {
+				commentAuthorUid: comment.author?.uid,
+				requestUserId: userId,
+			});
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -74,7 +88,7 @@ export const PUT: APIRoute = async ({ request }) => {
 			.set({
 				content: content,
 				editedAt: new Date().toISOString(),
-				isApproved: contentModerator.shouldAutoApprove(content), // Re-check moderation
+				isApproved: contentModerator.shouldAutoApprove(content),
 			})
 			.commit();
 
