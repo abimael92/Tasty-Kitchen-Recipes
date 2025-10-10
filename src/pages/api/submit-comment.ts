@@ -1,9 +1,7 @@
 // src/pages/api/submit-comment.ts
 import type { APIRoute } from 'astro';
 import { contentModerator } from '../../utils/contentModeration';
-
 import { serverClient as client } from '../../lib/sanity';
-
 import { broadcastToRecipeClients } from './comments-stream';
 
 export const POST: APIRoute = async ({ request }) => {
@@ -17,13 +15,9 @@ export const POST: APIRoute = async ({ request }) => {
 			return new Response(
 				JSON.stringify({
 					success: false,
-					error:
-						'Missing required fields: content, recipeId, and userId are required',
+					error: 'Missing required fields',
 				}),
-				{
-					status: 400,
-					headers: { 'Content-Type': 'application/json' },
-				}
+				{ status: 400 }
 			);
 		}
 
@@ -35,22 +29,42 @@ export const POST: APIRoute = async ({ request }) => {
 					success: false,
 					error: validation.errors[0],
 				}),
-				{
-					status: 400,
-					headers: { 'Content-Type': 'application/json' },
-				}
+				{ status: 400 }
 			);
 		}
 
+		// VERIFY USER EXISTS IN SANITY
+		const userQuery = `*[_type == "user" && uid == $userId][0]{
+			_id,
+			name,
+			lastname,
+			email,
+			image
+		}`;
+
+		const sanityUser = await client.fetch(userQuery, { userId });
+
+		if (!sanityUser) {
+			console.error('User not found in Sanity:', userId);
+			return new Response(
+				JSON.stringify({
+					success: false,
+					error: 'User not found in system',
+				}),
+				{ status: 404 }
+			);
+		}
+
+		console.log('Found user in Sanity:', sanityUser._id);
+
 		// Check profanity for auto-moderation
 		const profanityCheck = contentModerator.checkForProfanity(content);
-
 		const requiresModeration = !contentModerator.shouldAutoApprove(content);
 
-		// Submit to Sanity
+		// Submit to Sanity - use Sanity user ID, not Firebase UID
 		const commentData = {
 			_type: 'comment',
-			author: { _type: 'reference', _ref: userId },
+			author: { _type: 'reference', _ref: sanityUser._id }, // Use Sanity user ID
 			recipe: { _type: 'reference', _ref: recipeId },
 			content: content,
 			isApproved: !requiresModeration,
@@ -65,19 +79,28 @@ export const POST: APIRoute = async ({ request }) => {
 		const result = await client.create(commentData);
 		console.log('Comment created successfully:', result._id);
 
+		// Prepare comment for real-time broadcast
+		const broadcastComment = {
+			_id: result._id,
+			content: content,
+			author: {
+				_id: sanityUser._id,
+				name: sanityUser.name,
+				lastname: sanityUser.lastname,
+				email: sanityUser.email,
+				image: sanityUser.image,
+			},
+			publishedAt: new Date().toISOString(),
+			isApproved: !requiresModeration,
+			parentCommentId: parentCommentId || null,
+		};
+
 		// Broadcast real-time update for approved comments
 		if (!requiresModeration) {
 			console.log('Broadcasting comment to clients...');
 			broadcastToRecipeClients(recipeId, {
 				type: 'NEW_COMMENT',
-				comment: {
-					_id: result._id,
-					content: content,
-					author: { _id: userId },
-					publishedAt: new Date().toISOString(),
-					isApproved: true,
-					parentCommentId: parentCommentId || null,
-				},
+				comment: broadcastComment,
 				recipeId: recipeId,
 			});
 		}
@@ -91,10 +114,7 @@ export const POST: APIRoute = async ({ request }) => {
 					? 'Comment submitted and awaiting moderation'
 					: 'Comment posted successfully',
 			}),
-			{
-				status: 200,
-				headers: { 'Content-Type': 'application/json' },
-			}
+			{ status: 200 }
 		);
 	} catch (error) {
 		console.error('Error submitting comment:', error);
@@ -102,14 +122,8 @@ export const POST: APIRoute = async ({ request }) => {
 			JSON.stringify({
 				success: false,
 				error: 'Internal server error',
-				...(process.env.NODE_ENV === 'development' && {
-					details: error.message,
-				}),
 			}),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			}
+			{ status: 500 }
 		);
 	}
 };
