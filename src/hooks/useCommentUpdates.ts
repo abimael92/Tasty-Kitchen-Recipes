@@ -46,7 +46,7 @@ export function useCommentUpdates(
 						// Handle comment deletion
 						break;
 					default:
-						console.log('Unknown event type:', data.type);
+						console.log('COMMENT_EVENT:', data.type);
 				}
 			} catch (error) {
 				console.error('Error parsing SSE message:', error);
