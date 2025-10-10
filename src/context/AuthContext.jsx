@@ -61,7 +61,12 @@ export function AuthProvider({ children }) {
 				token: data.token,
 			})
 		);
-		setUser(data);
+
+		setUser({
+			...data,
+			uid: data.uid, // Ensure uid is set
+		});
+
 		setLoading(false);
 	};
 
