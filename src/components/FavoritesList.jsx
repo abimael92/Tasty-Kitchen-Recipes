@@ -8,7 +8,7 @@ export default function FavoritesList({ recipes, title }) {
 	return (
 		<div style={{ padding: '20px' }}>
 			<h1 style={{ textAlign: 'center', color: '#d2691e', margin: '20px 0' }}>
-				+ {title || 'Your Favorite Recipes'}+{' '}
+				{title || 'Your Favorite Recipes'}
 			</h1>
 
 			<div
@@ -65,4 +65,3 @@ export default function FavoritesList({ recipes, title }) {
 		</div>
 	);
 }
-
