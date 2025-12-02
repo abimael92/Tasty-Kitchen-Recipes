@@ -458,6 +458,55 @@ export const GroceryListPage = ({ locale }) => {
 		}
 	};
 
+	function capitalizeImportant(name) {
+		const ignore = [
+			// English
+			'and',
+			'of',
+			'the',
+			'in',
+			'on',
+			'a',
+			'an',
+			'to',
+			'for',
+			'with',
+			// Spanish
+			'y',
+			'de',
+			'De',
+			'del',
+			'la',
+			'el',
+			'los',
+			'las',
+			'en',
+			'un',
+			'una',
+			'unos',
+			'unas',
+			'para',
+			'con',
+			'por',
+			'sin',
+			'sobre',
+		];
+
+		const words = name.trim().split(' ');
+
+		// Skip first word if it's in ignore list
+		const first = words[0].toLowerCase();
+		const rest = ignore.includes(first) ? words.slice(1) : words;
+
+		// If nothing left → return empty
+		if (rest.length === 0) {
+			return '';
+		}
+
+		// Capitalize remaining words
+		return rest.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+	}
+
 	const handleAddItem = async () => {
 		if (!newItem.trim()) return;
 
@@ -808,7 +857,7 @@ export const GroceryListPage = ({ locale }) => {
 															<Icon />
 															{categoryConfig.name}
 														</span>
-														{item.quantity && (
+														{item.quantity > 0 && (
 															<span className='item-quantity'>
 																{item.quantity} {item.unit || ''}
 															</span>
@@ -819,7 +868,7 @@ export const GroceryListPage = ({ locale }) => {
 															item.completed ? 'item-name-completed' : ''
 														}`}
 													>
-														{item.name}
+														{capitalizeImportant(item.name)}
 													</div>
 													{item.recipeTitle && (
 														<div className='item-recipe'>
@@ -1478,6 +1527,11 @@ export const GroceryListPage = ({ locale }) => {
 					gap: var(--spacing-medium);
 				}
 
+				.item-main:hover button:hover {
+					color: var(--color-dark);
+					border: 2px solid var(--color-dark);
+				}
+
 				.item-checkbox {
 					padding: 8px;
 					border-radius: 50%;
@@ -1494,12 +1548,13 @@ export const GroceryListPage = ({ locale }) => {
 				}
 
 				.item-checkbox:hover {
-					background-color: var(--color-accent);
-					border-color: var(--color-accent);
+					background-color: var(--color-header);
+					border-color: var(--color-header);
+					color: var(--color-dark);
 				}
 
 				.item-checkbox-completed {
-					background-color: var(--color-accent);
+					background-color: var(--color-header);
 					border-color: var(--color-accent);
 					color: var(--color-dark);
 				}
@@ -1625,6 +1680,7 @@ export const GroceryListPage = ({ locale }) => {
 					border-radius: var(--border-radius);
 					border: none;
 					background-color: var(--color-primary);
+					opacity: 0.75;
 					color: var(--color-light);
 					display: flex;
 					align-items: center;
@@ -1636,7 +1692,8 @@ export const GroceryListPage = ({ locale }) => {
 				}
 
 				.add-item-btn:hover {
-					background-color: var(--color-accent);
+					background-color: var(--color-primary);
+					opacity: 0.95;
 					color: var(--color-dark);
 				}
 
@@ -1656,9 +1713,9 @@ export const GroceryListPage = ({ locale }) => {
 				}
 
 				.export-btn:hover {
-					background-color: var(--color-accent);
+					background-color: var(--color-secondary);
 					color: var(--color-dark);
-					border-color: var(--color-accent);
+					border-color: var(--color-secondary);
 				}
 
 				.action-icon {
