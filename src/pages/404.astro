@@ -36,26 +36,35 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			</p>
 
 			<!-- Search bar -->
-			<div class='error-search'>
-				<p class='search-label'>Looking for something specific?</p>
-				<form class='search-form' onsubmit='handleSearch(event)'>
-					<input
-						type='text'
-						placeholder='Search recipes...'
-						class='search-input'
-						aria-label='Search recipes'
-					/>
-					<button type='submit' class='search-button'>
-						<svg width='20' height='20' viewBox='0 0 24 24' fill='none'>
-							<path
-								d='M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z'
-								stroke='currentColor'
-								stroke-width='2'
-								stroke-linecap='round'></path>
-						</svg>
-						Search
-					</button>
-				</form>
+			<div class='search-container'>
+				<p class='search-prompt'>Looking for something specific?</p>
+				<div class='search-box'>
+					<input type='text' placeholder='Search...' />
+					<button
+						><svg
+							width='26px'
+							height='26px'
+							viewBox='0 0 24 24'
+							fill='none'
+							xmlns='http://www.w3.org/2000/svg'
+							><g id='SVGRepo_bgCarrier' stroke-width='0'></g><g
+								id='SVGRepo_tracerCarrier'
+								stroke-linecap='round'
+								stroke-linejoin='round'></g><g id='SVGRepo_iconCarrier'>
+								<path
+									d='M17 17L21 21'
+									stroke='#323030'
+									stroke-width='2'
+									stroke-linecap='round'
+									stroke-linejoin='round'></path>
+								<path
+									d='M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z'
+									stroke='#323030'
+									stroke-width='2'></path>
+							</g></svg
+						></button
+					>
+				</div>
 			</div>
 
 			<!-- Action buttons -->
@@ -465,7 +474,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					background: var(--color-background);
+					/* background: var(--color-background); */
 					position: relative;
 					overflow: hidden;
 				}
@@ -483,11 +492,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				.error-decoration-top {
 					top: -200px;
 					right: -200px;
-					background: radial-gradient(
-						circle,
-						var(--color-primary) 0%,
-						transparent 70%
-					);
 				}
 
 				.error-decoration-bottom {
@@ -509,8 +513,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					border-radius: var(--border-radius);
 					padding: var(--spacing-large);
 					width: 100%;
-					box-shadow: 0 10px 40px rgba(255, 99, 71, 0.15);
-					border: 2px solid rgba(255, 99, 71, 0.1);
+
 					animation: recipeAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 				}
 
@@ -693,36 +696,81 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					font-size: 1.1rem;
 				}
 
+				.search-container {
+					font-family: Arial, sans-serif;
+					padding: 20px;
+					text-align: center;
+					border-radius: 12px;
+					max-width: 500px;
+					margin: 40px auto;
+				}
+
+				.search-prompt {
+					color: #333;
+					margin-bottom: 16px;
+					font-size: 18px;
+					font-weight: 500;
+				}
+
+				.search-box {
+					display: flex;
+					box-shadow: 0 4px 15px rgba(193, 78, 57, 0.2);
+					border: 2px solid var(--color-secondary);
+					border-radius: 8px;
+					overflow: hidden;
+					background: var(--color-light);
+				}
+
+				.search-box input {
+					flex: 1;
+					border: none;
+					padding: 12px 16px;
+					font-size: 16px;
+					outline: none;
+				}
+
+				.search-box button {
+					background: var(--color-secondary);
+					color: white;
+					border: none;
+					padding: 0 20px;
+					cursor: pointer;
+					font-size: 18px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				}
+
+				.search-box button:hover {
+					background: #0056b3;
+				}
+
 				.search-form {
 					display: flex;
 					max-width: 500px;
 					margin: 0 auto;
 					border-radius: 50px;
-					overflow: hidden;
+					overflow: hidden; /* ← This is crucial */
 					box-shadow: 0 4px 15px rgba(193, 78, 57, 0.2);
 					border: 2px solid var(--color-secondary);
 				}
-
 				.search-input {
 					flex: 1;
-					padding: var(--spacing-medium);
+					padding: 15px 20px;
 					border: none;
 					font-family: var(--font-body);
 					font-size: 1rem;
 					background: var(--color-light);
 					color: var(--color-dark);
-				}
-
-				.search-input:focus {
-					outline: none;
-					box-shadow: inset 0 0 0 2px var(--color-accent);
+					padding-left: 20px;
+					border-radius: 50px 0 0 50px; /* ← Left side rounded */
 				}
 
 				.search-button {
 					display: flex;
 					align-items: center;
 					gap: 8px;
-					padding: var(--spacing-medium) var(--spacing-large);
+					padding: 15px 25px;
 					background: var(--color-secondary);
 					border: none;
 					color: var(--color-light);
@@ -730,6 +778,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					font-weight: 600;
 					cursor: pointer;
 					transition: all 0.3s ease;
+					border-radius: 0 50px 50px 0; /* ← Right side rounded */
+				}
+
+				.search-input:focus {
+					outline: none;
+					box-shadow: inset 0 0 0 2px var(--color-accent);
 				}
 
 				.search-button:hover {
@@ -945,7 +999,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					}
 
 					.search-input {
-						border-bottom: 1px solid rgba(193, 78, 57, 0.2);
+						flex: 1;
+						padding: 15px 20px;
+						border: none;
+						font-family: var(--font-body);
+						font-size: 1rem;
+						background: var(--color-light);
+						color: var(--color-dark);
+						padding-left: 20px;
+						border-radius: 50px 0 0 50px; /* ← Add this */
 					}
 
 					.search-button {
