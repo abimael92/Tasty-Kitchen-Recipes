@@ -1,4 +1,5 @@
 ---
+/* Section: Footer Component Initialization */
 import { t } from '../utils/i18n';
 const { currentLocale } = Astro;
 import twitterIcon from '../assets/socialmedia/twitter-icon.svg?url';
@@ -6,14 +7,19 @@ import githubIcon from '../assets/socialmedia/github-icon.svg?url';
 import linkedinIcon from '../assets/socialmedia/linkedin-icon.svg?url';
 
 const year = new Date().getFullYear();
+
+console.log('Footer: Component loaded for', currentLocale);
+console.log('Footer: Applying SVG color theme');
 ---
 
-<footer class='footer'>
+<footer class='footer' role='contentinfo'>
 	<div class='container'>
+		<!-- Section: Footer Top Content -->
 		<div class='footer-top'>
+			<!-- Section: About -->
 			<div class='footer-section'>
-				<h3>{t('footer.about.title', currentLocale)}</h3>
-				<p>
+				<h3 class='footer-heading'>{t('footer.about.title', currentLocale)}</h3>
+				<p class='footer-description'>
 					{
 						t('footer.about.description', currentLocale)
 							.split('\n')
@@ -26,157 +32,365 @@ const year = new Date().getFullYear();
 					}
 				</p>
 			</div>
+
+			<!-- Section: Quick Links -->
 			<div class='footer-section'>
-				<h3>{t('footer.links.title', currentLocale)}</h3>
-				<ul>
-					<li><a href='/'>{t('footer.links.home', currentLocale)}</a></li>
-					<li><a href='/about'>{t('footer.links.about', currentLocale)}</a></li>
+				<h3 class='footer-heading'>{t('footer.links.title', currentLocale)}</h3>
+				<ul class='footer-links' role='list'>
+					<li>
+						<a href='/' class='footer-link'
+							>{t('footer.links.home', currentLocale)}</a
+						>
+					</li>
+					<li>
+						<a href='/about' class='footer-link'
+							>{t('footer.links.about', currentLocale)}</a
+						>
+					</li>
+					<li>
+						<a href='/recipes' class='footer-link'
+							>{t('footer.links.recipes', currentLocale)}</a
+						>
+					</li>
 				</ul>
 			</div>
+
+			<!-- Section: Social Media -->
 			<div class='footer-section'>
-				<h3>{t('footer.follow.title', currentLocale)}</h3>
-				<ul class='social-links'>
+				<h3 class='footer-heading'>
+					{t('footer.follow.title', currentLocale)}
+				</h3>
+				<ul class='social-links' role='list'>
 					<li>
-						<a href='#' aria-label='Twitter'>
+						<a href='#' class='social-link' aria-label='Twitter'>
 							<img src={twitterIcon} alt='Twitter' width='24' height='24' />
 						</a>
 					</li>
 					<li>
-						<a href='#' aria-label='GitHub'>
+						<a href='#' class='social-link' aria-label='GitHub'>
 							<img src={githubIcon} alt='GitHub' width='24' height='24' />
 						</a>
 					</li>
 					<li>
-						<a href='#' aria-label='LinkedIn'>
+						<a href='#' class='social-link' aria-label='LinkedIn'>
 							<img src={linkedinIcon} alt='LinkedIn' width='24' height='24' />
 						</a>
 					</li>
 				</ul>
 			</div>
 		</div>
+
+		<!-- Section: Footer Bottom -->
 		<div class='footer-bottom'>
-			<p>
+			<p class='copyright'>
 				&copy; {year} Tasty Kitchen Recipes. {t('footer.rights', currentLocale)}
 			</p>
 		</div>
 	</div>
 </footer>
 
+<script is:inline>
+	/* Section: Footer Performance Monitoring */
+	console.log('Footer: JavaScript execution started');
+	const footerLoadTime = performance.now();
+	console.log(
+		`Footer: Load completed in ${(performance.now() - footerLoadTime).toFixed(2)}ms`
+	);
+</script>
+
 <style>
+	/* Section: Footer Base Styles */
 	.footer {
-		background: #222;
-		color: #fff;
-		padding: 0.5rem;
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-svg-dark) 95%, black),
+			color-mix(in srgb, var(--color-svg-secondary) 90%, black)
+		);
+		color: var(--color-text-light);
+		padding: var(--space-xl) 0 var(--space-md) 0;
+		border-top: 1px solid
+			color-mix(in srgb, var(--color-svg-accent) 30%, transparent);
+		position: relative;
+		overflow: hidden;
 	}
-	.container {
+
+	/* Section: Background Decoration */
+	.footer::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: linear-gradient(
+			90deg,
+			var(--color-svg-accent),
+			var(--color-svg-warm),
+			var(--color-svg-fresh)
+		);
+	}
+
+	/* Section: Container */
+	.footer .container {
 		max-width: 1200px;
 		margin: 0 auto;
-	}
-	.footer-top {
-		display: flex;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		gap: 2rem;
+		padding: 0 var(--space-lg);
 	}
 
+	/* Section: Footer Top Layout */
+	.footer-top {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: var(--space-xl);
+		margin-bottom: var(--space-xl);
+	}
+
+	/* Section: Footer Sections */
 	.footer-section {
 		display: flex;
+		flex-direction: column;
+		gap: var(--space-md);
+	}
+
+	.footer-heading {
+		color: var(--color-primary);
+		border-bottom: 3px solid var(--color-svg-cream);
+		font-size: 1.5rem;
+		font-weight: 900;
+		padding-bottom: 0.5rem;
+	}
+
+	.footer-heading::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 40px;
+		height: 2px;
+		background: linear-gradient(
+			90deg,
+			var(--color-svg-warm),
+			var(--color-svg-fresh)
+		);
+		border-radius: var(--radius-full);
+	}
+
+	.footer-description {
+		line-height: 1.7;
+		font-size: var(--text-sm);
+		color: color-mix(in srgb, var(--color-text-light) 90%, white);
+		margin: 0;
+	}
+
+	/* Section: Footer Links */
+	.footer-links {
+		list-style: none;
 		margin: 0;
 		padding: 0;
-		flex-direction: column; /* Aligns content vertically */
-		align-items: center; /* Centers the content horizontally */
-		gap: 2px; /* Adds space between the title and icons */
-
-		flex: 1 1 200px; /* allows wrapping and consistent width */
-		max-width: 250px; /* limit how wide each section can grow */
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-sm);
 	}
 
-	.footer-section h3 {
-		/* margin-bottom: 1rem; */
-		font-size: 1.2rem;
-	}
-	.footer-section ul {
-		list-style: none;
-		padding: 0;
-	}
-	.footer-section ul li {
-		margin: 0.5rem 0;
-	}
-	.footer-section a {
-		color: #bbb;
+	.footer-link {
+		color: color-mix(in srgb, var(--color-text-light) 80%, white);
 		text-decoration: none;
-	}
-	.footer-section a:hover {
-		color: #fff;
+		padding: var(--space-xs) 0;
+		position: relative;
+		transition: all var(--transition-fast);
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
 	}
 
-	.footer-bottom {
-		margin-top: 2rem;
-		text-align: center;
-		font-size: 0.9rem;
-		border-top: 1px solid #444;
-		padding-top: 1rem;
+	.footer-link::before {
+		content: '';
+		width: 6px;
+		height: 6px;
+		background: var(--color-svg-fresh);
+		border-radius: 50%;
+		opacity: 0;
+		transition: opacity var(--transition-fast);
 	}
+
+	.footer-link:hover {
+		color: var(--color-svg-cream);
+		padding-left: var(--space-sm);
+		transform: translateX(4px);
+	}
+
+	.footer-link:hover::before {
+		opacity: 1;
+	}
+
+	/* Section: Social Links */
 	.social-links {
 		display: flex;
-		justify-content: center;
-		gap: 1rem;
-	}
-
-	.social-links li {
+		gap: var(--space-md);
 		list-style: none;
+		margin: 0;
+		padding: 0;
 	}
 
-	.social-links a {
-		display: block;
+	.social-link {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		background: color-mix(in srgb, var(--color-svg-secondary) 60%, transparent);
+		border: 1px solid
+			color-mix(in srgb, var(--color-svg-accent) 30%, transparent);
+		border-radius: var(--radius-full);
+		transition: all var(--transition-medium) var(--animation-timing);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.social-link::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--color-svg-cream) 20%, transparent),
+			transparent
+		);
+		transition: left 0.6s ease;
+	}
+
+	.social-link:hover::before {
+		left: 100%;
+	}
+
+	.social-link:hover {
+		background: color-mix(in srgb, var(--color-svg-accent) 60%, transparent);
+		transform: translateY(-3px) scale(1.1);
+		box-shadow: 0 4px 12px
+			color-mix(in srgb, var(--color-svg-accent) 30%, transparent);
+	}
+
+	.social-link:active {
+		transform: translateY(-1px) scale(1.05);
+	}
+
+	.social-link img {
+		filter: brightness(0.9);
+		transition: filter var(--transition-fast);
+	}
+
+	.social-link:hover img {
+		filter: brightness(1.2);
+	}
+
+	/* Section: Footer Bottom */
+	.footer-bottom {
+		margin-top: var(--space-xl);
+		padding-top: var(--space-lg);
+		border-top: 1px solid
+			color-mix(in srgb, var(--color-svg-accent) 20%, transparent);
 		text-align: center;
 	}
 
-	.social-links img {
-		margin-bottom: 8px; /* Adjust the spacing between the icon and the text */
+	.copyright {
+		font-size: var(--text-sm);
+		color: color-mix(in srgb, var(--color-text-light) 60%, white);
+		margin: 0;
+		opacity: 0.8;
+	}
+
+	/* Section: Responsive Design */
+	@media (max-width: 1024px) {
+		.footer-top {
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: var(--space-lg);
+		}
 	}
 
 	@media (max-width: 768px) {
 		.footer {
-			padding: 1rem 0.5rem;
+			padding: var(--space-lg) 0 var(--space-md) 0;
 		}
-		.container {
-			max-width: 600px;
-			margin: 0;
+
+		.footer .container {
+			padding: 0 var(--space-md);
 		}
+
 		.footer-top {
-			gap: 0;
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
 		}
+
 		.footer-section {
-			gap: 0.5px; /* Adds space between the title and icons */
-		}
-		.footer-top {
-			flex-direction: column;
-			align-items: center;
 			text-align: center;
-		}
-
-		.footer-section {
-			width: 100%;
 			align-items: center;
-			margin: 0;
-			padding: 0;
 		}
 
-		.footer-section h3 {
-			font-size: 1.1rem;
-			margin: 0;
+		.footer-heading::after {
+			left: 50%;
+			transform: translateX(-50%);
+		}
+
+		.footer-links {
+			align-items: center;
+		}
+
+		.footer-link:hover {
+			padding-left: var(--space-md);
 		}
 
 		.social-links {
 			justify-content: center;
-			gap: 1.5rem;
-		}
-
-		.footer-bottom {
-			font-size: 0.85rem;
-			padding-top: 1rem;
 		}
 	}
-</style>
 
+	@media (max-width: 480px) {
+		.footer {
+			padding: var(--space-lg) 0 var(--space-sm) 0;
+		}
+
+		.footer .container {
+			padding: 0 var(--space-sm);
+		}
+
+		.footer-heading {
+			font-size: var(--text-md);
+		}
+
+		.social-link {
+			width: 40px;
+			height: 40px;
+		}
+	}
+
+	/* Section: Animation */
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.footer-section {
+		animation: fadeInUp 0.6s var(--animation-timing) forwards;
+		opacity: 0;
+	}
+
+	.footer-section:nth-child(1) {
+		animation-delay: 0.1s;
+	}
+	.footer-section:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+	.footer-section:nth-child(3) {
+		animation-delay: 0.3s;
+	}
+</style>

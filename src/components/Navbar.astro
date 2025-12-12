@@ -5,38 +5,87 @@ const { currentLocale } = Astro;
 ---
 
 <nav class='navbar'>
-	<ul>
-		<li><a href='/'>{t('home.nav.home', currentLocale)}</a></li>
-		<li><a href='/recipes'>{t('home.nav.recipes', currentLocale)}</a></li>
-		<li><a href='/about'>{t('home.nav.about', currentLocale)}</a></li>
-	</ul>
-	<ul>
-		<li>
-			<LoginWrapper client:load />
-		</li>
-	</ul>
+	<div class='nav-items'>
+		<a href='/' class='nav-link'>{t('home.nav.home', currentLocale)}</a>
+		<a href='/recipes' class='nav-link'
+			>{t('home.nav.recipes', currentLocale)}</a
+		>
+		<a href='/about' class='nav-link'>{t('home.nav.about', currentLocale)}</a>
+	</div>
+	<div class='nav-login'>
+		<LoginWrapper client:load />
+	</div>
 </nav>
 
 <style>
-	.navbar ul {
-		list-style: none;
+	/* Full width navbar */
+	.navbar {
 		display: flex;
-		gap: 1.5rem;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding: 0.25rem 1rem;
 	}
-	.navbar a {
-		text-decoration: none;
+
+	/* Evenly spaced nav items */
+	.nav-items {
+		display: flex;
+		justify-content: center;
+		flex: 1;
+		gap: 3rem;
+	}
+
+	.nav-link {
 		color: white;
-		font-family: 'Poppins', sans-serif;
-		font-weight: 500;
-		transition: color 0.3s;
+		text-decoration: none;
+		padding: 0.15rem;
+		white-space: nowrap;
 	}
-	.navbar a:hover {
-		color: #ffd700; /* Golden yellow */
+
+	.nav-link::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 0;
+		height: 3px;
+		background: #ff4500; /* Orange-red */
+		transition: width 0.3s ease;
 	}
+
+	.nav-link:hover::after {
+		width: 100%;
+	}
+
+	.nav-link:hover {
+		text-decoration: underline;
+		transform: scale(1.05);
+	}
+
+	/* Login on far right, minimal space */
+	.nav-login {
+		margin-left: auto;
+		padding: 0 1rem;
+	}
+
+	/* Mobile */
 	@media (max-width: 768px) {
-		.navbar ul {
-			padding: 0;
+		.navbar {
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.nav-items {
+			flex-direction: column;
+			gap: 1rem;
+			width: 100%;
+			text-align: center;
+		}
+
+		.nav-login {
+			margin-left: 0;
+			width: 100%;
+			text-align: center;
 		}
 	}
 </style>
-
