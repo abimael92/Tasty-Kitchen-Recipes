@@ -8,82 +8,352 @@ const { currentLocale } = Astro;
 ---
 
 <header class='header'>
-	<div class='container'>
-		<div class='header-top'>
-			<Logo />
-			<h1 class='blog-title'>{t('title', currentLocale)}</h1>
+	<div class='header-container'>
+		<!-- Section: Main header row with logo and title -->
+		<div class='header-main'>
+			<div>
+				<Logo />
+			</div>
+			<div class='header-title-wrapper'>
+				<h1 class='blog-title'>{t('title', currentLocale)}</h1>
+				<p class='blog-tagline'>
+					{
+						t('subtitle', currentLocale) ||
+							'Delicious recipes from around the world'
+					}
+				</p>
+			</div>
 		</div>
-		<LanguageSelector />
+
+		<!-- Section: Right side controls -->
+		<div class='header-controls'>
+			<div class='header-actions'>
+				<LanguageSelector />
+				<button
+					class='theme-toggle'
+					id='theme-toggle'
+					aria-label='Toggle dark mode'
+				>
+					Dark/Light
+				</button>
+			</div>
+
+			<!-- Section: Search bar -->
+			<div class='header-search'>
+				<div class='search-wrapper'>
+					<svg
+						class='search-icon'
+						width='18'
+						height='18'
+						viewBox='0 0 24 24'
+						fill='none'
+						stroke='currentColor'
+						stroke-width='2'
+					>
+						<circle cx='11' cy='11' r='8'></circle>
+						<path d='m21 21-4.35-4.35'></path>
+					</svg>
+					<input
+						type='search'
+						class='search-input'
+						placeholder={t('search.placeholder', currentLocale) ||
+							'Search recipes...'}
+						aria-label='Search recipes'
+					/>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Section: Navigation below header -->
+	<div class='header-nav'>
 		<Navbar />
 	</div>
 </header>
 
+<script is:inline>
+	// Theme toggle functionality
+	const themeToggle = document.getElementById('theme-toggle');
+	const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+	function setTheme(theme) {
+		document.documentElement.setAttribute('data-theme', theme);
+		localStorage.setItem('theme', theme);
+		themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+	}
+
+	function toggleTheme() {
+		const current = document.documentElement.getAttribute('data-theme');
+		const newTheme = current === 'dark' ? 'light' : 'dark';
+		setTheme(newTheme);
+	}
+
+	// Initialize theme
+	const savedTheme = localStorage.getItem('theme');
+	if (savedTheme) {
+		setTheme(savedTheme);
+	} else if (prefersDark.matches) {
+		setTheme('dark');
+	} else {
+		// Initial text for light theme
+	}
+
+	themeToggle?.addEventListener('click', toggleTheme);
+</script>
+
 <style>
+	/* Section: Header Base */
 	.header {
-		background-color: var(--color-header);
-		color: var(--color-light);
-		padding: var(--spacing-medium) 0;
+		background: linear-gradient(
+			135deg,
+			var(--color-svg-accent),
+			var(--color-primary)
+		);
+		color: white;
+		padding: var(--space-md) 0 0 0;
+		box-shadow: var(--shadow-lg);
+		position: relative;
+		z-index: 100;
 	}
 
-	.container {
-		width: 90%;
+	/* Section: Header Container */
+	.header-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+		padding: 0 var(--space-md);
 		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
+		max-width: 1200px;
 	}
 
-	.header-top {
+	/* Section: Main Header Row */
+	.header-main {
 		display: flex;
-		flex-direction: column;
 		align-items: center;
-		gap: var(--spacing-small);
+		gap: var(--space-xl);
+		flex-wrap: nowrap;
+	}
+
+	/* Logo sizing */
+	.header-main :global(.logo) {
+		flex-shrink: 0;
+		width: 60px;
+		height: 60px;
+	}
+
+	/* Section: Title Wrapper */
+	.header-title-wrapper {
+		flex: 1;
+		min-width: 0; /* Prevents overflow */
 	}
 
 	.blog-title {
-		font-size: 1.8rem;
-		font-weight: bold;
-		font-family: 'Lora', serif;
-		color: #fff;
-		text-transform: uppercase;
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		font-size: var(--text-2xl);
+		font-weight: 800;
 		margin: 0;
-		padding: 0 30px;
-		text-align: center;
+		line-height: 1.2;
+		background: linear-gradient(135deg, #ffffff, var(--color-svg-cream));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
-	/* Navbar overrides for spacing */
-	nav.navbar {
-		margin-top: var(--spacing-small);
-		width: 100%;
+	.blog-tagline {
+		font-size: var(--text-sm);
+		margin: var(--space-2xs) 0 0 0;
+		opacity: 0.9;
+		font-weight: 400;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* Section: Header Controls */
+	.header-controls {
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
+		gap: var(--space-md);
 	}
 
-	/* Desktop layout */
+	/* Section: Header Actions Row */
+	.header-actions {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: var(--space-sm);
+	}
+
+	/* Theme Toggle Button */ /* Theme Toggle Button - FIXED */ /* Theme toggle button - shows current theme */
+	.theme-toggle {
+		background: var(--color-svg-accent); /* Dark red */
+		color: white;
+		border: 2px solid white;
+		border-radius: 20px;
+		padding: 8px 16px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		min-width: 80px;
+	}
+
+	/* When dark theme is active */
+	[data-theme='dark'] .theme-toggle {
+		background: var(--color-svg-dark); /* Dark gray */
+		color: var(--color-svg-cream); /* Peach text */
+		border: 2px solid var(--color-svg-warm); /* Red border */
+	}
+
+	.theme-toggle:hover {
+		background: white;
+		color: var(--color-svg-accent);
+		transform: scale(1.05);
+	}
+
+	/* Section: Search Bar */
+	.header-search {
+		width: 100%;
+	}
+
+	.search-wrapper {
+		position: relative;
+		max-width: 500px;
+		margin-left: auto;
+	}
+
+	.search-icon {
+		position: absolute;
+		left: var(--space-md);
+		top: 50%;
+		transform: translateY(-50%);
+		color: var(--color-text-light);
+		pointer-events: none;
+	}
+
+	.search-input {
+		width: 100%;
+		padding: var(--space-sm) var(--space-md) var(--space-sm)
+			calc(var(--space-md) * 2 + 18px);
+		background: rgba(255, 255, 255, 0.9);
+		border: 2px solid rgba(255, 255, 255, 0.3);
+		border-radius: var(--radius-full);
+		font-size: var(--text-base);
+		color: var(--color-text);
+		transition: all 0.2s ease;
+	}
+
+	.search-input:focus {
+		background: white;
+		border-color: white;
+		box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+		outline: none;
+	}
+
+	.search-input::placeholder {
+		color: var(--color-text-light);
+		opacity: 0.7;
+	}
+
+	.header-nav {
+		margin-top: var(--space-2xs);
+		padding: var(--space-sm);
+		background: var(--color-primary);
+	}
+
+	/* Section: Responsive Design */
 	@media (min-width: 768px) {
-		.container {
+		.header-container {
 			flex-direction: row;
-			justify-content: space-between;
 			align-items: center;
+			justify-content: space-between;
+			gap: var(--space-xl);
+			padding: 0 var(--space-xl);
+		}
+
+		.header-controls {
+			flex-direction: column;
+			align-items: flex-end;
+			flex-shrink: 0;
+			min-width: 300px;
+		}
+
+		.header-actions {
+			order: 2;
+		}
+
+		.header-search {
+			order: 1;
 		}
 
 		.blog-title {
-			font-size: 1.8rem;
-			padding: 0;
+			font-size: var(--text-3xl);
+			white-space: normal;
 		}
 
-		.header-top {
-			flex-direction: row;
-			align-items: center;
-			gap: var(--spacing-medium);
+		.blog-tagline {
+			white-space: normal;
+		}
+	}
+
+	@media (max-width: 767px) {
+		.header-container {
+			padding: 0 var(--space-md);
 		}
 
-		nav.navbar {
-			margin-top: 0;
-			justify-content: flex-end;
-			width: auto;
+		.header-main {
+			flex-wrap: wrap;
+			justify-content: center;
+			text-align: center;
+		}
+
+		.header-title-wrapper {
+			width: 100%;
+			text-align: center;
+		}
+
+		.blog-title {
+			font-size: var(--text-xl);
+			white-space: normal;
+		}
+
+		.blog-tagline {
+			font-size: var(--text-xs);
+			white-space: normal;
+		}
+
+		.header-controls {
+			width: 100%;
+		}
+
+		.search-wrapper {
+			max-width: none;
+			margin: 0;
+		}
+
+		.header-actions {
+			justify-content: center;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.header {
+			padding: var(--space-sm) 0 0 0;
+		}
+
+		.header-main :global(.logo) {
+			width: 50px;
+			height: 50px;
+		}
+
+		.blog-title {
+			font-size: var(--text-lg);
+		}
+
+		.theme-toggle {
+			width: 36px;
+			height: 36px;
 		}
 	}
 </style>
-
