@@ -1,14 +1,15 @@
 import React from 'react';
+import { t } from '../utils/i18n';
 
-export default function FavoritesList({ recipes, title }) {
+export default function FavoritesList({ recipes, title, locale }) {
 	if (!recipes.length) {
-		return <p>No favorites yet.</p>;
+		return <p>{t('favorites.empty', locale)}</p>;
 	}
 
 	return (
 		<div style={{ padding: '20px' }}>
 			<h1 style={{ textAlign: 'center', color: '#d2691e', margin: '20px 0' }}>
-				{title || 'Your Favorite Recipes'}
+				{title || t('favorites.title', locale)}
 			</h1>
 
 			<div
