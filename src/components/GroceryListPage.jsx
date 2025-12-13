@@ -4,7 +4,9 @@ import LoadingIndicator from './LoadingIndicator.jsx';
 import { deduplicateGroceryItems } from '../utils/deduplicateGroceryItems.ts';
 import { t } from '../utils/i18n';
 
-// SVG Icon Components
+console.log('GroceryListPage: Component loaded');
+
+// SVG Icon Components (same as before)
 const PlusIcon = () => (
 	<svg
 		width='20'
@@ -194,7 +196,7 @@ const AlertIcon = () => (
 	</svg>
 );
 
-// Simple category icons using letters or simple shapes
+// Category icons
 const AppleIcon = () => (
 	<svg
 		width='12'
@@ -331,6 +333,8 @@ const CheckCheckIcon = () => (
 );
 
 export const GroceryListPage = ({ locale }) => {
+	console.log('GroceryListPage: Component initialized for locale', locale);
+
 	const [items, setItems] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -351,7 +355,7 @@ export const GroceryListPage = ({ locale }) => {
 	const { user: currentUser } = useAuth();
 	const audioRef = useRef(null);
 
-	// Categories with our custom SVG icons
+	// Categories with SVG icons
 	const categories = [
 		{
 			id: 'produce',
@@ -383,6 +387,7 @@ export const GroceryListPage = ({ locale }) => {
 		const completed = items.filter((item) => item.completed).length;
 		const active = total - completed;
 		setStats({ total, completed, active });
+		console.log('Stats updated:', { total, completed, active });
 	};
 
 	const getFilteredItems = () => {
@@ -425,7 +430,7 @@ export const GroceryListPage = ({ locale }) => {
 			const data = await res.json();
 			const deduplicatedItems = deduplicateGroceryItems(data);
 
-			console.log('Fetched grocery list:', deduplicatedItems);
+			console.log('Fetched grocery list:', deduplicatedItems.length, 'items');
 			setItems(deduplicatedItems);
 			updateStats();
 		} catch (err) {
@@ -460,7 +465,6 @@ export const GroceryListPage = ({ locale }) => {
 
 	function capitalizeImportant(name) {
 		const ignore = [
-			// English
 			'and',
 			'of',
 			'the',
@@ -471,7 +475,6 @@ export const GroceryListPage = ({ locale }) => {
 			'to',
 			'for',
 			'with',
-			// Spanish
 			'y',
 			'de',
 			'De',
@@ -493,17 +496,11 @@ export const GroceryListPage = ({ locale }) => {
 		];
 
 		const words = name.trim().split(' ');
-
-		// Skip first word if it's in ignore list
 		const first = words[0].toLowerCase();
 		const rest = ignore.includes(first) ? words.slice(1) : words;
 
-		// If nothing left → return empty
-		if (rest.length === 0) {
-			return '';
-		}
+		if (rest.length === 0) return '';
 
-		// Capitalize remaining words
 		return rest.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
 	}
 
@@ -615,6 +612,7 @@ export const GroceryListPage = ({ locale }) => {
 	return (
 		<div className='grocery-page'>
 			<div className='grocery-container'>
+				{/* Header Section */}
 				<div className='grocery-header'>
 					<div>
 						<div className='header-title'>
@@ -649,6 +647,7 @@ export const GroceryListPage = ({ locale }) => {
 					</div>
 				</div>
 
+				{/* Progress Section */}
 				<div className='progress-section'>
 					<div className='progress-labels'>
 						<span>Progress</span>
@@ -666,6 +665,7 @@ export const GroceryListPage = ({ locale }) => {
 					</div>
 				</div>
 
+				{/* Controls Section */}
 				<div className='controls-container'>
 					<div className='search-wrapper'>
 						<SearchIcon />
@@ -717,6 +717,7 @@ export const GroceryListPage = ({ locale }) => {
 					</div>
 				</div>
 
+				{/* Add Item Form */}
 				{showAddForm && (
 					<div className='add-item-form'>
 						<div className='form-grid'>
@@ -793,13 +794,13 @@ export const GroceryListPage = ({ locale }) => {
 									!newItem.trim() ? 'form-submit-btn-disabled' : ''
 								}`}
 							>
-								<PlusIcon />
-								Add Item
+								<PlusIcon /> Add Item
 							</button>
 						</div>
 					</div>
 				)}
 
+				{/* Success Message */}
 				{itemAdded && (
 					<div className='success-message'>
 						<CheckIcon />
@@ -807,6 +808,7 @@ export const GroceryListPage = ({ locale }) => {
 					</div>
 				)}
 
+				{/* Grocery List */}
 				<div className='grocery-list-container'>
 					{filteredItems.length === 0 ? (
 						<div className='empty-state'>
@@ -824,8 +826,7 @@ export const GroceryListPage = ({ locale }) => {
 								onClick={() => setShowAddForm(true)}
 								className='add-first-btn'
 							>
-								<PlusIcon />
-								Add Your First Item
+								<PlusIcon /> Add Your First Item
 							</button>
 						</div>
 					) : (
@@ -898,6 +899,7 @@ export const GroceryListPage = ({ locale }) => {
 					)}
 				</div>
 
+				{/* Footer Actions */}
 				<div className='footer-actions'>
 					<div className='action-buttons'>
 						<button
@@ -908,8 +910,7 @@ export const GroceryListPage = ({ locale }) => {
 							{showAddForm ? 'Hide Form' : 'Add New Item'}
 						</button>
 						<button onClick={handleExportList} className='export-btn'>
-							<DownloadIcon />
-							Export List
+							<DownloadIcon /> Export List
 						</button>
 					</div>
 
@@ -920,6 +921,7 @@ export const GroceryListPage = ({ locale }) => {
 					)}
 				</div>
 
+				{/* Tips Section */}
 				<div className='tips-section'>
 					<h3 className='tips-title'>Shopping Tips</h3>
 					<div className='tips-grid'>
@@ -946,35 +948,63 @@ export const GroceryListPage = ({ locale }) => {
 				</div>
 			</div>
 
-			{/* Styles */}
+			{/* Enhanced Styles */}
 			<style jsx>{`
+				/* Section: Grocery Page Base */
 				.grocery-page {
 					min-height: 100vh;
-					background: var(--color-light);
-					opacity: 0.95;
-					padding: var(--spacing-medium);
-					border-radius: var(--border-radius);
-					margin: 4px;
+					background: var(--color-background);
+					padding: var(--space-lg);
+					border-radius: var(--radius-xl);
+					margin: var(--space-sm);
+					position: relative;
+					overflow: hidden;
+				}
+
+				.grocery-page::before {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					height: 4px;
+					background: linear-gradient(
+						90deg,
+						var(--color-primary),
+						var(--color-svg-fresh)
+					);
+					z-index: 1;
 				}
 
 				@media (min-width: 768px) {
 					.grocery-page {
-						padding: var(--spacing-large);
+						padding: var(--space-xl);
+						margin: var(--space-md);
 					}
 				}
 
+				/* Section: Container */
 				.grocery-container {
 					max-width: 1200px;
 					margin: 0 auto;
+					position: relative;
+					z-index: 2;
 				}
 
+				/* Section: Header */
 				.grocery-header {
 					display: flex;
 					flex-direction: column;
 					justify-content: space-between;
 					align-items: flex-start;
-					margin-bottom: var(--spacing-large);
-					gap: var(--spacing-medium);
+					margin-bottom: var(--space-xl);
+					gap: var(--space-lg);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-lg);
+					padding: var(--space-lg);
+					box-shadow: var(--glass-shadow);
 				}
 
 				@media (min-width: 768px) {
@@ -987,120 +1017,136 @@ export const GroceryListPage = ({ locale }) => {
 				.header-title {
 					display: flex;
 					align-items: center;
-					gap: 12px;
-					margin-bottom: var(--spacing-small);
+					gap: var(--space-md);
+					margin-bottom: var(--space-sm);
 				}
 
 				.page-title {
-					font-size: 2.2rem;
-					font-weight: bold;
+					font-size: var(--text-2xl);
+					font-weight: 800;
 					color: var(--color-primary);
 					margin: 0;
 					font-family: var(--font-heading);
+					background: linear-gradient(
+						135deg,
+						var(--color-primary),
+						var(--color-svg-accent)
+					);
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
+					background-clip: text;
 				}
 
 				.page-subtitle {
-					color: var(--color-dark);
+					color: var(--color-text-light);
 					margin: 0;
-					font-size: 1rem;
-					opacity: 0.8;
+					font-size: var(--text-sm);
+					opacity: 0.9;
 				}
 
-				.all-done-badge {
-					display: flex;
-					align-items: center;
-					gap: 4px;
-					background-color: var(--color-accent);
-					color: var(--color-dark);
-					padding: 6px 12px;
-					border-radius: 9999px;
-					font-size: 14px;
-				}
-
-				.sparkle-icon {
-					height: 16px;
-					width: 16px;
-				}
-
-				.all-done-text {
-					font-weight: 600;
-				}
-
+				/* Section: Stats */
 				.stats-container {
 					display: flex;
-					gap: var(--spacing-medium);
+					gap: var(--space-md);
 				}
 
 				.stat-box {
 					text-align: center;
-					padding: var(--spacing-small) var(--spacing-medium);
-					background-color: var(--color-light);
-					border-radius: 12px;
-					box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-					min-width: 80px;
-					border: 2px solid var(--color-primary);
+					padding: var(--space-md);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-lg);
+					min-width: 90px;
+					box-shadow: var(--shadow-sm);
+					transition: all var(--transition-medium);
+				}
+
+				.stat-box:hover {
+					transform: translateY(-2px);
+					box-shadow: var(--shadow-md);
+					border-color: var(--color-primary);
 				}
 
 				.stat-number {
-					font-size: 1.5rem;
-					font-weight: bold;
+					font-size: var(--text-2xl);
+					font-weight: 800;
 					color: var(--color-primary);
+					line-height: 1;
 				}
 
 				.stat-number-active {
-					color: var(--color-accent);
+					color: var(--color-svg-fresh);
 				}
 
 				.stat-number-completed {
-					color: var(--color-secondary);
+					color: var(--color-success);
 				}
 
 				.stat-label {
-					font-size: 0.875rem;
-					color: var(--color-dark);
-					opacity: 0.7;
+					font-size: var(--text-xs);
+					color: var(--color-text-light);
+					margin-top: var(--space-2xs);
+					font-weight: 600;
+					text-transform: uppercase;
+					letter-spacing: 0.5px;
 				}
 
+				/* Section: Progress */
 				.progress-section {
-					margin-bottom: var(--spacing-large);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-lg);
+					padding: var(--space-lg);
+					margin-bottom: var(--space-xl);
+					box-shadow: var(--glass-shadow);
 				}
 
 				.progress-labels {
 					display: flex;
 					justify-content: space-between;
-					font-size: 0.875rem;
-					color: var(--color-dark);
-					margin-bottom: var(--spacing-small);
+					font-size: var(--text-sm);
+					color: var(--color-text);
+					margin-bottom: var(--space-sm);
+					font-weight: 600;
 				}
 
 				.progress-bar-bg {
-					height: 8px;
-					background-color: var(--color-light);
-					border-radius: 4px;
+					height: 10px;
+					background: color-mix(
+						in srgb,
+						var(--color-background) 80%,
+						transparent
+					);
+					border-radius: var(--radius-full);
 					overflow: hidden;
-					border: 1px solid var(--color-primary);
+					border: 1px solid var(--glass-border);
 				}
 
 				.progress-bar-fill {
 					height: 100%;
 					background: linear-gradient(
-						to right,
+						90deg,
 						var(--color-primary),
-						var(--color-accent)
+						var(--color-svg-fresh)
 					);
-					transition: width 0.5s ease;
+					border-radius: var(--radius-full);
+					transition: width var(--transition-slow) var(--animation-timing);
 				}
 
+				/* Section: Controls */
 				.controls-container {
 					display: flex;
 					flex-direction: column;
-					gap: var(--spacing-medium);
-					margin-bottom: var(--spacing-large);
+					gap: var(--space-lg);
+					margin-bottom: var(--space-xl);
 				}
 
 				@media (min-width: 640px) {
 					.controls-container {
 						flex-direction: row;
+						align-items: center;
 					}
 				}
 
@@ -1109,100 +1155,97 @@ export const GroceryListPage = ({ locale }) => {
 					position: relative;
 				}
 
-				.search-icon {
+				.search-wrapper svg {
 					position: absolute;
-					left: 12px;
+					left: var(--space-md);
 					top: 50%;
 					transform: translateY(-50%);
-					height: 20px;
-					width: 20px;
-					color: var(--color-secondary);
+					color: var(--color-text-light);
+					pointer-events: none;
 				}
 
 				.search-input {
 					width: 100%;
-					padding: 12px 16px 12px 40px;
-					background-color: var(--color-light);
-					border-radius: var(--border-radius);
-					border: 2px solid var(--color-secondary);
-					outline: none;
-					font-size: 1rem;
-					box-sizing: border-box;
+					padding: var(--space-sm) var(--space-md) var(--space-sm)
+						calc(var(--space-md) * 2 + 20px);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-full);
+					font-size: var(--text-base);
+					color: var(--color-text);
+					transition: all var(--transition-fast);
 					font-family: var(--font-body);
 				}
 
 				.search-input:focus {
-					border-color: var(--color-accent);
-					box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+					background: var(--color-surface);
+					border-color: var(--color-primary);
+					box-shadow: 0 0 0 3px var(--color-focus);
+					outline: none;
 				}
 
 				.clear-search-btn {
 					position: absolute;
-					right: 12px;
+					right: var(--space-md);
 					top: 50%;
 					transform: translateY(-50%);
 					background: none;
 					border: none;
+					color: var(--color-text-light);
 					cursor: pointer;
-					padding: 4px;
+					padding: var(--space-2xs);
+					border-radius: var(--radius-full);
+					transition: all var(--transition-fast);
 				}
 
-				.clear-icon {
-					height: 20px;
-					width: 20px;
-					color: var(--color-secondary);
-				}
-
-				.clear-icon:hover {
+				.clear-search-btn:hover {
 					color: var(--color-primary);
+					background: var(--color-hover);
 				}
 
+				/* Section: Filter Buttons */
 				.filter-buttons {
 					display: flex;
-					gap: var(--spacing-small);
+					gap: var(--space-sm);
 				}
 
 				.filter-btn {
-					padding: 12px 16px;
-					border-radius: var(--border-radius);
-					border: 2px solid var(--color-secondary);
-					background-color: var(--color-light);
-					color: var(--color-dark);
+					padding: var(--space-sm) var(--space-md);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-lg);
+					color: var(--color-text);
 					display: flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-xs);
 					cursor: pointer;
-					transition: all 0.2s ease;
-					font-size: 0.875rem;
+					transition: all var(--transition-fast);
+					font-size: var(--text-sm);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
 				.filter-btn:hover {
-					background-color: var(--color-accent);
-					color: var(--color-dark);
+					background: var(--color-hover);
+					transform: translateY(-1px);
 				}
 
 				.filter-btn-active {
-					background-color: var(--color-primary);
-					color: var(--color-light);
+					background: var(--color-primary);
+					color: white;
 					border-color: var(--color-primary);
 				}
 
 				.filter-btn-active.active {
-					background-color: var(--color-accent);
-					color: var(--color-dark);
-					border-color: var(--color-accent);
+					background: var(--color-svg-fresh);
+					border-color: var(--color-svg-fresh);
 				}
 
 				.filter-btn-active.completed {
-					background-color: var(--color-secondary);
-					color: var(--color-light);
-					border-color: var(--color-secondary);
-				}
-
-				.filter-icon {
-					height: 16px;
-					width: 16px;
+					background: var(--color-success);
+					border-color: var(--color-success);
 				}
 
 				.filter-text {
@@ -1215,19 +1258,33 @@ export const GroceryListPage = ({ locale }) => {
 					}
 				}
 
+				/* Section: Add Item Form */
 				.add-item-form {
-					background-color: var(--color-light);
-					border-radius: var(--border-radius);
-					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-					padding: var(--spacing-large);
-					margin-bottom: var(--spacing-large);
-					border: 2px solid var(--color-primary);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-xl);
+					padding: var(--space-xl);
+					margin-bottom: var(--space-xl);
+					box-shadow: var(--glass-shadow);
+					animation: fadeIn 0.4s var(--animation-timing);
+				}
+
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(-10px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
 				}
 
 				.form-grid {
 					display: grid;
 					grid-template-columns: 1fr;
-					gap: var(--spacing-medium);
+					gap: var(--space-lg);
 				}
 
 				@media (min-width: 768px) {
@@ -1238,267 +1295,332 @@ export const GroceryListPage = ({ locale }) => {
 
 				.form-label {
 					display: block;
-					font-size: 0.875rem;
+					font-size: var(--text-sm);
 					font-weight: 600;
 					color: var(--color-primary);
-					margin-bottom: var(--spacing-small);
+					margin-bottom: var(--space-xs);
 					font-family: var(--font-heading);
 				}
 
 				.form-input {
 					width: 100%;
-					padding: var(--spacing-medium);
+					padding: var(--space-sm) var(--space-md);
+					background: var(--color-surface);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-md);
+					font-size: var(--text-base);
+					color: var(--color-text);
+					transition: all var(--transition-fast);
 					font-family: var(--font-body);
-					font-size: 1rem;
-					color: var(--color-dark);
-					background-color: var(--color-light);
-					border: 2px solid var(--color-secondary);
-					border-radius: var(--border-radius);
-					margin-bottom: var(--spacing-medium);
-					transition: border-color 0.3s ease, box-shadow 0.3s ease;
-					box-sizing: border-box;
 				}
 
 				.form-input:focus {
-					border-color: var(--color-accent);
-					box-shadow: 0 0 6px var(--color-accent);
+					border-color: var(--color-primary);
+					box-shadow: 0 0 0 3px var(--color-focus);
 					outline: none;
+					background: white;
 				}
 
 				.form-quantity-grid {
 					display: grid;
 					grid-template-columns: 1fr 1fr;
-					gap: var(--spacing-medium);
+					gap: var(--space-md);
 				}
 
 				.form-category-section {
 					grid-column: 1 / -1;
 				}
 
+				/* Section: Category Buttons */
 				.category-buttons {
 					display: flex;
 					flex-wrap: wrap;
-					gap: var(--spacing-small);
+					gap: var(--space-sm);
 				}
 
 				.category-btn {
-					padding: var(--spacing-small) var(--spacing-medium);
-					border-radius: var(--border-radius);
-					border: 2px solid var(--color-secondary);
-					background-color: var(--color-light);
-					color: var(--color-dark);
+					padding: var(--space-xs) var(--space-md);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-full);
+					color: var(--color-text);
 					display: flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-xs);
 					cursor: pointer;
-					transition: all 0.2s ease;
-					font-size: 0.875rem;
+					transition: all var(--transition-fast);
+					font-size: var(--text-xs);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
 				.category-btn:hover {
-					background-color: var(--color-accent);
-					color: var(--color-dark);
+					transform: translateY(-2px);
+					box-shadow: var(--shadow-sm);
 				}
 
 				.category-btn-active {
-					outline: 2px solid var(--color-accent);
-					outline-offset: 2px;
+					background: var(--color-primary);
+					color: white;
 					border-color: var(--color-primary);
 				}
 
-				/* Category Colors */
+				/* Category Colors using SVG theme */
 				.category-produce {
-					background-color: rgba(34, 139, 34, 0.1);
-					color: #228b22;
-					border-color: #228b22;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-fresh) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-fresh) 40%,
+						transparent
+					);
+					color: var(--color-svg-fresh);
 				}
 
 				.category-dairy {
-					background-color: rgba(135, 206, 235, 0.1);
-					color: #87ceeb;
-					border-color: #87ceeb;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-cream) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-cream) 40%,
+						transparent
+					);
+					color: var(--color-svg-cream);
 				}
 
 				.category-meat {
-					background-color: rgba(205, 92, 92, 0.1);
-					color: #cd5c5c;
-					border-color: #cd5c5c;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-warm) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-warm) 40%,
+						transparent
+					);
+					color: var(--color-svg-warm);
 				}
 
 				.category-bakery {
-					background-color: rgba(218, 165, 32, 0.1);
-					color: #daa520;
-					border-color: #daa520;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-gold) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-gold) 40%,
+						transparent
+					);
+					color: var(--color-svg-gold);
 				}
 
 				.category-pantry {
-					background-color: rgba(160, 82, 45, 0.1);
-					color: #a0522d;
-					border-color: #a0522d;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-secondary) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-secondary) 40%,
+						transparent
+					);
+					color: var(--color-svg-secondary);
 				}
 
 				.category-beverages {
-					background-color: rgba(30, 144, 255, 0.1);
-					color: #1e90ff;
-					border-color: #1e90ff;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-accent) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-accent) 40%,
+						transparent
+					);
+					color: var(--color-svg-accent);
 				}
 
 				.category-frozen {
-					background-color: rgba(173, 216, 230, 0.1);
-					color: #add8e6;
-					border-color: #add8e6;
+					background: color-mix(
+						in srgb,
+						var(--color-svg-light) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-svg-light) 40%,
+						transparent
+					);
+					color: var(--color-svg-light);
 				}
 
 				.category-other {
-					background-color: rgba(128, 128, 128, 0.1);
-					color: #808080;
-					border-color: #808080;
+					background: color-mix(
+						in srgb,
+						var(--color-text-light) 15%,
+						transparent
+					);
+					border-color: color-mix(
+						in srgb,
+						var(--color-text-light) 40%,
+						transparent
+					);
+					color: var(--color-text-light);
 				}
 
+				/* Section: Form Actions */
 				.form-actions {
 					display: flex;
 					justify-content: flex-end;
-					gap: 12px;
-					margin-top: var(--spacing-large);
+					gap: var(--space-md);
+					margin-top: var(--space-xl);
 				}
 
 				.form-cancel-btn {
-					padding: 8px 24px;
-					color: var(--color-dark);
+					padding: var(--space-sm) var(--space-lg);
 					background: none;
-					border: 2px solid var(--color-secondary);
-					border-radius: var(--border-radius);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-lg);
+					color: var(--color-text);
 					cursor: pointer;
-					font-size: 1rem;
+					transition: all var(--transition-fast);
+					font-size: var(--text-sm);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
 				.form-cancel-btn:hover {
-					background-color: var(--color-accent);
+					background: var(--color-hover);
+					border-color: var(--color-text-light);
 				}
 
 				.form-submit-btn {
-					padding: 8px 24px;
-					border-radius: var(--border-radius);
+					padding: var(--space-sm) var(--space-lg);
+					background: linear-gradient(
+						135deg,
+						var(--color-primary),
+						var(--color-svg-accent)
+					);
 					border: none;
-					background-color: var(--color-primary);
-					color: var(--color-light);
+					border-radius: var(--radius-lg);
+					color: white;
 					display: flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-xs);
 					cursor: pointer;
-					font-size: 1rem;
-					transition: all 0.2s ease;
+					transition: all var(--transition-medium);
+					font-size: var(--text-sm);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
-				.form-submit-btn:hover {
-					background-color: var(--color-accent);
-					color: var(--color-dark);
+				.form-submit-btn:hover:not(:disabled) {
+					transform: translateY(-2px);
+					box-shadow: var(--shadow-lg);
+					background: linear-gradient(
+						135deg,
+						var(--color-svg-accent),
+						var(--color-primary)
+					);
 				}
 
 				.form-submit-btn-disabled {
-					background-color: var(--color-secondary);
-					color: var(--color-light);
+					background: var(--color-text-light);
 					cursor: not-allowed;
+					opacity: 0.6;
 				}
 
-				.form-submit-btn-disabled:hover {
-					background-color: var(--color-secondary);
-					color: var(--color-light);
-				}
-
-				.submit-icon {
-					height: 16px;
-					width: 16px;
-				}
-
+				/* Section: Success Message */
 				.success-message {
-					margin-bottom: var(--spacing-medium);
-					padding: var(--spacing-medium);
-					background-color: rgba(34, 139, 34, 0.1);
-					border: 2px solid #228b22;
-					border-radius: var(--border-radius);
+					padding: var(--space-md);
+					background: color-mix(in srgb, var(--color-success) 15%, transparent);
+					border: 2px solid var(--color-success);
+					border-radius: var(--radius-lg);
 					display: flex;
 					align-items: center;
-					gap: 12px;
-				}
-
-				.success-icon {
-					height: 20px;
-					width: 20px;
-					color: #228b22;
+					gap: var(--space-sm);
+					margin-bottom: var(--space-lg);
+					animation: fadeIn 0.3s ease;
 				}
 
 				.success-text {
-					color: #228b22;
-					font-size: 1rem;
+					color: var(--color-success);
 					font-weight: 600;
+					font-size: var(--text-sm);
 				}
 
+				/* Section: Grocery List */
 				.grocery-list-container {
-					background-color: var(--color-light);
-					border-radius: var(--border-radius);
-					box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-xl);
 					overflow: hidden;
-					margin-bottom: var(--spacing-large);
-					border: 2px solid var(--color-primary);
+					margin-bottom: var(--space-xl);
+					box-shadow: var(--glass-shadow);
 				}
 
 				.empty-state {
 					text-align: center;
-					padding: 48px 16px;
-				}
-
-				.empty-icon {
-					height: 64px;
-					width: 64px;
-					color: var(--color-secondary);
-					margin: 0 auto 16px;
+					padding: var(--space-3xl) var(--space-lg);
 				}
 
 				.empty-title {
-					font-size: 1.25rem;
-					font-weight: 600;
+					font-size: var(--text-xl);
+					font-weight: 700;
 					color: var(--color-primary);
-					margin-bottom: var(--spacing-small);
+					margin: var(--space-md) 0 var(--space-sm);
 					font-family: var(--font-heading);
 				}
 
 				.empty-subtitle {
-					color: var(--color-dark);
-					margin-bottom: var(--spacing-large);
-					font-size: 1rem;
-					opacity: 0.8;
+					color: var(--color-text-light);
+					margin-bottom: var(--space-xl);
+					font-size: var(--text-base);
 				}
 
 				.add-first-btn {
-					padding: 12px 24px;
-					border-radius: var(--border-radius);
+					padding: var(--space-md) var(--space-xl);
+					background: linear-gradient(
+						135deg,
+						var(--color-primary),
+						var(--color-svg-accent)
+					);
 					border: none;
-					background-color: var(--color-primary);
-					color: var(--color-light);
-					display: flex;
+					border-radius: var(--radius-lg);
+					color: white;
+					display: inline-flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-sm);
 					cursor: pointer;
-					font-size: 1rem;
-					margin: 0 auto;
-					transition: all 0.2s ease;
+					transition: all var(--transition-medium);
+					font-size: var(--text-base);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
 				.add-first-btn:hover {
-					background-color: var(--color-accent);
-					color: var(--color-dark);
+					transform: translateY(-2px);
+					box-shadow: var(--shadow-lg);
+					background: linear-gradient(
+						135deg,
+						var(--color-svg-accent),
+						var(--color-primary)
+					);
 				}
 
-				.add-first-icon {
-					height: 20px;
-					width: 20px;
-				}
-
+				/* Section: Grocery Items */
 				.grocery-list {
 					list-style: none;
 					padding: 0;
@@ -1506,64 +1628,58 @@ export const GroceryListPage = ({ locale }) => {
 				}
 
 				.grocery-item {
-					border-bottom: 2px solid var(--color-secondary);
-				}
-
-				.grocery-item:hover {
-					background-color: rgba(255, 215, 0, 0.1);
+					border-bottom: 1px solid var(--glass-border);
+					transition: all var(--transition-fast);
 				}
 
 				.grocery-item:last-child {
 					border-bottom: none;
 				}
 
+				.grocery-item:hover {
+					background: var(--color-hover);
+				}
+
 				.item-content {
-					padding: var(--spacing-medium) var(--spacing-large);
+					padding: var(--space-md) var(--space-lg);
 				}
 
 				.item-main {
 					display: flex;
 					align-items: center;
-					gap: var(--spacing-medium);
+					gap: var(--space-md);
 				}
 
-				.item-main:hover button:hover {
-					color: var(--color-dark);
-					border: 2px solid var(--color-dark);
-				}
-
+				/* Section: Item Checkbox */
 				.item-checkbox {
-					padding: 8px;
-					border-radius: 50%;
-					border: 2px solid var(--color-secondary);
-					background-color: var(--color-light);
-					color: var(--color-secondary);
+					padding: var(--space-xs);
+					background: var(--color-surface);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-full);
+					color: var(--color-text-light);
 					cursor: pointer;
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					transition: all 0.2s ease;
-					min-width: 36px;
-					min-height: 36px;
+					transition: all var(--transition-fast);
+					min-width: 40px;
+					min-height: 40px;
+					flex-shrink: 0;
 				}
 
 				.item-checkbox:hover {
-					background-color: var(--color-header);
-					border-color: var(--color-header);
-					color: var(--color-dark);
+					border-color: var(--color-primary);
+					color: var(--color-primary);
+					transform: scale(1.1);
 				}
 
 				.item-checkbox-completed {
-					background-color: var(--color-header);
-					border-color: var(--color-accent);
-					color: var(--color-dark);
+					background: var(--color-success);
+					border-color: var(--color-success);
+					color: white;
 				}
 
-				.checkbox-icon {
-					height: 20px;
-					width: 20px;
-				}
-
+				/* Section: Item Details */
 				.item-details {
 					flex: 1;
 					min-width: 0;
@@ -1572,196 +1688,198 @@ export const GroceryListPage = ({ locale }) => {
 				.item-meta {
 					display: flex;
 					align-items: center;
-					gap: 12px;
-					margin-bottom: 4px;
+					gap: var(--space-sm);
+					margin-bottom: var(--space-2xs);
 					flex-wrap: wrap;
 				}
 
 				.item-category {
-					padding: 4px 12px;
-					border-radius: 9999px;
-					font-size: 0.75rem;
+					padding: var(--space-2xs) var(--space-sm);
+					background: var(--glass-bg);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-full);
+					font-size: var(--text-xs);
 					font-weight: 600;
 					display: inline-flex;
 					align-items: center;
-					gap: 4px;
-					font-family: var(--font-body);
-				}
-
-				.category-icon-small {
-					height: 12px;
-					width: 12px;
+					gap: var(--space-2xs);
 				}
 
 				.item-quantity {
-					font-size: 0.875rem;
+					font-size: var(--text-sm);
 					font-weight: 600;
 					color: var(--color-primary);
+					padding: var(--space-2xs) var(--space-sm);
+					background: var(--glass-bg);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-sm);
 				}
 
 				.item-name {
-					font-size: 1rem;
+					font-size: var(--text-base);
 					font-weight: 500;
-					color: var(--color-dark);
-					margin: 4px 0;
-					font-family: var(--font-body);
+					color: var(--color-text);
+					margin: var(--space-2xs) 0;
+					line-height: 1.4;
 				}
 
 				.item-name-completed {
 					text-decoration: line-through;
-					color: var(--color-secondary);
+					color: var(--color-text-light);
 					opacity: 0.7;
 				}
 
 				.item-recipe {
-					font-size: 0.875rem;
-					color: var(--color-secondary);
-					margin-top: 4px;
+					font-size: var(--text-xs);
+					color: var(--color-text-light);
+					margin-top: var(--space-2xs);
 					font-style: italic;
 				}
 
+				/* Section: Item Actions */
 				.item-actions {
 					display: flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-sm);
 				}
 
 				.item-status {
-					font-size: 0.75rem;
-					color: var(--color-primary);
+					font-size: var(--text-xs);
+					color: var(--color-success);
 					font-weight: 600;
-					padding: 4px 8px;
-					background-color: rgba(255, 215, 0, 0.2);
-					border-radius: 4px;
-					border: 1px solid var(--color-primary);
+					padding: var(--space-2xs) var(--space-sm);
+					background: color-mix(in srgb, var(--color-success) 15%, transparent);
+					border-radius: var(--radius-sm);
+					border: 1px solid var(--color-success);
 				}
 
 				.item-delete-btn {
-					padding: 8px;
-					color: var(--color-secondary);
+					padding: var(--space-xs);
 					background: none;
-					border: 2px solid var(--color-secondary);
-					border-radius: var(--border-radius);
+					border: 2px solid var(--glass-border);
+					border-radius: var(--radius-md);
+					color: var(--color-text-light);
 					cursor: pointer;
-					transition: all 0.2s ease;
+					transition: all var(--transition-fast);
 					display: flex;
 					align-items: center;
 					justify-content: center;
 				}
 
 				.item-delete-btn:hover {
-					color: var(--color-primary);
-					background-color: rgba(255, 99, 71, 0.1);
-					border-color: var(--color-primary);
+					color: var(--color-svg-warm);
+					border-color: var(--color-svg-warm);
+					background: color-mix(
+						in srgb,
+						var(--color-svg-warm) 10%,
+						transparent
+					);
+					transform: scale(1.1);
 				}
 
-				.delete-icon {
-					height: 16px;
-					width: 16px;
-				}
-
+				/* Section: Footer Actions */
 				.footer-actions {
-					margin-top: var(--spacing-large);
 					display: flex;
 					flex-wrap: wrap;
-					gap: var(--spacing-medium);
+					gap: var(--space-lg);
 					justify-content: space-between;
 					align-items: center;
+					margin-top: var(--space-xl);
 				}
 
 				.action-buttons {
 					display: flex;
-					gap: 12px;
+					gap: var(--space-md);
 					flex-wrap: wrap;
 				}
 
 				.add-item-btn {
-					padding: 12px 24px;
-					border-radius: var(--border-radius);
+					padding: var(--space-md) var(--space-lg);
+					background: linear-gradient(
+						135deg,
+						var(--color-primary),
+						var(--color-svg-accent)
+					);
 					border: none;
-					background-color: var(--color-primary);
-					opacity: 0.75;
-					color: var(--color-light);
+					border-radius: var(--radius-lg);
+					color: white;
 					display: flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-sm);
 					cursor: pointer;
-					font-size: 1rem;
-					transition: all 0.2s ease;
+					transition: all var(--transition-medium);
+					font-size: var(--text-base);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
 				.add-item-btn:hover {
-					background-color: var(--color-primary);
-					opacity: 0.95;
-					color: var(--color-dark);
+					transform: translateY(-2px);
+					box-shadow: var(--shadow-lg);
+					background: linear-gradient(
+						135deg,
+						var(--color-svg-accent),
+						var(--color-primary)
+					);
 				}
 
 				.export-btn {
-					padding: 12px 24px;
-					border-radius: var(--border-radius);
+					padding: var(--space-md) var(--space-lg);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
 					border: 2px solid var(--color-primary);
-					background-color: var(--color-light);
+					border-radius: var(--radius-lg);
 					color: var(--color-primary);
 					display: flex;
 					align-items: center;
-					gap: 8px;
+					gap: var(--space-sm);
 					cursor: pointer;
-					font-size: 1rem;
-					transition: all 0.2s ease;
+					transition: all var(--transition-medium);
+					font-size: var(--text-base);
+					font-weight: 600;
 					font-family: var(--font-body);
 				}
 
 				.export-btn:hover {
-					background-color: var(--color-secondary);
-					color: var(--color-dark);
-					border-color: var(--color-secondary);
-				}
-
-				.action-icon {
-					height: 20px;
-					width: 20px;
+					background: var(--color-primary);
+					color: white;
+					transform: translateY(-2px);
+					box-shadow: var(--shadow-lg);
 				}
 
 				.item-count {
-					font-size: 0.875rem;
-					color: var(--color-dark);
-					opacity: 0.8;
+					font-size: var(--text-sm);
+					color: var(--color-text-light);
+					font-weight: 500;
 				}
 
+				/* Section: Tips */
 				.tips-section {
-					margin-top: 48px;
-					padding: var(--spacing-large);
+					margin-top: var(--space-3xl);
+					padding: var(--space-xl);
 					background: linear-gradient(
 						135deg,
-						rgba(255, 99, 71, 0.1),
-						rgba(255, 215, 0, 0.1)
+						color-mix(in srgb, var(--color-primary) 10%, transparent),
+						color-mix(in srgb, var(--color-svg-fresh) 10%, transparent)
 					);
-					border-radius: var(--border-radius);
-					border: 2px solid var(--color-primary);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-xl);
+					box-shadow: var(--glass-shadow);
 				}
 
 				.tips-title {
-					font-size: 1.125rem;
-					font-weight: 600;
+					font-size: var(--text-xl);
+					font-weight: 700;
 					color: var(--color-primary);
-					margin-bottom: var(--spacing-medium);
-					display: flex;
-					align-items: center;
-					gap: 8px;
+					margin-bottom: var(--space-lg);
 					font-family: var(--font-heading);
-				}
-
-				.tips-icon {
-					height: 20px;
-					width: 20px;
-					color: var(--color-primary);
+					text-align: center;
 				}
 
 				.tips-grid {
 					display: grid;
 					grid-template-columns: 1fr;
-					gap: var(--spacing-medium);
+					gap: var(--space-lg);
 				}
 
 				@media (min-width: 768px) {
@@ -1771,54 +1889,125 @@ export const GroceryListPage = ({ locale }) => {
 				}
 
 				.tip-card {
-					background-color: var(--color-light);
-					padding: var(--spacing-medium);
-					border-radius: var(--border-radius);
-					border: 2px solid var(--color-secondary);
+					background: var(--glass-bg);
+					backdrop-filter: var(--backdrop-blur);
+					border: 1px solid var(--glass-border);
+					border-radius: var(--radius-lg);
+					padding: var(--space-lg);
+					text-align: center;
+					transition: all var(--transition-medium);
 				}
 
-				.tip-icon {
-					height: 24px;
-					width: 24px;
-					margin-bottom: 8px;
-				}
-
-				.tip-icon.clock {
-					color: var(--color-primary);
-				}
-
-				.tip-icon.star {
-					color: var(--color-accent);
-				}
-
-				.tip-icon.alert {
-					color: var(--color-secondary);
+				.tip-card:hover {
+					transform: translateY(-4px);
+					box-shadow: var(--shadow-lg);
+					border-color: var(--color-primary);
 				}
 
 				.tip-heading {
-					font-size: 1rem;
-					font-weight: 500;
+					font-size: var(--text-base);
+					font-weight: 600;
 					color: var(--color-primary);
-					margin-bottom: 4px;
+					margin: var(--space-sm) 0 var(--space-xs);
 					font-family: var(--font-heading);
 				}
 
 				.tip-text {
-					font-size: 0.875rem;
-					color: var(--color-dark);
+					font-size: var(--text-sm);
+					color: var(--color-text-light);
 					margin: 0;
-					opacity: 0.8;
+					line-height: 1.5;
 				}
 
+				/* Section: Error Message */
 				.error-message {
-					padding: var(--spacing-large);
+					padding: var(--space-xl);
 					text-align: center;
-					color: #ef4444;
-					background-color: #fef2f2;
-					border-radius: var(--border-radius);
-					margin: var(--spacing-large);
-					font-size: 1rem;
-					border: 2px solid #ef4444;
+					color: var(--color-svg-warm);
+					background: color-mix(
+						in srgb,
+						var(--color-svg-warm) 10%,
+						transparent
+					);
+					border: 2px solid var(--color-svg-warm);
+					border-radius: var(--radius-lg);
+					margin: var(--space-xl);
+					font-size: var(--text-base);
+					font-weight: 600;
+				}
+
+				/* Section: Responsive Adjustments */
+				@media (max-width: 640px) {
+					.grocery-header {
+						padding: var(--space-md);
+					}
+
+					.stats-container {
+						flex-wrap: wrap;
+						justify-content: center;
+					}
+
+					.stat-box {
+						min-width: 70px;
+						padding: var(--space-sm);
+					}
+
+					.filter-buttons {
+						width: 100%;
+						justify-content: center;
+					}
+
+					.form-actions {
+						flex-direction: column;
+					}
+
+					.action-buttons {
+						width: 100%;
+						justify-content: center;
+					}
+
+					.footer-actions {
+						flex-direction: column;
+						text-align: center;
+					}
+				}
+
+				@media (max-width: 480px) {
+					.grocery-page {
+						padding: var(--space-md);
+						margin: var(--space-2xs);
+					}
+
+					.page-title {
+						font-size: var(--text-xl);
+					}
+
+					.category-buttons {
+						justify-content: center;
+					}
+
+					.tip-card {
+						padding: var(--space-md);
+					}
+				}
+
+				/* Section: Dark Theme Adjustments */
+				[data-theme='dark'] .grocery-page {
+					background: color-mix(in srgb, var(--color-background) 95%, black);
+				}
+
+				[data-theme='dark'] .search-input,
+				[data-theme='dark'] .form-input {
+					background: var(--color-surface);
+					color: var(--color-text);
+				}
+
+				[data-theme='dark'] .category-btn {
+					background: color-mix(in srgb, var(--glass-bg) 80%, transparent);
+				}
+
+				[data-theme='dark'] .grocery-item:hover {
+					background: color-mix(in srgb, var(--color-hover) 50%, transparent);
 				}
 			`}</style>
 		</div>
