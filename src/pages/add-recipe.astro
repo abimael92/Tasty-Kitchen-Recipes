@@ -1,27 +1,39 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../utils/i18n';
+
+const { currentLocale } = Astro;
+
+// Obtener traducciones para usar en JavaScript
+const jsMessages = {
+	submitting: t('addRecipe.messages.submitting'),
+	success: t('addRecipe.messages.success'),
+	error: t('addRecipe.messages.error'),
+	failed: t('addRecipe.messages.failed'),
+};
 ---
 
-<BaseLayout title='Add Recipe'>
+<BaseLayout title={t('addRecipe.title')}>
 	<div
 		class='max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-300'
 	>
 		<div class='recipe-form-wrapper'>
-			<h1>Add a New Recipe</h1>
+			<h1>{t('addRecipe.title')}</h1>
 			<form id='recipeForm' enctype='multipart/form-data' class='space-y-6'>
 				<div>
 					<label
 						for='title'
 						class='block mb-3 font-semibold text-gray-800 text-lg'
 					>
-						Title <span class='text-red-600'>*</span>
+						{t('addRecipe.form.title')}
+						<span class='text-red-600'>*</span>
 					</label>
 					<input
 						type='text'
 						id='title'
 						name='title'
 						required
-						placeholder='E.g., Cinnamon Rolls'
+						placeholder={t('addRecipe.form.titlePlaceholder')}
 						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
 						focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition'
 					/>
@@ -32,14 +44,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 						for='ingredients'
 						class='block mb-3 font-semibold text-gray-800 text-lg'
 					>
-						Ingredients <span class='text-red-600'>*</span>
+						{t('addRecipe.form.ingredients')}
+						<span class='text-red-600'>*</span>
 					</label>
 					<textarea
 						id='ingredients'
 						name='ingredients'
 						rows='6'
 						required
-						placeholder='List ingredients, one per line'
+						placeholder={t('addRecipe.form.ingredientsPlaceholder')}
 						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
 						resize-y focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition font-mono'
 					></textarea>
@@ -50,14 +63,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 						for='instructions'
 						class='block mb-3 font-semibold text-gray-800 text-lg'
 					>
-						Instructions <span class='text-red-600'>*</span>
+						{t('addRecipe.form.instructions')}
+						<span class='text-red-600'>*</span>
 					</label>
 					<textarea
 						id='instructions'
 						name='instructions'
 						rows='8'
 						required
-						placeholder='Step-by-step instructions'
+						placeholder={t('addRecipe.form.instructionsPlaceholder')}
 						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
 						resize-y focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition font-mono'
 					></textarea>
@@ -68,7 +82,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 						for='image'
 						class='block mb-3 font-semibold text-gray-800 text-lg'
 					>
-						Image (optional)
+						{t('addRecipe.form.image')}
 					</label>
 					<input
 						type='file'
@@ -84,7 +98,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 						for='video'
 						class='block mb-3 font-semibold text-gray-800 text-lg'
 					>
-						Video (optional)
+						{t('addRecipe.form.video')}
 					</label>
 					<input
 						type='file'
@@ -100,7 +114,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					class='w-full bg-primary text-white py-4 rounded-xl font-bold text-xl hover:bg-primary-dark shadow-lg
 					transition-colors duration-300 ease-in-out focus:ring-4 focus:ring-primary/60'
 				>
-					Submit Recipe
+					{t('addRecipe.form.submit')}
 				</button>
 			</form>
 
@@ -125,6 +139,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	</style>
 
 	<script>
+		// Traducciones pasadas desde Astro
+		const addRecipeMessages = {
+			submitting: '{jsMessages.submitting}',
+			success: '{jsMessages.success}',
+			error: '{jsMessages.error}',
+			failed: '{jsMessages.failed}',
+		};
+
 		document
 			.getElementById('recipeForm')
 			.addEventListener('submit', async (e) => {
@@ -133,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				const formData = new FormData(form);
 				const statusEl = document.getElementById('formStatus');
 
-				statusEl.textContent = 'Submitting...';
+				statusEl.textContent = addRecipeMessages.submitting;
 				statusEl.style.color = 'var(--primary-color)';
 
 				try {
@@ -143,15 +165,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					});
 					const data = await res.json();
 					if (res.ok) {
-						statusEl.textContent = '✅ Recipe submitted successfully!';
+						statusEl.textContent = addRecipeMessages.success;
 						statusEl.style.color = 'green';
 						form.reset();
 					} else {
-						statusEl.textContent = `❌ Error: ${data.message}`;
+						statusEl.textContent = addRecipeMessages.error + data.message;
 						statusEl.style.color = 'red';
 					}
 				} catch {
-					statusEl.textContent = '❌ Failed to submit recipe.';
+					statusEl.textContent = addRecipeMessages.failed;
 					statusEl.style.color = 'red';
 				}
 			});
