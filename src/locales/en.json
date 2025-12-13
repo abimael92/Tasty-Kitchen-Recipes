@@ -88,5 +88,9 @@
         "instructions": "Instructions",
         "notFound": "Recipe Not Found",
         "notFoundMessage": "Sorry, this recipe does not exist."
+    },
+    "favorites": {
+        "title": "Tus Recetas Favoritas",
+        "empty": "Aún no tienes favoritos."
     }
 }
