@@ -94,6 +94,42 @@
   --color-text-light: #b0b0b0;
   --glass-bg: rgba(26, 26, 26, 0.85);
   --glass-border: rgba(255, 255, 255, 0.1);
+
+  input,
+  textarea,
+  select {
+    background: color-mix(in srgb, var(--color-surface) 90%, white);
+    color: var(--color-text);
+    border-color: color-mix(in srgb, var(--color-svg-light) 30%, transparent);
+  }
+  
+  input:focus,
+  textarea:focus,
+  select:focus {
+    background: color-mix(in srgb, var(--color-surface) 95%, white);
+    border-color: var(--color-primary);
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: color-mix(in srgb, var(--color-text-light) 70%, white);
+  }
+  
+* p, * ul, * li {
+  color: var(--color-text-light) !important;
+  font-family: var(--font-body)  !important;
+  font-size: var(--text-base)  !important;
+}
+
+h2 {
+  font-size: var(--text-2xl) !important;
+  color: var(--color-primary)  !important;
+  position: relative  !important;
+  padding-bottom: var(--space-xs)  !important;
+}
+
+
+
 }
 
 /* Section: Base Styles */
@@ -325,13 +361,14 @@ textarea,
 select {
   width: 100%;
   padding: var(--space-sm) var(--space-md);
-  background: var(--glass-bg);
+  background: var(--color-surface); /* Changed from #fff to var(--color-surface) */
   border: 2px solid color-mix(in srgb, var(--color-secondary) 30%, transparent);
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: var(--text-base);
-  color: var(--color-text);
+  color: var(--color-text); /* This should be visible now */
   transition: all var(--transition-fast);
+
 }
 
 input:focus,
@@ -340,7 +377,7 @@ select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-focus);
-  background: color-mix(in srgb, var(--glass-bg) 90%, white);
+  background: var(--color-surface);
 }
 
 input::placeholder,
