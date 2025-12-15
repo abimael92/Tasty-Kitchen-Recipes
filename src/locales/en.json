@@ -91,9 +91,10 @@
     },
     "aiCookingTips": {
         "title": "Chef's Pro Tips",
-        "newTip": "New tip"
+        "newTip": "New tip",
     "favorites": {
-        "title": "Tus Recetas Favoritas",
-        "empty": "Aún no tienes favoritos."
+        "title": "Your Favorite Recipes",
+        "empty": "You don't have any favorites yet."
     }
+}
 }

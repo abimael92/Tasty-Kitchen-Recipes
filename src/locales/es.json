@@ -114,28 +114,9 @@
     "aiCookingTips": {
         "title": "Consejos del Chef",
         "newTip": "Nuevo consejo"
+    },
     "favorites": {
         "title": "Tus Recetas Favoritas",
         "empty": "Aún no tienes favoritos."
-    },
-    "addRecipe": {
-        "title": "Agregar Nueva Receta",
-        "form": {
-            "title": "Título",
-            "titlePlaceholder": "Ej. Rollos de Canela",
-            "ingredients": "Ingredientes",
-            "ingredientsPlaceholder": "Lista de ingredientes, uno por línea",
-            "instructions": "Instrucciones",
-            "instructionsPlaceholder": "Instrucciones paso a paso",
-            "image": "Imagen (opcional)",
-            "video": "Video (opcional)",
-            "submit": "Enviar Receta"
-        },
-        "messages": {
-            "submitting": "Enviando...",
-            "success": "✅ ¡Receta enviada exitosamente!",
-            "error": "❌ Error: ",
-            "failed": "❌ Falló el envío de la receta."
-        }
     }
 }
