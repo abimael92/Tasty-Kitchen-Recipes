@@ -88,5 +88,9 @@
         "instructions": "Instructions",
         "notFound": "Recipe Not Found",
         "notFoundMessage": "Sorry, this recipe does not exist."
+    },
+    "aiCookingTips": {
+        "title": "Chef's Pro Tips",
+        "newTip": "New tip"
     }
 }
