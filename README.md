@@ -51,21 +51,21 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 
 📖 Features
 
-- [x] 🍰 Rich recipe layout (ingredients, instructions, media)
-- [ ] 📹 Embedded video walkthroughs
-- [x] 🌟 User star ratings (1–5)
+- [X] 🍰 Rich recipe layout (ingredients, instructions, media)
+- [X] 📹 Embedded video walkthroughs
+- [X] 🌟 User star ratings (1–5)
 - [ ] 💬 Threaded comments (emoji + Markdown support)
-- [ ] 📷 Review photo uploads
+- [X] 📷 Review photo uploads
 - [x] 🧑‍🍳 Author info, tags
-- [ ] 🍽 Servings, calories
-- [ ] 🏷 Clickable tags and filters (e.g. Vegan, 15 mins)
-- [ ] 🧾 Grocery list generator from ingredients
-- [x] 📌 Save/favorite recipes to user profile
+- [X] 🍽 Servings, calories
+- [X] 🏷 Clickable tags and filters (e.g. Vegan, 15 mins)
+- [X] 🧾 Grocery list generator from ingredients
+- [X] 📌 Save/favorite recipes to user profile
 - [ ] 🗂 Create recipe collections (e.g. "Quick Dinners")
-- [ ] 📊 Analytics: views, saves, avg. rating
+- [X] 📊 Analytics: views, saves, avg. rating
 - [ ] 📬 "Recipe of the Week" email subscription
-- [x] 🔗 Social sharing (WhatsApp, Pinterest, Twitter)
-- [x] 🖨 Print-friendly view
+- [X] 🔗 Social sharing (WhatsApp, Pinterest, Twitter)
+- [X] 🖨 Print-friendly view
 - [ ] 🧠 AI cooking tips (e.g. "Add lemon zest")
 
 | ✅ Milestones                            | Features                                                                                                       |

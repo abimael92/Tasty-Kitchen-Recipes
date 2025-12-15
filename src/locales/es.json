@@ -1,12 +1,13 @@
 {
     "title": "Recetas de Cocina Sabrosas",
+    "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
     "language": "Idioma",
     "home": {
         "title": "Recetas de Cocina Sabrosas",
         "nav": {
             "home": "Inicio",
             "recipes": "Recetas",
-            "about": "Acerca de",
+            "about": "Acerca de nosotros",
             "profile": "Perfil",
             "favorites": "Favoritos",
             "groceryList": "Mi Lista de Compras",
@@ -82,7 +83,8 @@
         "links": {
             "title": "Enlaces Rápidos",
             "home": "Inicio",
-            "about": "Acerca de"
+            "about": "Acerca de nosotros",
+            "recipes": "Recetas"
         },
         "follow": {
             "title": "Síguenos"
@@ -109,6 +111,9 @@
         "notFound": "Receta No Encontrada",
         "notFoundMessage": "Lo sentimos, esta receta no existe."
     },
+    "aiCookingTips": {
+        "title": "Consejos del Chef",
+        "newTip": "Nuevo consejo"
     "favorites": {
         "title": "Tus Recetas Favoritas",
         "empty": "Aún no tienes favoritos."
