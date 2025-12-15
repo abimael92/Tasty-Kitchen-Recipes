@@ -1,5 +1,5 @@
 // src/hooks/useCommentUpdates.ts
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 
 interface Comment {
 	_id: string;
@@ -20,49 +20,86 @@ export function useCommentUpdates(
 	onCommentUpdate?: (comment: Comment) => void
 ) {
 	const eventSourceRef = useRef<EventSource | null>(null);
+	const [isConnected, setIsConnected] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (!recipeId) return;
+	const cleanup = useCallback(() => {
+		if (eventSourceRef.current) {
+			eventSourceRef.current.close();
+			eventSourceRef.current = null;
+			setIsConnected(false);
+		}
+	}, []);
 
-		// Setup Server-Sent Events connection
-		const eventSource = new EventSource(
-			`/api/comments-stream?recipeId=${recipeId}`
-		);
-		eventSourceRef.current = eventSource;
+useEffect(() => {
+	if (!recipeId) return;
+	cleanup();
 
-		eventSource.onmessage = (event) => {
+	try {
+		let retryCount = 0;
+		const maxRetries = 3;
+
+		const connect = () => {
+			console.log(`Connecting to SSE for recipe: ${recipeId}`);
+
 			try {
-				const data = JSON.parse(event.data);
+				const eventSource = new EventSource(
+					`/api/comments-stream?recipeId=${recipeId}`
+				);
+				eventSourceRef.current = eventSource;
 
-				switch (data.type) {
-					case 'NEW_COMMENT':
-						console.log('New comment received:', data.comment);
-						onNewComment?.(data.comment);
-						break;
-					case 'COMMENT_UPDATED':
-						onCommentUpdate?.(data.comment);
-						break;
-					case 'COMMENT_DELETED':
-						// Handle comment deletion
-						break;
-					default:
-						console.log('COMMENT_EVENT:', data.type);
-				}
-			} catch (error) {
-				console.error('Error parsing SSE message:', error);
+				eventSource.onopen = () => {
+					console.log('SSE connection opened');
+					setIsConnected(true);
+					setError(null);
+					retryCount = 0;
+				};
+
+				eventSource.onmessage = (event) => {
+					try {
+						const data = JSON.parse(event.data);
+						if (data.type === 'NEW_COMMENT') {
+							onNewComment?.(data.comment);
+						} else if (data.type === 'COMMENT_UPDATED') {
+							onCommentUpdate?.(data.comment);
+						}
+					} catch (error) {
+						console.error('Error parsing SSE message:', error);
+					}
+				};
+
+				eventSource.onerror = (error) => {
+					console.error('SSE connection error:', error);
+					setIsConnected(false);
+					if (retryCount < maxRetries) {
+						retryCount++;
+						setTimeout(() => {
+							if (eventSource.readyState === EventSource.CLOSED) {
+								eventSource.close();
+								connect();
+							}
+						}, 3000 * retryCount);
+					} else {
+						setError('Failed to connect');
+					}
+				};
+			} catch (err) {
+				console.log('SSE failed');
+				return;
 			}
 		};
 
-		eventSource.onerror = (error) => {
-			console.error('SSE error:', error);
-		};
+		connect();
+	} catch (err) {
+		console.error('Failed:', err);
+	}
 
-		return () => {
-			eventSource.close();
-		};
-	}, [recipeId, onNewComment, onCommentUpdate]);
+	return cleanup;
+}, [recipeId, onNewComment, onCommentUpdate, cleanup]);
 
 	return {
-		disconnect: () => eventSourceRef.current?.close(),
+		isConnected,
+		error,
+		disconnect: cleanup,
 	};
 }
