@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext.jsx';
 import FavoritesList from './FavoritesList.jsx';
+import { t } from '../utils/i18n';
 
-export default function FavoritesFetcher() {
+export default function FavoritesFetcher({ locale = 'es' }) {
 	const { user, loading } = useAuth();
 	const [recipes, setRecipes] = useState([]);
-	const [title, setTitle] = useState('Your Favorite Recipes');
+	const [title, setTitle] = useState(t('favorites.title', locale));
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
@@ -31,7 +32,7 @@ export default function FavoritesFetcher() {
 					setRecipes(Array.isArray(data?.recipes) ? data.recipes : []);
 				} catch (err) {
 					console.error('Fetch error:', err);
-					setError('Failed to load favorites. Please refresh the page.');
+					setError(t('favorites.fetchError', locale));
 				} finally {
 					setIsLoading(false);
 				}
@@ -39,13 +40,17 @@ export default function FavoritesFetcher() {
 
 			fetchFavorites();
 		}
-	}, [user, loading]); // Run when user or loading state changes
+	}, [user, loading, locale]); // Añadí locale a las dependencias
 
-	if (loading) return <p>Loading user info...</p>;
-	if (!user) return <p>Please log in to see your favorites.</p>;
-	if (isLoading) return <p>Loading your favorites...</p>;
+	// Actualizar el título cuando cambia el locale
+	useEffect(() => {
+		setTitle(t('favorites.title', locale));
+	}, [locale]);
+
+	if (loading) return <p>{t('auth.loading', locale)}</p>;
+	if (!user) return <p>{t('favorites.loginRequired', locale)}</p>;
+	if (isLoading) return <p>{t('favorites.loading', locale)}</p>;
 	if (error) return <p className='error'>{error}</p>;
 
-	return <FavoritesList recipes={recipes} title={title} />;
+	return <FavoritesList recipes={recipes} title={title} locale={locale} />;
 }
-

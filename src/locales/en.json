@@ -92,5 +92,8 @@
     "aiCookingTips": {
         "title": "Chef's Pro Tips",
         "newTip": "New tip"
+    "favorites": {
+        "title": "Tus Recetas Favoritas",
+        "empty": "Aún no tienes favoritos."
     }
 }
