@@ -1,11 +1,11 @@
 ---
 const { url } = Astro;
-const pathLocale = url.pathname.split('/')[1];
-const currentLocale = pathLocale === 'en' ? 'en' : 'es';
+// We don't care about URL prefixes anymore
+const currentLocale = 'es'; // Always show Spanish by default, or use localStorage
 const locales = ['es', 'en'];
 ---
 
-<select id='language-selector' class='simple-select' value={currentLocale}>
+<select id='language-selector' class='simple-select'>
 	{
 		locales.map((locale) => (
 			<option value={locale} selected={locale === currentLocale}>
@@ -16,26 +16,22 @@ const locales = ['es', 'en'];
 </select>
 
 <script is:inline>
-	// Your exact same code
-	document.getElementById('language-selector').value =
-		window.location.pathname.startsWith('/en') ? 'en' : 'es';
-
-	document
-		.getElementById('language-selector')
-		.addEventListener('change', (e) => {
-			const newLocale = e.target.value;
-			const currentPath = window.location.pathname;
-
-			if (currentPath === '/' || currentPath === '/en') {
-				window.location.href = newLocale === 'es' ? '/' : '/en';
-				return;
-			}
-
-			const pathWithoutLocale = currentPath.replace(/^\/(en|es)/, '');
-			window.location.href =
-				newLocale === 'es' ? pathWithoutLocale : `/en${pathWithoutLocale}`;
-		});
+	// Check localStorage for saved language preference
+	const savedLocale = localStorage.getItem('preferred-language') || 'es';
+	document.getElementById('language-selector').value = savedLocale;
+	
+	// When language changes, save preference and reload page
+	document.getElementById('language-selector').addEventListener('change', (e) => {
+		const newLocale = e.target.value;
+		
+		// Save preference
+		localStorage.setItem('preferred-language', newLocale);
+		
+		// Reload the page to apply translations
+		window.location.reload();
+	});
 </script>
+
 
 <style>
 	.simple-select {
