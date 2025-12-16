@@ -1,85 +1,796 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../utils/i18n.js';
+
+const { currentLocale } = Astro.params;
 ---
 
-<BaseLayout title='About Us'>
-	<section class='about-us'>
-		<h1>About Our Recipe Blog</h1>
-		<p>
-			Welcome to our recipe blog, your go-to place for delicious and
-			easy-to-follow recipes! We’re passionate about sharing the best recipes to
-			inspire your cooking journey. Whether you’re a beginner or a seasoned
-			chef, you’ll find something to try.
-		</p>
+<BaseLayout title={t('about.title', currentLocale)}>
+	<div class='about-container'>
+		<!-- Hero Section -->
+		<section class='hero-section'>
+			<div class='hero-content'>
+				<h1 class='hero-title'>{t('about.heroTitle', currentLocale)}</h1>
+				<p class='hero-subtitle'>{t('about.heroSubtitle', currentLocale)}</p>
+			</div>
+		</section>
 
-		<h2>What We Share</h2>
-		<ul>
-			<li>Simple and quick recipes for everyday meals</li>
-			<li>Healthy and indulgent options to suit any taste</li>
-			<li>Helpful tips and tricks to improve your cooking skills</li>
-			<li>Fun food ideas for family meals and gatherings</li>
-		</ul>
+		<!-- Mission & Vision -->
+		<section class='mission-section'>
+			<div class='mission-grid'>
+				<div class='mission-card'>
+					<div class='mission-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'
+							></path>
+						</svg>
+					</div>
+					<h2>{t('about.missionTitle', currentLocale)}</h2>
+					<p>{t('about.missionText', currentLocale)}</p>
+				</div>
+				<div class='mission-card'>
+					<div class='mission-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M12 2a10 10 0 110 20 10 10 0 010-20zm0 2a8 8 0 100 16 8 8 0 000-16zm-1 3h2v6h-2V7zm0 8h2v2h-2v-2z'
+							></path>
+						</svg>
+					</div>
+					<h2>{t('about.visionTitle', currentLocale)}</h2>
+					<p>{t('about.visionText', currentLocale)}</p>
+				</div>
+			</div>
+		</section>
 
-		<h2>Join the Community</h2>
-		<p>
-			We love to hear from our readers! If you try a recipe, feel free to leave
-			a comment or share your feedback. Don't forget to subscribe to our
-			newsletter to stay updated on the latest recipes and tips!
-		</p>
-	</section>
+		<!-- What We Offer -->
+		<section class='offerings-section'>
+			<h2 class='section-title'>{t('about.offeringsTitle', currentLocale)}</h2>
+			<div class='offerings-grid'>
+				<div class='offering-card'>
+					<h3>{t('about.offering1Title', currentLocale)}</h3>
+					<ul>
+						<li>{t('about.offering1Item1', currentLocale)}</li>
+						<li>{t('about.offering1Item2', currentLocale)}</li>
+						<li>{t('about.offering1Item3', currentLocale)}</li>
+						<li>{t('about.offering1Item4', currentLocale)}</li>
+					</ul>
+				</div>
+
+				<div class='offering-card'>
+					<h3>{t('about.offering2Title', currentLocale)}</h3>
+					<ul>
+						<li>{t('about.offering2Item1', currentLocale)}</li>
+						<li>{t('about.offering2Item2', currentLocale)}</li>
+						<li>{t('about.offering2Item3', currentLocale)}</li>
+						<li>{t('about.offering2Item4', currentLocale)}</li>
+					</ul>
+				</div>
+
+				<div class='offering-card'>
+					<h3>{t('about.offering3Title', currentLocale)}</h3>
+					<ul>
+						<li>{t('about.offering3Item1', currentLocale)}</li>
+						<li>{t('about.offering3Item2', currentLocale)}</li>
+						<li>{t('about.offering3Item3', currentLocale)}</li>
+						<li>{t('about.offering3Item4', currentLocale)}</li>
+					</ul>
+				</div>
+
+				<div class='offering-card'>
+					<h3>{t('about.offering4Title', currentLocale)}</h3>
+					<ul>
+						<li>{t('about.offering4Item1', currentLocale)}</li>
+						<li>{t('about.offering4Item2', currentLocale)}</li>
+						<li>{t('about.offering4Item3', currentLocale)}</li>
+						<li>{t('about.offering4Item4', currentLocale)}</li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<!-- Features -->
+		<section class='features-section'>
+			<h2 class='section-title'>{t('about.featuresTitle', currentLocale)}</h2>
+			<div class='features-list'>
+				<div class='feature-item'>
+					<span class='feature-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'></path>
+						</svg>
+					</span>
+					<div>
+						<h3>{t('about.feature1Title', currentLocale)}</h3>
+						<p>{t('about.feature1Text', currentLocale)}</p>
+					</div>
+				</div>
+
+				<div class='feature-item'>
+					<span class='feature-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path d='M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z'></path>
+						</svg>
+					</span>
+					<div>
+						<h3>{t('about.feature2Title', currentLocale)}</h3>
+						<p>{t('about.feature2Text', currentLocale)}</p>
+					</div>
+				</div>
+
+				<div class='feature-item'>
+					<span class='feature-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'
+							></path>
+						</svg>
+					</span>
+					<div>
+						<h3>{t('about.feature3Title', currentLocale)}</h3>
+						<p>{t('about.feature3Text', currentLocale)}</p>
+					</div>
+				</div>
+
+				<div class='feature-item'>
+					<span class='feature-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z'
+							></path>
+						</svg>
+					</span>
+					<div>
+						<h3>{t('about.feature4Title', currentLocale)}</h3>
+						<p>{t('about.feature4Text', currentLocale)}</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Community Section -->
+		<section class='community-section'>
+			<div class='community-content'>
+				<h2>{t('about.communityTitle', currentLocale)}</h2>
+				<p>{t('about.communityText', currentLocale)}</p>
+
+				<div class='community-stats'>
+					<div class='stat-item'>
+						<span class='stat-number'>500+</span>
+						<span class='stat-label'>{t('about.recipes', currentLocale)}</span>
+					</div>
+					<div class='stat-item'>
+						<span class='stat-number'>50K+</span>
+						<span class='stat-label'>{t('about.members', currentLocale)}</span>
+					</div>
+					<div class='stat-item'>
+						<span class='stat-number'>10K+</span>
+						<span class='stat-label'>{t('about.comments', currentLocale)}</span>
+					</div>
+					<div class='stat-item'>
+						<span class='stat-number'>24/7</span>
+						<span class='stat-label'>{t('about.support', currentLocale)}</span>
+					</div>
+				</div>
+
+				<div class='cta-buttons'>
+					<a href='/recipes' class='btn primary'>
+						{t('about.exploreRecipes', currentLocale)}
+					</a>
+					<a href='/subscribe' class='btn secondary'>
+						{t('about.subscribe', currentLocale)}
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<!-- Team Section -->
+		<section class='team-section'>
+			<h2 class='section-title'>{t('about.teamTitle', currentLocale)}</h2>
+			<div class='team-grid'>
+				<div class='team-member'>
+					<div class='member-avatar'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
+							></path>
+						</svg>
+					</div>
+					<h3>{t('about.teamMember1Name', currentLocale)}</h3>
+					<p class='member-role'>{t('about.teamMember1Role', currentLocale)}</p>
+					<p class='member-bio'>{t('about.teamMember1Bio', currentLocale)}</p>
+				</div>
+
+				<div class='team-member'>
+					<div class='member-avatar'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
+							></path>
+						</svg>
+					</div>
+					<h3>{t('about.teamMember2Name', currentLocale)}</h3>
+					<p class='member-role'>{t('about.teamMember2Role', currentLocale)}</p>
+					<p class='member-bio'>{t('about.teamMember2Bio', currentLocale)}</p>
+				</div>
+
+				<div class='team-member'>
+					<div class='member-avatar'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
+							></path>
+						</svg>
+					</div>
+					<h3>{t('about.teamMember3Name', currentLocale)}</h3>
+					<p class='member-role'>{t('about.teamMember3Role', currentLocale)}</p>
+					<p class='member-bio'>{t('about.teamMember3Bio', currentLocale)}</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Contact Section -->
+		<section class='contact-section'>
+			<h2>{t('about.contactTitle', currentLocale)}</h2>
+			<p>{t('about.contactText', currentLocale)}</p>
+
+			<div class='contact-info'>
+				<div class='contact-item'>
+					<span class='contact-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'
+							></path>
+						</svg>
+					</span>
+					<span>hello@recipeblog.com</span>
+				</div>
+				<div class='contact-item'>
+					<span class='contact-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'
+							></path>
+						</svg>
+					</span>
+					<span>+1 (555) 123-4567</span>
+				</div>
+				<div class='contact-item'>
+					<span class='contact-icon'>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+						>
+							<path
+								d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'
+							></path>
+						</svg>
+					</span>
+					<span>{t('about.location', currentLocale)}</span>
+				</div>
+			</div>
+
+			<div class='social-links'>
+				<a href='#' class='social-link' aria-label='Instagram'>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						viewBox='0 0 24 24'
+						fill='currentColor'
+					>
+						<path
+							d='M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 011.25 1.25A1.25 1.25 0 0117.25 8 1.25 1.25 0 0116 6.75a1.25 1.25 0 011.25-1.25M12 7a5 5 0 015 5 5 5 0 01-5 5 5 5 0 01-5-5 5 5 0 015-5m0 2a3 3 0 00-3 3 3 3 0 003 3 3 3 0 003-3 3 3 0 00-3-3z'
+						></path>
+					</svg>
+				</a>
+				<a href='#' class='social-link' aria-label='Facebook'>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						viewBox='0 0 24 24'
+						fill='currentColor'
+					>
+						<path
+							d='M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 008.44-9.9c0-5.53-4.5-10.02-10-10.02z'
+						></path>
+					</svg>
+				</a>
+				<a href='#' class='social-link' aria-label='Pinterest'>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						viewBox='0 0 24 24'
+						fill='currentColor'
+					>
+						<path
+							d='M12 0C5.37 0 0 5.37 0 12c0 4.75 3.06 8.79 7.36 10.31-.1-.88-.18-2.23.04-3.2.2-.86 1.29-5.47 1.29-5.47s-.33-.65-.33-1.62c0-1.52.88-2.65 1.98-2.65.94 0 1.39.71 1.39 1.56 0 .95-.6 2.38-.9 3.71-.26 1.1.56 2 1.65 2 1.98 0 3.49-2.09 3.49-5.1 0-2.67-1.92-4.53-4.66-4.53-3.18 0-5.05 2.38-5.05 4.84 0 .95.36 1.98.81 2.54.09.11.1.21.07.33-.08.36-.25 1.12-.29 1.28-.05.21-.17.25-.4.15-1.5-.7-2.44-2.89-2.44-4.66 0-3.78 2.75-7.27 7.94-7.27 4.17 0 7.4 2.98 7.4 6.96 0 4.14-2.61 7.47-6.24 7.47-1.22 0-2.37-.63-2.76-1.38l-.75 2.85c-.27 1.03-1.01 2.32-1.5 3.1 1.13.35 2.32.55 3.57.55 6.63 0 12-5.37 12-12S18.63 0 12 0z'
+						></path>
+					</svg>
+				</a>
+				<a href='#' class='social-link' aria-label='YouTube'>
+					<svg
+						xmlns='http://www.w3.org/2000/svg'
+						viewBox='0 0 24 24'
+						fill='currentColor'
+					>
+						<path
+							d='M10 15l5.19-3L10 9v6zm11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z'
+						></path>
+					</svg>
+				</a>
+			</div>
+		</section>
+	</div>
 </BaseLayout>
 
 <style>
-	.about-us {
-		padding: 8rem;
-		border-radius: 8px;
+	/* Base Styles */
+	.about-container {
 		max-width: 1200px;
 		margin: 0 auto;
+		padding: 0 1rem;
 	}
 
-	.about-us h1 {
+	/* Hero Section */
+	.hero-section {
+		text-align: center;
+		padding: 3rem 1rem;
+		background: linear-gradient(
+			135deg,
+			var(--primary-color) 0%,
+			var(--secondary-color) 100%
+		);
+		border-radius: 12px;
+		margin: 1rem 0;
+		color: white;
+	}
+
+	.hero-title {
 		font-size: 2.5rem;
-		color: #d2691e;
+		font-weight: 700;
+		margin-bottom: 1rem;
+	}
+
+	.hero-subtitle {
+		font-size: 1.1rem;
+		max-width: 600px;
+		margin: 0 auto;
+		line-height: 1.6;
+		opacity: 0.9;
+	}
+
+	/* Mission Section */
+	.mission-section {
+		padding: 3rem 0;
+	}
+
+	.mission-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+		margin-top: 2rem;
+	}
+
+	.mission-card {
+		background: white;
+		padding: 2rem;
+		border-radius: 12px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+		border: 1px solid var(--border-color);
 		text-align: center;
 	}
 
-	.about-us h2 {
+	.mission-icon {
+		width: 48px;
+		height: 48px;
+		margin: 0 auto 1rem;
+		color: var(--primary-color);
+	}
+
+	.mission-card h2 {
+		font-size: 1.5rem;
+		color: var(--text-color);
+		margin-bottom: 1rem;
+	}
+
+	.mission-card p {
+		color: var(--text-color);
+		line-height: 1.6;
+		opacity: 0.8;
+	}
+
+	/* Offerings Section */
+	.offerings-section {
+		padding: 3rem 0;
+		background: var(--light-bg);
+		border-radius: 12px;
+		margin: 2rem 0;
+	}
+
+	.section-title {
 		font-size: 2rem;
-		color: #333;
+		color: var(--text-color);
+		text-align: center;
+		margin-bottom: 2rem;
+		font-weight: 600;
 	}
 
-	.about-us p {
-		font-size: 1rem;
-		color: #666;
+	.offerings-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.offering-card {
+		background: white;
+		padding: 1.5rem;
+		border-radius: 8px;
+		border: 1px solid var(--border-color);
+	}
+
+	.offering-card h3 {
+		color: var(--primary-color);
+		font-size: 1.2rem;
+		margin-bottom: 1rem;
+	}
+
+	.offering-card ul {
+		list-style: none;
+		padding: 0;
+	}
+
+	.offering-card li {
+		padding: 0.5rem 0;
+		color: var(--text-color);
+		position: relative;
+		padding-left: 1.5rem;
+	}
+
+	.offering-card li::before {
+		content: '•';
+		color: var(--secondary-color);
+		position: absolute;
+		left: 0;
+		font-size: 1.2rem;
+	}
+
+	/* Features Section */
+	.features-section {
+		padding: 3rem 0;
+	}
+
+	.features-list {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.feature-item {
+		display: flex;
+		gap: 1rem;
+		padding: 1.5rem;
+		background: white;
+		border-radius: 8px;
+		margin-bottom: 1rem;
+		border: 1px solid var(--border-color);
+		align-items: flex-start;
+	}
+
+	.feature-icon {
+		width: 24px;
+		height: 24px;
+		color: var(--primary-color);
+		flex-shrink: 0;
+	}
+
+	.feature-item h3 {
+		color: var(--text-color);
+		margin-bottom: 0.5rem;
+		font-size: 1.1rem;
+	}
+
+	.feature-item p {
+		color: var(--text-color);
 		line-height: 1.5;
+		opacity: 0.8;
 	}
 
-	.about-us ul {
-		list-style-type: disc;
-		padding-left: 20px;
-		color: #333;
+	/* Community Section */
+	.community-section {
+		padding: 3rem 1rem;
+		background: var(--text-color);
+		border-radius: 12px;
+		margin: 2rem 0;
+		text-align: center;
+		color: white;
 	}
 
-	.about-us ul li {
-		font-size: 1rem;
+	.community-section h2 {
+		font-size: 2rem;
+		margin-bottom: 1rem;
 	}
 
-	@media (max-width: 600px) {
-		.about-us {
+	.community-section p {
+		max-width: 600px;
+		margin: 0 auto 2rem;
+		line-height: 1.6;
+		opacity: 0.9;
+	}
+
+	.community-stats {
+		display: flex;
+		justify-content: center;
+		gap: 2rem;
+		flex-wrap: wrap;
+		margin: 2rem 0;
+	}
+
+	.stat-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.stat-number {
+		font-size: 2rem;
+		font-weight: 700;
+		color: var(--primary-color);
+	}
+
+	.stat-label {
+		font-size: 0.9rem;
+		opacity: 0.8;
+		margin-top: 0.5rem;
+	}
+
+	.cta-buttons {
+		display: flex;
+		gap: 1rem;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin-top: 2rem;
+	}
+
+	.btn {
+		padding: 0.75rem 2rem;
+		border-radius: 4px;
+		font-weight: 600;
+		text-decoration: none;
+		transition: all 0.2s ease;
+	}
+
+	.btn.primary {
+		background: var(--primary-color);
+		color: white;
+	}
+
+	.btn.primary:hover {
+		background: var(--secondary-color);
+	}
+
+	.btn.secondary {
+		background: transparent;
+		color: white;
+		border: 2px solid white;
+	}
+
+	.btn.secondary:hover {
+		background: rgba(255, 255, 255, 0.1);
+	}
+
+	/* Team Section */
+	.team-section {
+		padding: 3rem 0;
+	}
+
+	.team-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 2rem;
+		margin-top: 2rem;
+	}
+
+	.team-member {
+		text-align: center;
+		padding: 2rem;
+		background: white;
+		border-radius: 12px;
+		border: 1px solid var(--border-color);
+	}
+
+	.member-avatar {
+		width: 64px;
+		height: 64px;
+		margin: 0 auto 1rem;
+		color: var(--primary-color);
+	}
+
+	.team-member h3 {
+		color: var(--text-color);
+		font-size: 1.2rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.member-role {
+		color: var(--secondary-color);
+		font-weight: 600;
+		margin-bottom: 1rem;
+	}
+
+	.member-bio {
+		color: var(--text-color);
+		line-height: 1.5;
+		opacity: 0.8;
+	}
+
+	/* Contact Section */
+	.contact-section {
+		padding: 3rem 1rem;
+		background: var(--light-bg);
+		border-radius: 12px;
+		text-align: center;
+		margin: 2rem 0;
+	}
+
+	.contact-section h2 {
+		color: var(--text-color);
+		font-size: 2rem;
+		margin-bottom: 1rem;
+	}
+
+	.contact-section p {
+		color: var(--text-color);
+		max-width: 600px;
+		margin: 0 auto 2rem;
+		line-height: 1.6;
+	}
+
+	.contact-info {
+		display: flex;
+		justify-content: center;
+		gap: 2rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+	}
+
+	.contact-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--text-color);
+	}
+
+	.contact-icon {
+		width: 20px;
+		height: 20px;
+		color: var(--primary-color);
+	}
+
+	.social-links {
+		display: flex;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	.social-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		background: white;
+		border-radius: 50%;
+		color: var(--text-color);
+		text-decoration: none;
+		transition: all 0.2s ease;
+	}
+
+	.social-link:hover {
+		background: var(--primary-color);
+		color: white;
+	}
+
+	.social-link svg {
+		width: 20px;
+		height: 20px;
+	}
+
+	/* Responsive Design */
+	@media (max-width: 768px) {
+		.about-container {
+			padding: 0 0.5rem;
+		}
+
+		.hero-title {
+			font-size: 2rem;
+		}
+
+		.hero-section {
 			padding: 2rem 1rem;
 		}
 
-		.about-us h1 {
-			font-size: 1.8rem;
-		}
-
-		.about-us h2 {
+		.section-title {
 			font-size: 1.5rem;
 		}
 
-		.about-us p,
-		.about-us ul li {
-			font-size: 0.9rem;
+		.mission-grid,
+		.offerings-grid,
+		.team-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.community-stats {
+			gap: 1.5rem;
+		}
+
+		.stat-number {
+			font-size: 1.5rem;
+		}
+
+		.cta-buttons {
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.btn {
+			width: 100%;
+			max-width: 300px;
+		}
+
+		.feature-item {
+			flex-direction: column;
+			text-align: center;
+			align-items: center;
+		}
+
+		.contact-info {
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.mission-card,
+		.offering-card,
+		.team-member {
+			padding: 1.5rem;
 		}
 	}
 </style>

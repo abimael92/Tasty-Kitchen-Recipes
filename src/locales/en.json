@@ -48,6 +48,26 @@
         },
         "loading": "Loading..."
     },
+    "addRecipe": {
+        "title": "Add New Recipe",
+        "form": {
+            "title": "Title",
+            "titlePlaceholder": "Ex. Cinnamon Rolls",
+            "ingredients": "Ingredients",
+            "ingredientsPlaceholder": "List ingredients, one per line",
+            "instructions": "Instructions",
+            "instructionsPlaceholder": "Step-by-step instructions",
+            "image": "Image (optional)",
+            "video": "Video (optional)",
+            "submit": "Submit Recipe"
+        },
+        "messages": {
+            "submitting": "Submitting...",
+            "success": "✅ Recipe submitted successfully!",
+            "error": "❌ Error: ",
+            "failed": "❌ Failed to submit recipe."
+        }
+    },
     "hero": {
         "title": "Fresh, Simple, and Tasty",
         "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",
@@ -91,10 +111,10 @@
     },
     "aiCookingTips": {
         "title": "Chef's Pro Tips",
-        "newTip": "New tip",
+        "newTip": "New tip"
+    },
     "favorites": {
         "title": "Your Favorite Recipes",
         "empty": "You don't have any favorites yet."
     }
-}
 }
