@@ -1,0 +1,327 @@
+---
+// src/components/Kitchen404Animation.astro
+---
+
+<div class="kitchen-404-animation">
+  <!-- Animated 404 -->
+  <div class="error-number">
+    <span class="error-digit">4</span>
+    <div class="kitchen-icon">
+      <div class="pan">
+        <div class="pan-handle"></div>
+        <div class="pan-body">
+          <div class="sizzle"></div>
+          <div class="sizzle"></div>
+          <div class="sizzle"></div>
+          <div class="ingredient tomato"></div>
+          <div class="ingredient onion"></div>
+          <div class="ingredient garlic"></div>
+        </div>
+      </div>
+    </div>
+    <span class="error-digit">4</span>
+  </div>
+  
+  <!-- Cooking steam -->
+  <div class="steam steam-1"></div>
+  <div class="steam steam-2"></div>
+  <div class="steam steam-3"></div>
+</div>
+
+<style>
+  .kitchen-404-animation {
+    position: relative;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--space-xl) 0;
+  }
+
+  .error-number {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .error-digit {
+    font-family: var(--font-heading);
+    font-size: clamp(4rem, 10vw, 8rem);
+    font-weight: 900;
+    color: #c14e39;
+    text-shadow: 
+      2px 2px 0 var(--color-svg-dark),
+      4px 4px 0 rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: digitDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  .error-digit:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+
+  .error-digit:nth-child(3) {
+    animation-delay: 0.5s;
+  }
+
+  @keyframes digitDrop {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .kitchen-icon {
+    width: 140px;
+    height: 140px;
+    position: relative;
+    animation: panFloat 3s infinite ease-in-out;
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.2));
+  }
+
+  @keyframes panFloat {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    33% {
+      transform: translateY(-10px) rotate(5deg);
+    }
+    66% {
+      transform: translateY(5px) rotate(-3deg);
+    }
+  }
+
+  .pan {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    transform-origin: center;
+  }
+
+  .pan-handle {
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 18px;
+    background: linear-gradient(90deg, #8b4513, #a0522d);
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    z-index: 1;
+  }
+
+  .pan-handle::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 25px;
+    background: #654321;
+    border-radius: 4px;
+  }
+
+  .pan-body {
+    position: absolute;
+    width: 120px;
+    height: 60px;
+    background: linear-gradient(135deg, #2f4f4f, #1a2f2f);
+    border-radius: 50% 50% 5% 5%;
+    box-shadow: 
+      inset 0 -15px 30px rgba(0,0,0,0.4),
+      inset 0 5px 10px rgba(255,255,255,0.1),
+      0 10px 25px rgba(0,0,0,0.3);
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .pan-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30%;
+    background: linear-gradient(180deg, 
+      rgba(255,215,0,0.3) 0%,
+      rgba(255,99,71,0.2) 50%,
+      transparent 100%
+    );
+    border-radius: 50% 50% 0 0;
+  }
+
+  .sizzle {
+    position: absolute;
+    background: #ffd700;
+    border-radius: 50%;
+    filter: blur(1px);
+    animation: sizzlePop 1.5s infinite;
+    box-shadow: 0 0 10px #ff4500;
+  }
+
+  .sizzle:nth-child(1) {
+    width: 14px;
+    height: 14px;
+    top: 20px;
+    left: 25px;
+    animation-delay: 0s;
+  }
+
+  .sizzle:nth-child(2) {
+    width: 10px;
+    height: 10px;
+    top: 35px;
+    left: 60px;
+    animation-delay: 0.5s;
+  }
+
+  .sizzle:nth-child(3) {
+    width: 12px;
+    height: 12px;
+    top: 15px;
+    left: 85px;
+    animation-delay: 1s;
+  }
+
+  @keyframes sizzlePop {
+    0%, 100% {
+      transform: scale(0.3) rotate(0deg);
+      opacity: 0.4;
+    }
+    50% {
+      transform: scale(1.3) rotate(180deg);
+      opacity: 0.9;
+      box-shadow: 0 0 20px #ff4500, 0 0 30px #ffd700;
+    }
+  }
+
+  /* Floating Ingredients */
+  .ingredient {
+    position: absolute;
+    border-radius: 50%;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+    animation: ingredientFloat 4s infinite ease-in-out;
+  }
+
+  .ingredient.tomato {
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    top: 25px;
+    left: 40px;
+    animation-delay: 0.2s;
+  }
+
+  .ingredient.onion {
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #e6e6fa, #d8bfd8);
+    top: 30px;
+    left: 70px;
+    animation-delay: 0.7s;
+  }
+
+  .ingredient.garlic {
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #fffaf0, #f5f5dc);
+    top: 20px;
+    left: 60px;
+    animation-delay: 1.2s;
+  }
+
+  @keyframes ingredientFloat {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-8px) rotate(10deg);
+    }
+  }
+
+  /* Cooking Steam */
+  .steam {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    filter: blur(10px);
+    animation: steamRise 3s infinite ease-in-out;
+    z-index: 1;
+  }
+
+  .steam-1 {
+    width: 40px;
+    height: 60px;
+    top: -30px;
+    left: 50%;
+    margin-left: -20px;
+    animation-delay: 0s;
+  }
+
+  .steam-2 {
+    width: 35px;
+    height: 55px;
+    top: -40px;
+    left: calc(50% - 30px);
+    animation-delay: 0.5s;
+  }
+
+  .steam-3 {
+    width: 30px;
+    height: 50px;
+    top: -35px;
+    left: calc(50% + 25px);
+    animation-delay: 1s;
+  }
+
+  @keyframes steamRise {
+    0% {
+      transform: translateY(0) scale(0.8);
+      opacity: 0;
+    }
+    50% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-100px) scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .kitchen-404-animation {
+      height: 150px;
+    }
+    
+    .error-digit {
+      font-size: clamp(3rem, 8vw, 5rem);
+    }
+    
+    .kitchen-icon {
+      width: 100px;
+      height: 100px;
+    }
+    
+    .pan {
+      width: 90px;
+      height: 90px;
+    }
+    
+    .pan-body {
+      width: 90px;
+      height: 45px;
+    }
+    
+    .pan-handle {
+      right: -20px;
+      width: 35px;
+      height: 15px;
+    }
+  }
+</style>
