@@ -1,0 +1,12 @@
+---
+// src/components/404Page.astro
+import { t } from '../utils/i18n.js';
+import InteractiveNotFound from './InteractiveNotFound.astro';
+import { currentLocale = 'es' } = Astro.props;
+---
+
+<InteractiveNotFound
+  title={t('recipes.notFound', currentLocale)}
+  message={t('recipes.notFoundMessage', currentLocale)}
+  currentLocale={currentLocale}
+/>
