@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import RecipeNotFound from '../../components/RecipeNotFound.astro';
 import { getCollection } from 'astro:content';
 import { client } from '../../lib/sanity.js';
 import { t } from '../../utils/i18n.js';
@@ -252,7 +253,11 @@ try {
 		</BaseLayout>
 	) : (
 		<BaseLayout title={t('recipes.notFound', currentLocale)}>
-			<p>{t('recipes.notFoundMessage', currentLocale)}</p>
+			<RecipeNotFound
+				title={t('recipes.notFound', currentLocale)}
+				message={t('recipes.notFoundMessage', currentLocale)}
+				currentLocale={currentLocale}
+			/>
 		</BaseLayout>
 	)
 }

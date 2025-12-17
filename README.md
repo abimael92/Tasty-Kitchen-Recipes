@@ -54,9 +54,9 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 - [X] 🍰 Rich recipe layout (ingredients, instructions, media)
 - [X] 📹 Embedded video walkthroughs
 - [X] 🌟 User star ratings (1–5)
-- [ ] 💬 Threaded comments (emoji + Markdown support)
+- [X] 💬 Threaded comments (emoji + Markdown support)
 - [X] 📷 Review photo uploads
-- [x] 🧑‍🍳 Author info, tags
+- [X] 🧑‍🍳 Author info, tags
 - [X] 🍽 Servings, calories
 - [X] 🏷 Clickable tags and filters (e.g. Vegan, 15 mins)
 - [X] 🧾 Grocery list generator from ingredients
@@ -66,7 +66,7 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 - [ ] 📬 "Recipe of the Week" email subscription
 - [X] 🔗 Social sharing (WhatsApp, Pinterest, Twitter)
 - [X] 🖨 Print-friendly view
-- [ ] 🧠 AI cooking tips (e.g. "Add lemon zest")
+- [X] 🧠 AI cooking tips (e.g. "Add lemon zest")
 
 | ✅ Milestones                            | Features                                                                                                       |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |

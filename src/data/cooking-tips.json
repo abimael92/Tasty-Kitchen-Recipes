@@ -19,6 +19,442 @@
         {
             "en": "Use room temperature ingredients for better mixing and rising.",
             "es": "Usa ingredientes a temperatura ambiente para mejor mezcla y levado."
+        },
+        {
+            "en": "Sharpen your knives regularly for safer and more precise cutting.",
+            "es": "Afilá tus cuchillos regularmente para cortar con más seguridad y precisión."
+        },
+        {
+            "en": "Read the entire recipe before starting to cook.",
+            "es": "Lee toda la receta antes de comenzar a cocinar."
+        },
+        {
+            "en": "Measure ingredients accurately, especially in baking.",
+            "es": "Mide los ingredientes con precisión, especialmente en repostería."
+        },
+        {
+            "en": "Preheat your oven for consistent baking results.",
+            "es": "Precalienta el horno para obtener resultados de horneado consistentes."
+        },
+        {
+            "en": "Don't overcrowd the pan when sautéing or roasting.",
+            "es": "No llenes demasiado la sartén al saltear o asar."
+        },
+        {
+            "en": "Taste your food as you cook and adjust seasoning.",
+            "es": "Prueba la comida mientras cocinas y ajusta la sazón."
+        },
+        {
+            "en": "Use fresh herbs at the end of cooking to preserve their flavor.",
+            "es": "Usa hierbas frescas al final de la cocción para preservar su sabor."
+        },
+        {
+            "en": "Store onions and potatoes separately to prevent spoilage.",
+            "es": "Almacena cebollas y papas por separado para evitar que se echen a perder."
+        },
+        {
+            "en": "Add pasta water to sauces for better emulsification.",
+            "es": "Añade agua de pasta a las salsas para mejor emulsificación."
+        },
+        {
+            "en": "Use a kitchen scale for precise measurements.",
+            "es": "Usa una báscula de cocina para medidas precisas."
+        },
+        {
+            "en": "Keep your cutting board stable with a damp towel underneath.",
+            "es": "Mantén estable la tabla de cortar con un paño húmedo debajo."
+        },
+        {
+            "en": "Bloom gelatin in cold water before using.",
+            "es": "Hidrata la gelatina en agua fría antes de usarla."
+        },
+        {
+            "en": "Use the right oil for the right cooking temperature.",
+            "es": "Usa el aceite adecuado para la temperatura de cocción correcta."
+        },
+        {
+            "en": "Clean as you cook to minimize post-meal cleanup.",
+            "es": "Limpia mientras cocinas para minimizar la limpieza posterior."
+        },
+        {
+            "en": "Store ripe bananas in the refrigerator to slow further ripening.",
+            "es": "Almacena plátanos maduros en el refrigerador para retardar la maduración."
+        },
+        {
+            "en": "Use a microplane for finely grating garlic, ginger, and citrus zest.",
+            "es": "Usa un microplane para rallar finamente ajo, jengibre y cáscara de cítricos."
+        },
+        {
+            "en": "Bring dairy ingredients to room temperature before baking.",
+            "es": "Lleva los ingredientes lácteos a temperatura ambiente antes de hornear."
+        },
+        {
+            "en": "Use cold butter for flaky pastry dough.",
+            "es": "Usa mantequilla fría para masa de hojaldre escamosa."
+        },
+        {
+            "en": "Soak beans overnight to reduce cooking time and improve digestibility.",
+            "es": "Remoja los frijoles durante la noche para reducir el tiempo de cocción y mejorar la digestibilidad."
+        },
+        {
+            "en": "Pat meat dry before searing for better browning.",
+            "es": "Seca la carne con papel antes de sellar para un mejor dorado."
+        },
+        {
+            "en": "Use kitchen shears for cutting herbs, pizza, and poultry.",
+            "es": "Usa tijeras de cocina para cortar hierbas, pizza y aves."
+        },
+        {
+            "en": "Store tomatoes at room temperature, not in the refrigerator.",
+            "es": "Almacena tomates a temperatura ambiente, no en el refrigerador."
+        },
+        {
+            "en": "Add a splash of pasta water to your sauce for better consistency.",
+            "es": "Añade un chorrito de agua de pasta a tu salsa para mejor consistencia."
+        },
+        {
+            "en": "Use a meat thermometer to ensure perfect doneness.",
+            "es": "Usa un termómetro para carne para asegurar la cocción perfecta."
+        },
+        {
+            "en": "Let dough rise in a warm, draft-free place.",
+            "es": "Deja que la masa leve en un lugar cálido y sin corrientes de aire."
+        },
+        {
+            "en": "Toast nuts before using to enhance their flavor.",
+            "es": "Tuesta los frutos secos antes de usarlos para realzar su sabor."
+        },
+        {
+            "en": "Use a splatter screen when frying to keep your stovetop clean.",
+            "es": "Usa una pantalla contra salpicaduras al freír para mantener la estufa limpia."
+        },
+        {
+            "en": "Cook with wines you'd enjoy drinking.",
+            "es": "Cocina con vinos que disfrutarías bebiendo."
+        },
+        {
+            "en": "Save Parmesan rinds to add flavor to soups and sauces.",
+            "es": "Guarda las cortezas de parmesano para añadir sabor a sopas y salsas."
+        },
+        {
+            "en": "Use a pastry brush for even application of glazes and butter.",
+            "es": "Usa un pincel de repostería para aplicar glaseados y mantequilla de manera uniforme."
+        },
+        {
+            "en": "Keep a kitchen journal to note recipe adjustments.",
+            "es": "Mantén un diario de cocina para anotar ajustes de recetas."
+        },
+        {
+            "en": "Use different colored cutting boards for different food types.",
+            "es": "Usa tablas de cortar de diferentes colores para diferentes tipos de alimentos."
+        },
+        {
+            "en": "Add cornstarch slurry to thicken sauces without lumps.",
+            "es": "Añade una mezcla de maicena y agua para espesar salsas sin grumos."
+        },
+        {
+            "en": "Season food in layers throughout the cooking process.",
+            "es": "Sazona la comida en capas durante todo el proceso de cocción."
+        },
+        {
+            "en": "Use a vegetable peeler to create thin cheese slices.",
+            "es": "Usa un pelador de verduras para crear lonchas finas de queso."
+        },
+        {
+            "en": "Cook rice with a ratio of 1:1.5 (rice to water) for perfect texture.",
+            "es": "Cocina el arroz con una proporción de 1:1.5 (arroz a agua) para textura perfecta."
+        },
+        {
+            "en": "Freeze ginger before grating for easier handling.",
+            "es": "Congela el jengibre antes de rallarlo para manejarlo más fácilmente."
+        },
+        {
+            "en": "Use avocado pits to prevent guacamole from browning.",
+            "es": "Usa los huesos de aguacate para evitar que el guacamole se ponga marrón."
+        },
+        {
+            "en": "Cook with seasonal ingredients for the best flavor.",
+            "es": "Cocina con ingredientes de temporada para el mejor sabor."
+        },
+        {
+            "en": "Use a bench scraper to clean and portion dough.",
+            "es": "Usa un raspador de mesa para limpiar y porcionar la masa."
+        },
+        {
+            "en": "Add a bay leaf to long-cooking dishes for subtle flavor.",
+            "es": "Añade una hoja de laurel a platos de cocción larga para un sabor sutil."
+        },
+        {
+            "en": "Use a cast iron skillet for superior searing and heat retention.",
+            "es": "Usa una sartén de hierro fundido para sellado superior y retención de calor."
+        },
+        {
+            "en": "Save vegetable scraps to make homemade broth.",
+            "es": "Guarda los recortes de vegetales para hacer caldo casero."
+        },
+        {
+            "en": "Use an ice cream scoop for evenly sized cookies and meatballs.",
+            "es": "Usa un sacabolas de helado para galletas y albóndigas de tamaño uniforme."
+        },
+        {
+            "en": "Let roasted vegetables caramelize for deeper flavor.",
+            "es": "Deja que las verduras asadas se caramelicen para un sabor más profundo."
+        },
+        {
+            "en": "Use mayonnaise instead of butter for golden grilled cheese.",
+            "es": "Usa mayonesa en lugar de mantequilla para sándwiches tostados dorados."
+        },
+        {
+            "en": "Add a teaspoon of sugar to tomato-based sauces to balance acidity.",
+            "es": "Añade una cucharadita de azúcar a salsas a base de tomate para equilibrar la acidez."
+        },
+        {
+            "en": "Use a pizza stone or steel for crispy pizza crust.",
+            "es": "Usa una piedra o acero para pizza para una corteza crujiente."
+        },
+        {
+            "en": "Store fresh herbs like bouquets in water.",
+            "es": "Almacena hierbas frescas como ramilletes en agua."
+        },
+        {
+            "en": "Add baking soda to tomato sauce to reduce acidity.",
+            "es": "Añade bicarbonato de sodio a la salsa de tomate para reducir la acidez."
+        },
+        {
+            "en": "Use a mandoline for uniformly sliced vegetables.",
+            "es": "Usa una mandolina para verduras cortadas uniformemente."
+        },
+        {
+            "en": "Cook eggs low and slow for creamy scrambled eggs.",
+            "es": "Cocina los huevos a fuego lento para huevos revueltos cremosos."
+        },
+        {
+            "en": "Add vanilla extract to chocolate recipes for enhanced flavor.",
+            "es": "Añade extracto de vainilla a recetas de chocolate para realzar el sabor."
+        },
+        {
+            "en": "Use parchment paper for easy cleanup when baking.",
+            "es": "Usa papel pergamino para una limpieza fácil al hornear."
+        },
+        {
+            "en": "Chill cookie dough before baking for thicker cookies.",
+            "es": "Enfría la masa de galletas antes de hornear para galletas más gruesas."
+        },
+        {
+            "en": "Add a pinch of baking soda to caramelized onions for faster browning.",
+            "es": "Añade una pizca de bicarbonato a cebollas caramelizadas para dorar más rápido."
+        },
+        {
+            "en": "Use a double boiler for delicate sauces and melting chocolate.",
+            "es": "Usa un baño María para salsas delicadas y derretir chocolate."
+        },
+        {
+            "en": "Cook mushrooms in a dry pan first to release moisture.",
+            "es": "Cocina champiñones primero en una sartén seca para liberar humedad."
+        },
+        {
+            "en": "Add a splash of milk to eggs for fluffier omelets.",
+            "es": "Añade un chorrito de leche a los huevos para tortillas más esponjosas."
+        },
+        {
+            "en": "Use leftover coffee in chocolate desserts for depth of flavor.",
+            "es": "Usa café sobrante en postres de chocolate para profundidad de sabor."
+        },
+        {
+            "en": "Cook bacon in the oven for evenly cooked strips.",
+            "es": "Cocina tocino en el horno para tiras cocidas uniformemente."
+        },
+        {
+            "en": "Add a cornstarch slurry to stir-fry sauces for glossy finish.",
+            "es": "Añade una mezcla de maicena a salsas de salteado para un acabado brillante."
+        },
+        {
+            "en": "Use a fish spatula for delicate fish and other proteins.",
+            "es": "Usa una espátula para pescado para pescado delicado y otras proteínas."
+        },
+        {
+            "en": "Season seafood just before cooking to prevent drying.",
+            "es": "Sazona los mariscos justo antes de cocinar para evitar que se sequen."
+        },
+        {
+            "en": "Add a splash of vinegar to poaching water for perfect poached eggs.",
+            "es": "Añade un chorrito de vinagre al agua de pochado para huevos escalfados perfectos."
+        },
+        {
+            "en": "Use a kitchen torch for professional-looking crème brûlée.",
+            "es": "Usa un soplete de cocina para un crème brûlée de aspecto profesional."
+        },
+        {
+            "en": "Cook with different salts for different purposes.",
+            "es": "Cocina con diferentes sales para diferentes propósitos."
+        },
+        {
+            "en": "Add MSG sparingly to boost umami flavors.",
+            "es": "Añade glutamato monosódico con moderación para potenciar sabores umami."
+        },
+        {
+            "en": "Use leftover pickle juice to brine chicken or make salad dressing.",
+            "es": "Usa el jugo sobrante de pepinillos para marinar pollo o hacer aderezo para ensalada."
+        },
+        {
+            "en": "Cook grains in broth instead of water for extra flavor.",
+            "es": "Cocina granos en caldo en lugar de agua para sabor extra."
+        },
+        {
+            "en": "Use a cooling rack to prevent sogginess in baked goods.",
+            "es": "Usa una rejilla de enfriamiento para evitar que los productos horneados se empapen."
+        },
+        {
+            "en": "Add a splash of vodka to pie dough for flakier crust.",
+            "es": "Añade un chorrito de vodka a la masa de tarta para una corteza más escamosa."
+        },
+        {
+            "en": "Cook with a lid to speed up boiling and retain moisture.",
+            "es": "Cocina con tapa para acelerar la ebullición y retener la humedad."
+        },
+        {
+            "en": "Use a salad spinner for crisp, dry greens.",
+            "es": "Usa un centrifugador de ensaladas para hojas verdes crujientes y secas."
+        },
+        {
+            "en": "Add cream of tartar to stabilize egg whites for meringue.",
+            "es": "Añade crémor tártaro para estabilizar claras de huevo para merengue."
+        },
+        {
+            "en": "Cook pasta 1-2 minutes less than package directions for al dente.",
+            "es": "Cocina la pasta 1-2 minutos menos que las instrucciones del paquete para al dente."
+        },
+        {
+            "en": "Use a Dutch oven for even heating in braises and stews.",
+            "es": "Usa una olla holandesa para calentamiento uniforme en guisos y estofados."
+        },
+        {
+            "en": "Add a Parmesan rind to minestrone for rich flavor.",
+            "es": "Añade una corteza de parmesano al minestrone para un sabor rico."
+        },
+        {
+            "en": "Use a potato ricer for smooth mashed potatoes.",
+            "es": "Usa un pasapurés para puré de papas suave."
+        },
+        {
+            "en": "Cook with fresh ground pepper for more intense flavor.",
+            "es": "Cocina con pimienta recién molida para un sabor más intenso."
+        },
+        {
+            "en": "Add a cinnamon stick to chili for subtle warmth.",
+            "es": "Añade una rama de canela al chili para un calor sutil."
+        },
+        {
+            "en": "Use a zester for fine citrus zest without bitter pith.",
+            "es": "Usa un rallador de cítricos para ralladura fina sin la parte blanca amarga."
+        },
+        {
+            "en": "Cook with high-smoke-point oils for frying and searing.",
+            "es": "Cocina con aceites de alto punto de humo para freír y sellar."
+        },
+        {
+            "en": "Add a pat of butter to finish sauces for richness.",
+            "es": "Añade una nuez de mantequilla al final para enriquecer las salsas."
+        },
+        {
+            "en": "Use a meat mallet to tenderize and flatten cuts evenly.",
+            "es": "Usa un mazo para carne para ablandar y aplanar cortes de manera uniforme."
+        },
+        {
+            "en": "Cook vegetables in batches when stir-frying to prevent steaming.",
+            "es": "Cocina verduras en lotes al saltear para evitar que se cocinen al vapor."
+        },
+        {
+            "en": "Add a splash of soy sauce to deepen savory flavors.",
+            "es": "Añade un chorrito de salsa de soya para profundizar los sabores salados."
+        },
+        {
+            "en": "Use a spider strainer for deep-frying and blanching.",
+            "es": "Usa un colador de araña para freír en profundidad y blanquear."
+        },
+        {
+            "en": "Cook with whole spices and grind them fresh when possible.",
+            "es": "Cocina con especias enteras y muélelas frescas cuando sea posible."
+        },
+        {
+            "en": "Add a squeeze of lime to avocado to prevent browning.",
+            "es": "Añade un chorrito de lima al aguacate para evitar que se ponga marrón."
+        },
+        {
+            "en": "Use a kitchen thermometer for candy making precision.",
+            "es": "Usa un termómetro de cocina para precisión en la elaboración de dulces."
+        },
+        {
+            "en": "Cook with filtered water for better-tasting results.",
+            "es": "Cocina con agua filtrada para resultados de mejor sabor."
+        },
+        {
+            "en": "Add a teaspoon of mustard to cheese sauces for smoother melting.",
+            "es": "Añade una cucharadita de mostaza a salsas de queso para un derretimiento más suave."
+        },
+        {
+            "en": "Use a basting brush to keep meats moist during roasting.",
+            "es": "Usa un pincel para barnizar para mantener las carnes húmedas durante el asado."
+        },
+        {
+            "en": "Cook with sea salt flakes for finishing dishes.",
+            "es": "Cocina con escamas de sal marina para terminar platos."
+        },
+        {
+            "en": "Add a pinch of sugar to savory dishes to balance flavors.",
+            "es": "Añade una pizca de azúcar a platos salados para equilibrar sabores."
+        },
+        {
+            "en": "Use a steamer basket for healthier vegetable cooking.",
+            "es": "Usa una canasta de vapor para cocinar verduras de manera más saludable."
+        },
+        {
+            "en": "Cook with fresh garlic for more potent flavor than powder.",
+            "es": "Cocina con ajo fresco para un sabor más potente que en polvo."
+        },
+        {
+            "en": "Add a bay leaf to rice cooking water for aromatic rice.",
+            "es": "Añade una hoja de laurel al agua de cocción del arroz para arroz aromático."
+        },
+        {
+            "en": "Use a grater with different sizes for various cheese textures.",
+            "es": "Usa un rallador con diferentes tamaños para varias texturas de queso."
+        },
+        {
+            "en": "Cook with homemade stock for superior flavor to store-bought.",
+            "es": "Cocina con caldo casero para un sabor superior al comprado en tienda."
+        },
+        {
+            "en": "Add a splash of wine to deglaze pans and create delicious sauces.",
+            "es": "Añade un chorrito de vino para desglasar sartenes y crear salsas deliciosas."
+        },
+        {
+            "en": "Use a mandoline guard to protect your fingers while slicing.",
+            "es": "Usa un protector de mandolina para proteger tus dedos al cortar."
+        },
+        {
+            "en": "Cook with unsalted butter to control salt levels precisely.",
+            "es": "Cocina con mantequilla sin sal para controlar los niveles de sal con precisión."
+        },
+        {
+            "en": "Add a squeeze of lemon to cooked greens to brighten them up.",
+            "es": "Añade un chorrito de limón a las verduras cocidas para avivarlas."
+        },
+        {
+            "en": "Use a mortar and pestle for grinding fresh spices and pastes.",
+            "es": "Usa un mortero para moler especias frescas y pastas."
+        },
+        {
+            "en": "Cook with convection setting for even baking and roasting.",
+            "es": "Cocina con ajuste de convección para hornear y asar de manera uniforme."
+        },
+        {
+            "en": "Add a sprig of fresh herbs to olive oil for infused flavor.",
+            "es": "Añade una ramita de hierbas frescas al aceite de oliva para sabor infusionado."
+        },
+        {
+            "en": "Use a silicone spatula to scrape bowls clean and fold ingredients gently.",
+            "es": "Usa una espátula de silicona para raspar bien los tazones y doblar ingredientes suavemente."
         }
     ]
 }

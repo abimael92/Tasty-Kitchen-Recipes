@@ -1,0 +1,459 @@
+---
+import AICookingTips from './AICookingTips.astro';
+import Kitchen404Animation from '../components/Kitchen404Animation.astro'; // Your enhanced animation
+import RecipeCategoryGrid from '../components/RecipeCategoryGrid.astro'; // Your category grid
+import ActionButtons from '../components/ActionButtons.astro'; // Your action buttons
+
+interface Props {
+	title: string;
+	message: string;
+	currentLocale?: string;
+}
+
+const { title, message, currentLocale = 'es' } = Astro.props;
+---
+
+<div class='error-page'>
+	<!-- Decorative elements -->
+	<div class='error-decoration error-decoration-top'></div>
+	<div class='error-decoration error-decoration-bottom'></div>
+
+	<div class='error-content'>
+		<!-- Use the enhanced Kitchen404Animation component -->
+		<Kitchen404Animation />
+
+		<h1 class='error-title'>{title}</h1>
+		<p class='error-description'>{message}</p>
+
+		<!-- Smart search section -->
+		<div class='search-container'>
+			<p class='search-prompt'>Looking for something specific?</p>
+			<div class='search-box'>
+				<input
+					type='text'
+					placeholder='Search recipes, ingredients, or techniques...'
+					id='searchInput'
+				/>
+				<button onclick='handleSearch()'>
+					<svg width='26px' height='26px' viewBox='0 0 24 24' fill='none'>
+						<path
+							d='M17 17L21 21'
+							stroke='#323030'
+							stroke-width='2'
+							stroke-linecap='round'></path>
+						<path
+							d='M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z'
+							stroke='#323030'
+							stroke-width='2'></path>
+					</svg>
+				</button>
+			</div>
+			<!-- Quick search tags -->
+			<div class='search-tags'>
+				<button class='tag' onclick="searchTag('dinner')">Dinner</button>
+				<button class='tag' onclick="searchTag('dessert')">Dessert</button>
+				<button class='tag' onclick="searchTag('quick')">Quick</button>
+				<button class='tag' onclick="searchTag('healthy')">Healthy</button>
+				<button class='tag' onclick="searchTag('vegetarian')">Vegetarian</button
+				>
+			</div>
+		</div>
+
+		<!-- Use the ActionButtons component -->
+		<ActionButtons />
+
+		<!-- Use the RecipeCategoryGrid component -->
+		<RecipeCategoryGrid title='Popular Recipe Categories' />
+
+		<!-- AI Cooking Tips -->
+		<div class='ai-tips-wrapper'>
+			<AICookingTips currentLocale={currentLocale} />
+		</div>
+
+		<!-- Additional helpful section -->
+		<div class='help-section'>
+			<h3>Need More Help?</h3>
+			<div class='help-options'>
+				<a href='/contact' class='help-option'>
+					<svg width='20' height='20' viewBox='0 0 24 24' fill='none'>
+						<path
+							d='M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z'
+							stroke='currentColor'
+							stroke-width='2'></path>
+					</svg>
+					<span>Contact Support</span>
+				</a>
+				<a href='/sitemap' class='help-option'>
+					<svg width='20' height='20' viewBox='0 0 24 24' fill='none'>
+						<path
+							d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z'
+							stroke='currentColor'
+							stroke-width='2'></path>
+						<polyline
+							points='9 22 9 12 15 12 15 22'
+							stroke='currentColor'
+							stroke-width='2'></polyline>
+					</svg>
+					<span>View Sitemap</span>
+				</a>
+				<a href='/blog' class='help-option'>
+					<svg width='20' height='20' viewBox='0 0 24 24' fill='none'>
+						<path
+							d='M12 6.25278V19.2528M12 6.25278C10.8321 5.47686 9.24649 5 7.5 5C5.75351 5 4.16789 5.47686 3 6.25278V19.2528C4.16789 18.4769 5.75351 18 7.5 18C9.24649 18 10.8321 18.4769 12 19.2528'
+							stroke='currentColor'
+							stroke-width='2'></path>
+					</svg>
+					<span>Browse Blog</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	/* Enhanced error page styles using global variables */
+	.error-page {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		overflow: hidden;
+		padding: var(--space-xl);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-background) 95%, white),
+			color-mix(in srgb, var(--color-svg-light) 85%, white)
+		);
+	}
+
+	.error-decoration {
+		position: absolute;
+		width: 400px;
+		height: 400px;
+		border-radius: 50%;
+		opacity: 0.1;
+		z-index: 0;
+		filter: blur(40px);
+		pointer-events: none;
+	}
+
+	.error-decoration-top {
+		top: -200px;
+		right: -200px;
+		background: radial-gradient(
+			circle,
+			var(--color-primary) 0%,
+			transparent 70%
+		);
+	}
+
+	.error-decoration-bottom {
+		bottom: -200px;
+		left: -200px;
+		background: radial-gradient(
+			circle,
+			var(--color-svg-fresh) 0%,
+			transparent 70%
+		);
+	}
+
+	.error-content {
+		position: relative;
+		z-index: 1;
+		padding: var(--space-2xl);
+		width: 100%;
+		max-width: 1000px;
+		animation: fadeInUp 0.6s var(--animation-timing);
+	}
+
+	@keyframes fadeInUp {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	/* Typography */
+	.error-title {
+		font-family: var(--font-heading);
+		color: var(--color-primary);
+		font-size: var(--text-3xl);
+		text-align: center;
+		margin: var(--space-xl) 0 var(--space-lg);
+		line-height: 1.2;
+	}
+
+	.error-description {
+		font-family: var(--font-body);
+		color: var(--color-text-light);
+		text-align: center;
+		font-size: var(--text-lg);
+		line-height: 1.6;
+		margin-bottom: var(--space-2xl);
+		max-width: 600px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	/* Enhanced Search Section */
+	.search-container {
+		margin: var(--space-2xl) auto;
+		max-width: 600px;
+	}
+
+	.search-prompt {
+		font-family: var(--font-heading);
+		color: var(--color-secondary);
+		text-align: center;
+		margin-bottom: var(--space-lg);
+		font-size: var(--text-xl);
+	}
+
+	.search-box {
+		display: flex;
+		border: 2px solid var(--color-secondary);
+		border-radius: var(--radius-xl);
+		overflow: hidden;
+		background: var(--color-surface);
+		transition: all var(--transition-medium);
+		margin-bottom: var(--space-lg);
+	}
+
+	.search-box:focus-within {
+		border-color: var(--color-primary);
+		box-shadow: 0 0 0 4px var(--color-focus);
+	}
+
+	.search-box input {
+		flex: 1;
+		padding: var(--space-lg) var(--space-xl);
+		border: none;
+		font-family: var(--font-body);
+		font-size: var(--text-base);
+		background: transparent;
+		color: var(--color-text);
+	}
+
+	.search-box input:focus {
+		outline: none;
+	}
+
+	.search-box button {
+		padding: 0 var(--space-xl);
+		background: var(--color-secondary);
+		border: none;
+		color: white;
+		cursor: pointer;
+		transition: background var(--transition-fast);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.search-box button:hover {
+		background: var(--color-primary);
+	}
+
+	/* Search Tags */
+	.search-tags {
+		display: flex;
+		gap: var(--space-sm);
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	.tag {
+		padding: var(--space-xs) var(--space-md);
+		background: color-mix(in srgb, var(--color-svg-herb) 10%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-svg-herb) 30%, transparent);
+		border-radius: var(--radius-full);
+		color: var(--color-svg-herb);
+		font-size: var(--text-sm);
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.tag:hover {
+		background: var(--color-svg-herb);
+		color: white;
+		transform: translateY(-2px);
+	}
+
+	/* Help Section */
+	.help-section {
+		margin-top: var(--space-2xl);
+		padding-top: var(--space-xl);
+		border-top: 1px solid var(--glass-border);
+	}
+
+	.help-section h3 {
+		font-family: var(--font-heading);
+		color: var(--color-secondary);
+		text-align: center;
+		margin-bottom: var(--space-lg);
+		font-size: var(--text-xl);
+	}
+
+	.help-options {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: var(--space-lg);
+		max-width: 800px;
+		margin: 0 auto;
+	}
+
+	.help-option {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-sm);
+		padding: var(--space-lg);
+		background: var(--color-surface);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-lg);
+		text-decoration: none;
+		color: var(--color-text);
+		transition: all var(--transition-medium);
+	}
+
+	.help-option:hover {
+		transform: translateY(-4px);
+		border-color: var(--color-primary);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.help-option svg {
+		color: var(--color-primary);
+		margin-bottom: var(--space-xs);
+	}
+
+	.help-option span {
+		font-family: var(--font-body);
+		font-weight: 600;
+		font-size: var(--text-sm);
+		text-align: center;
+	}
+
+	/* AI Tips Wrapper */
+	.ai-tips-wrapper {
+		margin: var(--space-2xl) 0;
+	}
+
+	/* Responsive Design */
+	@media (max-width: 768px) {
+		.error-page {
+			padding: var(--space-md);
+		}
+
+		.error-content {
+			padding: var(--space-lg);
+		}
+
+		.error-title {
+			font-size: var(--text-2xl);
+		}
+
+		.error-description {
+			font-size: var(--text-base);
+		}
+
+		.search-box {
+			flex-direction: column;
+			border-radius: var(--radius-lg);
+		}
+
+		.search-box input,
+		.search-box button {
+			width: 100%;
+			padding: var(--space-md);
+		}
+
+		.help-options {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.error-decoration {
+			width: 200px;
+			height: 200px;
+		}
+
+		.error-content {
+			padding: var(--space-md);
+		}
+
+		.search-tags {
+			justify-content: flex-start;
+		}
+	}
+</style>
+
+<script>
+	// Interactive search functionality
+	function handleSearch() {
+		const searchInput = document.getElementById('searchInput');
+		const query = searchInput.value.trim();
+
+		if (query) {
+			// Add search animation
+			searchInput.style.transform = 'scale(0.98)';
+			setTimeout(() => {
+				searchInput.style.transform = '';
+			}, 200);
+
+			// Navigate to search results
+			window.location.href = `/recipes?search=${encodeURIComponent(query)}`;
+		} else {
+			// Shake animation for empty input
+			searchInput.style.animation = 'shake 0.5s ease-in-out';
+			setTimeout(() => {
+				searchInput.style.animation = '';
+			}, 500);
+			searchInput.focus();
+		}
+	}
+
+	function searchTag(tag) {
+		// Animate the clicked tag
+		const tagElement = event.target;
+		tagElement.style.transform = 'scale(0.95)';
+		tagElement.style.backgroundColor = 'var(--color-svg-herb)';
+		tagElement.style.color = 'white';
+
+		setTimeout(() => {
+			tagElement.style.transform = '';
+		}, 200);
+
+		// Navigate to tag search
+		window.location.href = `/recipes?search=${tag}&category=${tag}`;
+	}
+
+	// Enter key support for search
+	document.addEventListener('DOMContentLoaded', () => {
+		const searchInput = document.getElementById('searchInput');
+		if (searchInput) {
+			searchInput.addEventListener('keypress', (e) => {
+				if (e.key === 'Enter') {
+					handleSearch();
+				}
+			});
+		}
+
+		// Add shake animation
+		const style = document.createElement('style');
+		style.textContent = `
+			@keyframes shake {
+				0%, 100% { transform: translateX(0); }
+				25% { transform: translateX(-5px); }
+				75% { transform: translateX(5px); }
+			}
+		`;
+		document.head.appendChild(style);
+	});
+</script>
