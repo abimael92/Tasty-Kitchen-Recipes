@@ -4,93 +4,166 @@ import { t } from '../utils/i18n';
 const { currentLocale } = Astro;
 ---
 
-<section class='hero'>
-	<video autoplay loop muted playsinline class='hero-video'>
-		<source src='./hero.mp4' type='video/mp4' />
-		Your browser does not support the video tag.
-	</video>
+<section class='pt-32 pb-20 px-6 lg:px-12 hero-section'>
+	<div class='max-w-7xl mx-auto'>
+		<div class='grid lg:grid-cols-2 gap-12 items-center'>
+			<div class='space-y-8'>
+				<div
+					class='inline-flex items-center gap-2 bg-white rounded-full px-5 py-2.5 shadow-md'
+				>
+					<div class='w-5 h-5 flex items-center justify-center'>
+						<i class='ri-star-fill text-yellow-500 text-lg'></i>
+					</div>
+					<span class='text-sm font-medium text-gray-700'
+						>{t('home.hero.badge', currentLocale)}</span
+					>
+				</div>
 
-	<div class='container'>
-		<h1>{t('hero.title', currentLocale)}</h1>
-		<p>{t('hero.subtitle', currentLocale)}</p>
-		<a href='/recipes' class='cta-button'>
-			{t('hero.cta', currentLocale)}
-		</a>
+				<h1 class='text-6xl lg:text-7xl font-bold text-gray-900 leading-tight'>
+					{t('home.hero.title', currentLocale)}
+				</h1>
+
+				<p class='text-lg text-gray-600 leading-relaxed max-w-xl'>
+					{t('home.hero.subtitle', currentLocale)}
+				</p>
+
+				<div class='flex flex-wrap items-center gap-4 pt-4'>
+					<a
+						href='/download'
+						class='px-8 py-4 bg-gray-900 text-white rounded-full hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 transition-all font-semibold text-lg whitespace-nowrap'
+					>
+						{t('home.hero.cta.download', currentLocale)}
+					</a>
+					<a
+						href='/demo'
+						class='group px-8 py-4 text-gray-900 font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all whitespace-nowrap'
+					>
+						{t('home.hero.cta.demo', currentLocale)}
+						<i class='ri-arrow-right-line text-xl'></i>
+					</a>
+				</div>
+			</div>
+
+			<div class='relative'>
+				<div class='relative rounded-3xl overflow-hidden shadow-2xl'>
+					<div
+						class='absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20'
+					>
+					</div>
+					<img
+						alt={t('home.hero.image.alt', currentLocale)}
+						class='w-full h-auto object-cover'
+						src='https://readdy.ai/api/search-image?query=modern%20tablet%20displaying%20recipe%20app%20interface%20on%20wooden%20kitchen%20table%20with%20fresh%20colorful%20vegetables%20tomatoes%20basil%20herbs%20olive%20oil%20ingredients%20artistically%20arranged%20around%20device%20warm%20natural%20lighting%20professional%20food%20photography%20clean%20minimalist%20aesthetic&width=800&height=900&seq=hero-recipe-app-001&orientation=portrait'
+					/>
+				</div>
+
+				<div
+					class='absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-2xl animate-float'
+				>
+					<div class='flex items-center gap-3'>
+						<img
+							alt={t('home.hero.recipe.name', currentLocale)}
+							class='w-16 h-16 rounded-xl object-cover'
+							src='https://readdy.ai/api/search-image?query=delicious%20homemade%20pasta%20carbonara%20dish%20in%20white%20plate%20creamy%20sauce%20bacon%20parsley%20garnish%20top%20view%20professional%20food%20photography%20simple%20clean%20background&width=80&height=80&seq=recipe-card-001&orientation=squarish'
+						/>
+						<div>
+							<h4 class='font-semibold text-gray-900 text-sm'>
+								{t('home.hero.recipe.name', currentLocale)}
+							</h4>
+							<div class='flex items-center gap-1 mt-1'>
+								<i class='ri-star-fill text-yellow-500 text-xs'></i>
+								<i class='ri-star-fill text-yellow-500 text-xs'></i>
+								<i class='ri-star-fill text-yellow-500 text-xs'></i>
+								<i class='ri-star-fill text-yellow-500 text-xs'></i>
+								<i class='ri-star-fill text-yellow-500 text-xs'></i>
+								<span class='text-xs text-gray-600 ml-1'>5.0</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class='mt-20 bg-white/80 backdrop-blur-md rounded-3xl shadow-lg p-8'>
+			<div class='grid grid-cols-2 lg:grid-cols-4 gap-8'>
+				<div class='text-center'>
+					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>10K+</div>
+					<div class='text-sm text-gray-600 mt-2'>
+						{t('home.hero.stats.users', currentLocale)}
+					</div>
+				</div>
+				<div class='text-center border-l border-gray-200'>
+					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>50K+</div>
+					<div class='text-sm text-gray-600 mt-2'>
+						{t('home.hero.stats.recipes', currentLocale)}
+					</div>
+				</div>
+				<div class='text-center border-l border-gray-200'>
+					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>4.9★</div>
+					<div class='text-sm text-gray-600 mt-2'>
+						{t('home.hero.stats.rating', currentLocale)}
+					</div>
+				</div>
+				<div class='text-center border-l border-gray-200'>
+					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>100+</div>
+					<div class='text-sm text-gray-600 mt-2'>
+						{t('home.hero.stats.countries', currentLocale)}
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </section>
 
 <style>
-	.hero {
+	.hero-section {
 		position: relative;
-		height: 60vh;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		text-align: center;
-		color: var(--text);
 		overflow: hidden;
-		padding: 0 1rem; /* add horizontal padding for small screens */
 	}
 
-	.hero-video {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		box-sizing: border-box;
-		border: 8px solid var(--color-primary);
-		border-radius: 8px;
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-10px);
+		}
 	}
 
-	.container {
-		position: relative;
-		z-index: 1;
-		background: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
-		padding: 2rem;
-		border-radius: 8px;
-		color: white;
-		max-width: 600px;
-		margin: 0 auto;
-	}
-
-	.container p {
-		margin: 1.5rem 4rem; /* reduce spacing below paragraph */
-		padding: 1rem 4rem;
-		font-size: 1.15rem;
-	}
-
-	.cta-button {
-		background-color: var(--color-primary);
-		color: var(--color-light);
-		border-radius: var(--border-radius);
-		margin: 0 auto;
-		padding: 1rem 2rem;
-		font-size: 1.2rem;
-		text-decoration: none;
-		display: inline-block;
+	.animate-float {
+		animation: float 3s ease-in-out infinite;
 	}
 
 	/* Responsive tweaks */
-	@media (max-width: 600px) {
-		.hero {
-			height: 40vh;
+	@media (max-width: 768px) {
+		.hero-section {
+			padding: 2rem 1rem;
 		}
 
-		.container {
-			padding: 1rem;
-			max-width: 90%;
+		.hero-section h1 {
+			font-size: 3rem;
+			line-height: 1.2;
 		}
 
-		.container p {
-			margin-bottom: 1rem;
+		.hero-section .flex-wrap {
+			flex-direction: column;
+			align-items: stretch;
 		}
 
-		.cta-button {
-			font-size: 1rem;
-			padding: 0.75rem 1.5rem;
+		.hero-section .flex-wrap a {
+			text-align: center;
+			justify-content: center;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero-section h1 {
+			font-size: 2.5rem;
+		}
+
+		.hero-section .grid-cols-2 {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>
-
