@@ -6,11 +6,11 @@ const { currentLocale } = Astro;
 
 <nav class='navbar'>
 	<div class='nav-items'>
-		<a href='/' class='nav-link'>{t('home.nav.home', currentLocale)}</a>
+		<a href='/' class='nav-link'>{t('nav.home', currentLocale)}</a>
 		<a href='/recipes' class='nav-link'
-			>{t('home.nav.recipes', currentLocale)}</a
+			>{t('nav.recipes', currentLocale)}</a
 		>
-		<a href='/about' class='nav-link'>{t('home.nav.about', currentLocale)}</a>
+		<a href='/about' class='nav-link'>{t('nav.about', currentLocale)}</a>
 	</div>
 	<div class='nav-login'>
 		<LoginWrapper client:load />
