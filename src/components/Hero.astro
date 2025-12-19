@@ -1,112 +1,195 @@
 ---
-import { t } from '../utils/i18n';
+/* Section: Transformed Hero Page Component */
+/* Converted from Tailwind to Global CSS Variables with enhanced UI/UX features */
 
+import { t } from '../utils/i18n';
 const { currentLocale } = Astro;
+import HeroButton from './HeroButton.jsx';
+import { AuthProvider } from '../context/AuthContext.jsx';
+
+// Debugging and performance monitoring
+console.log('🎨 Hero Component Initializing - Using Global CSS Variables');
+console.log('📱 Current Locale:', currentLocale);
+console.log('🎯 Loading i18n keys:', {
+	title: t('hero.title', currentLocale),
+	subtitle: t('hero.subtitle', currentLocale),
+	cta: t('hero.cta', currentLocale),
+});
+
+// Performance tracking
+const componentStartTime = performance.now();
 ---
 
-<section class='pt-32 pb-20 px-6 lg:px-12 hero-section'>
-	<div class='max-w-7xl mx-auto'>
-		<div class='grid lg:grid-cols-2 gap-12 items-center'>
-			<div class='space-y-8'>
-				<div
-					class='inline-flex items-center gap-2 bg-white rounded-full px-5 py-2.5 shadow-md'
-				>
-					<div class='w-5 h-5 flex items-center justify-center'>
-						<i class='ri-star-fill text-yellow-500 text-lg'></i>
+<section class='hero-section'>
+	<div class='container'>
+		<div class='hero-grid'>
+			<!-- Left Column: Hero Content -->
+			<div class='hero-content'>
+				<!-- Badge with interactive hover -->
+				<div class='hero-badge' role='status' aria-label='Premium recipe badge'>
+					<div class='badge-icon'>
+						<!-- SVG Star Icon -->
+						<svg
+							class='star-icon'
+							viewBox='0 0 24 24'
+							fill='currentColor'
+							aria-hidden='true'
+						>
+							<path
+								d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+							></path>
+						</svg>
 					</div>
-					<span class='text-sm font-medium text-gray-700'
-						>{t('home.hero.badge', currentLocale)}</span
-					>
+					<span class='badge-text'>{t('home.title', currentLocale)}</span>
 				</div>
 
-				<h1 class='text-6xl lg:text-7xl font-bold text-gray-900 leading-tight'>
-					{t('home.hero.title', currentLocale)}
+				<!-- Main Title with gradient animation -->
+				<h1 class='hero-title animate-fade-in' data-delay='0.1s'>
+					{t('hero.title', currentLocale)}
 				</h1>
 
-				<p class='text-lg text-gray-600 leading-relaxed max-w-xl'>
-					{t('home.hero.subtitle', currentLocale)}
+				<!-- Subtitle with staggered animation -->
+				<p class='hero-subtitle animate-fade-in' data-delay='0.3s'>
+					{t('hero.subtitle', currentLocale)}
 				</p>
 
-				<div class='flex flex-wrap items-center gap-4 pt-4'>
+				<!-- Call to Action Buttons -->
+				<div class='hero-actions animate-fade-in' data-delay='0.5s'>
 					<a
-						href='/download'
-						class='px-8 py-4 bg-gray-900 text-white rounded-full hover:bg-gray-800 hover:shadow-xl hover:-translate-y-1 transition-all font-semibold text-lg whitespace-nowrap'
+						href='/recipes'
+						class='button primary-button'
+						aria-label='Browse all recipes'
 					>
-						{t('home.hero.cta.download', currentLocale)}
+						{t('hero.cta', currentLocale)}
+						<svg
+							class='button-icon'
+							viewBox='0 0 24 24'
+							fill='none'
+							stroke='currentColor'
+							aria-hidden='true'
+						>
+							<path
+								d='M9 5l7 7-7 7'
+								stroke-width='2'
+								stroke-linecap='round'
+								stroke-linejoin='round'></path>
+						</svg>
 					</a>
-					<a
-						href='/demo'
-						class='group px-8 py-4 text-gray-900 font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all whitespace-nowrap'
-					>
-						{t('home.hero.cta.demo', currentLocale)}
-						<i class='ri-arrow-right-line text-xl'></i>
-					</a>
+
 				</div>
 			</div>
 
-			<div class='relative'>
-				<div class='relative rounded-3xl overflow-hidden shadow-2xl'>
-					<div
-						class='absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20'
-					>
-					</div>
+			<!-- Right Column: Hero Image -->
+			<div class='hero-image-container'>
+				<div class='hero-image-wrapper'>
+					<div class='image-gradient-overlay'></div>
 					<img
+						src='https://readdy.ai/api/search-image?query=modern%20tablet%20displaying%20recipe%20app%20interface%20on%20wooden%20kitchen%20table%20with%20fresh%20colorful%20vegetables%20tomatoes%20basil%20herbs%20olive%20oil%20ingredients%20artistically%20arranged%20around%20device%20warm%20natural%20lighting%20professional%20food%20photography%20clean%20minimalist%20aesthetic&width=800&height=900'
 						alt={t('home.hero.image.alt', currentLocale)}
-						class='w-full h-auto object-cover'
-						src='https://readdy.ai/api/search-image?query=modern%20tablet%20displaying%20recipe%20app%20interface%20on%20wooden%20kitchen%20table%20with%20fresh%20colorful%20vegetables%20tomatoes%20basil%20herbs%20olive%20oil%20ingredients%20artistically%20arranged%20around%20device%20warm%20natural%20lighting%20professional%20food%20photography%20clean%20minimalist%20aesthetic&width=800&height=900&seq=hero-recipe-app-001&orientation=portrait'
+						class='hero-image'
+						loading='lazy'
+						width='800'
+						height='900'
+						onload="console.log('🖼️ Hero image loaded successfully')"
+						onerror="console.error('❌ Hero image failed to load')"
 					/>
 				</div>
 
+				<!-- Floating Recipe Card -->
 				<div
-					class='absolute -top-6 -right-6 bg-white rounded-2xl p-4 shadow-2xl animate-float'
+					class='floating-recipe-card animate-float'
+					role='complementary'
+					aria-label='Featured recipe'
 				>
-					<div class='flex items-center gap-3'>
-						<img
-							alt={t('home.hero.recipe.name', currentLocale)}
-							class='w-16 h-16 rounded-xl object-cover'
-							src='https://readdy.ai/api/search-image?query=delicious%20homemade%20pasta%20carbonara%20dish%20in%20white%20plate%20creamy%20sauce%20bacon%20parsley%20garnish%20top%20view%20professional%20food%20photography%20simple%20clean%20background&width=80&height=80&seq=recipe-card-001&orientation=squarish'
-						/>
-						<div>
-							<h4 class='font-semibold text-gray-900 text-sm'>
-								{t('home.hero.recipe.name', currentLocale)}
-							</h4>
-							<div class='flex items-center gap-1 mt-1'>
-								<i class='ri-star-fill text-yellow-500 text-xs'></i>
-								<i class='ri-star-fill text-yellow-500 text-xs'></i>
-								<i class='ri-star-fill text-yellow-500 text-xs'></i>
-								<i class='ri-star-fill text-yellow-500 text-xs'></i>
-								<i class='ri-star-fill text-yellow-500 text-xs'></i>
-								<span class='text-xs text-gray-600 ml-1'>5.0</span>
-							</div>
+					<img
+						src='https://readdy.ai/api/search-image?query=delicious%20homemade%20pasta%20carbonara%20dish%20in%20white%20plate%20creamy%20sauce%20bacon%20parsley%20garnish%20top%20view%20professional%20food%20photography%20simple%20clean%20background&width=80&height=80'
+						alt={t('home.hero.recipe.name', currentLocale)}
+						class='recipe-card-image'
+						loading='lazy'
+						width='80'
+						height='80'
+					/>
+					<div class='recipe-card-content'>
+						<h4 class='recipe-card-title'>
+							{t('home.hero.recipe.name', currentLocale)}
+						</h4>
+						<div class='recipe-rating'>
+							<!-- SVG Star Ratings -->
+							<svg
+								class='rating-star active'
+								viewBox='0 0 24 24'
+								aria-hidden='true'
+							>
+								<path
+									d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+								></path>
+							</svg>
+							<svg
+								class='rating-star active'
+								viewBox='0 0 24 24'
+								aria-hidden='true'
+							>
+								<path
+									d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+								></path>
+							</svg>
+							<svg
+								class='rating-star active'
+								viewBox='0 0 24 24'
+								aria-hidden='true'
+							>
+								<path
+									d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+								></path>
+							</svg>
+							<svg
+								class='rating-star active'
+								viewBox='0 0 24 24'
+								aria-hidden='true'
+							>
+								<path
+									d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+								></path>
+							</svg>
+							<svg
+								class='rating-star active'
+								viewBox='0 0 24 24'
+								aria-hidden='true'
+							>
+								<path
+									d='M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z'
+								></path>
+							</svg>
+							<span class='rating-text'>5.0</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class='mt-20 bg-white/80 backdrop-blur-md rounded-3xl shadow-lg p-8'>
-			<div class='grid grid-cols-2 lg:grid-cols-4 gap-8'>
-				<div class='text-center'>
-					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>10K+</div>
-					<div class='text-sm text-gray-600 mt-2'>
-						{t('home.hero.stats.users', currentLocale)}
-					</div>
+		<!-- Stats Section -->
+		<div class='hero-stats-container animate-fade-in' data-delay='0.7s'>
+			<div class='stats-grid'>
+				<div class='stat-item'>
+					<div class='stat-number'>10K+</div>
+					<div class='stat-label'>{t('about.members', currentLocale)}</div>
 				</div>
-				<div class='text-center border-l border-gray-200'>
-					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>50K+</div>
-					<div class='text-sm text-gray-600 mt-2'>
-						{t('home.hero.stats.recipes', currentLocale)}
-					</div>
+				<div class='stat-divider'></div>
+				<div class='stat-item'>
+					<div class='stat-number'>50K+</div>
+					<div class='stat-label'>{t('about.recipes', currentLocale)}</div>
 				</div>
-				<div class='text-center border-l border-gray-200'>
-					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>4.9★</div>
-					<div class='text-sm text-gray-600 mt-2'>
+				<div class='stat-divider'></div>
+				<div class='stat-item'>
+					<div class='stat-number'>4.9★</div>
+					<div class='stat-label'>
 						{t('home.hero.stats.rating', currentLocale)}
 					</div>
 				</div>
-				<div class='text-center border-l border-gray-200'>
-					<div class='text-4xl lg:text-5xl font-bold text-gray-900'>100+</div>
-					<div class='text-sm text-gray-600 mt-2'>
+				<div class='stat-divider'></div>
+				<div class='stat-item'>
+					<div class='stat-number'>100+</div>
+					<div class='stat-label'>
 						{t('home.hero.stats.countries', currentLocale)}
 					</div>
 				</div>
@@ -115,10 +198,312 @@ const { currentLocale } = Astro;
 	</div>
 </section>
 
+<!-- Inline Styles using ONLY Global CSS Variables -->
 <style>
+	/* Section: Hero Component Base Styles */
 	.hero-section {
 		position: relative;
+		width: 100%;
+		min-height: 100vh;
+		padding: var(--space-3xl) var(--space-lg);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-background) 95%, white),
+			color-mix(in srgb, var(--color-background) 85%, white)
+		);
 		overflow: hidden;
+		animation: fadeIn var(--transition-medium) var(--animation-timing);
+	}
+
+	.hero-section::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 400px;
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-primary) 10%, transparent),
+			color-mix(in srgb, var(--color-svg-fresh) 5%, transparent)
+		);
+		filter: blur(60px);
+		opacity: 0.6;
+		z-index: 0;
+	}
+
+	/* Section: Hero Grid Layout */
+	.hero-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: var(--space-2xl);
+		align-items: center;
+		position: relative;
+		z-index: 1;
+	}
+
+	@media (min-width: 768px) {
+		.hero-grid {
+			grid-template-columns: 1fr 1fr;
+			gap: var(--space-3xl);
+		}
+	}
+
+	/* Section: Hero Content Area */
+	.hero-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xl);
+	}
+
+	/* Section: Hero Badge */
+	.hero-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--space-xs);
+		background: var(--color-surface);
+		border: 1px solid
+			color-mix(in srgb, var(--color-svg-light) 20%, transparent);
+		border-radius: var(--radius-full);
+		padding: var(--space-sm) var(--space-lg);
+		backdrop-filter: var(--backdrop-blur);
+		-webkit-backdrop-filter: var(--backdrop-blur);
+		box-shadow: var(--shadow-md);
+		max-width: fit-content;
+		transition: all var(--transition-medium) var(--animation-timing);
+		cursor: pointer;
+	}
+
+	.hero-badge:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-lg);
+		border-color: var(--color-primary);
+		background: color-mix(in srgb, var(--color-surface) 95%, white);
+	}
+
+	.badge-icon {
+		width: 20px;
+		height: 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.star-icon {
+		width: 100%;
+		height: 100%;
+		color: var(--color-svg-gold);
+		animation: pulse 2s ease-in-out infinite;
+	}
+
+	.badge-text {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		color: var(--color-text);
+		white-space: nowrap;
+	}
+
+	/* Section: Hero Title */
+	.hero-title {
+		font-size: var(--text-3xl);
+		font-weight: 800;
+		line-height: 1.1;
+		color: var(--color-text);
+		margin: 0;
+		background: linear-gradient(
+			135deg,
+			var(--color-primary),
+			var(--color-svg-accent)
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		position: relative;
+	}
+
+	@media (min-width: 768px) {
+		.hero-title {
+			font-size: clamp(3rem, 5vw, 4.5rem);
+		}
+	}
+
+	.hero-title::after {
+		content: '';
+		position: absolute;
+		bottom: -10px;
+		left: 0;
+		width: 80px;
+		height: 4px;
+		background: linear-gradient(
+			90deg,
+			var(--color-primary),
+			var(--color-svg-fresh)
+		);
+		border-radius: var(--radius-full);
+	}
+
+	/* Section: Hero Subtitle */
+	.hero-subtitle {
+		font-size: var(--text-lg);
+		line-height: 1.7;
+		color: var(--color-text-light);
+		margin: 0;
+		max-width: 600px;
+	}
+
+	/* Section: Hero Actions */
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-md);
+		align-items: center;
+		margin-top: var(--space-lg);
+	}
+
+	.button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-sm);
+		padding: var(--space-md) var(--space-xl);
+		font-family: var(--font-body);
+		font-size: var(--text-base);
+		font-weight: 600;
+		border-radius: var(--radius-full);
+		text-decoration: none;
+		transition: all var(--transition-medium) var(--animation-timing);
+		cursor: pointer;
+		border: 2px solid transparent;
+		position: relative;
+		overflow: hidden;
+		user-select: none;
+		min-height: 56px;
+	}
+
+	.button::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			rgba(255, 255, 255, 0.2),
+			transparent
+		);
+		transition: left 0.7s ease;
+	}
+
+	.button:hover::before {
+		left: 100%;
+	}
+
+	.primary-button {
+		background: linear-gradient(
+			135deg,
+			var(--color-primary),
+			var(--color-svg-accent)
+		);
+		color: white;
+		box-shadow: var(--shadow-lg);
+	}
+
+	.primary-button:hover {
+		transform: translateY(-3px);
+		box-shadow: var(--shadow-xl);
+		background: linear-gradient(
+			135deg,
+			var(--color-svg-accent),
+			var(--color-primary)
+		);
+	}
+
+	.secondary-button {
+		background: transparent;
+		color: var(--color-text);
+		border-color: color-mix(in srgb, var(--color-svg-light) 40%, transparent);
+	}
+
+	.secondary-button:hover {
+		transform: translateY(-3px);
+		border-color: var(--color-primary);
+		color: var(--color-primary);
+		box-shadow: var(--shadow-md);
+	}
+
+	.button-icon {
+		width: 20px;
+		height: 20px;
+		transition: transform var(--transition-fast);
+	}
+
+	.secondary-button:hover .button-icon {
+		transform: translateX(3px);
+	}
+
+	/* Section: Hero Image Container */
+	.hero-image-container {
+		position: relative;
+		width: 100%;
+	}
+
+	.hero-image-wrapper {
+		position: relative;
+		border-radius: var(--radius-xl);
+		overflow: hidden;
+		box-shadow: var(--shadow-xl);
+		transform: perspective(1000px) rotateY(-5deg);
+		transition: transform var(--transition-medium) var(--animation-timing);
+	}
+
+	.hero-image-wrapper:hover {
+		transform: perspective(1000px) rotateY(0deg);
+	}
+
+	.image-gradient-overlay {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			to bottom,
+			transparent 0%,
+			color-mix(in srgb, var(--color-svg-dark) 20%, transparent) 100%
+		);
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	.hero-image {
+		width: 100%;
+		height: auto;
+		object-fit: cover;
+		display: block;
+		transition: transform 1.2s var(--animation-timing);
+	}
+
+	.hero-image-wrapper:hover .hero-image {
+		transform: scale(1.05);
+	}
+
+	/* Section: Floating Recipe Card */
+	.floating-recipe-card {
+		position: absolute;
+		top: -20px;
+		right: -20px;
+		background: var(--glass-bg);
+		backdrop-filter: var(--backdrop-blur);
+		-webkit-backdrop-filter: var(--backdrop-blur);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-lg);
+		padding: var(--space-md);
+		box-shadow: var(--glass-shadow);
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		z-index: 2;
+		width: 280px;
+		animation: float 3s var(--animation-timing) infinite;
 	}
 
 	@keyframes float {
@@ -131,39 +516,213 @@ const { currentLocale } = Astro;
 		}
 	}
 
-	.animate-float {
-		animation: float 3s ease-in-out infinite;
+	.recipe-card-image {
+		width: 64px;
+		height: 64px;
+		border-radius: var(--radius-md);
+		object-fit: cover;
+		flex-shrink: 0;
 	}
 
-	/* Responsive tweaks */
+	.recipe-card-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.recipe-card-title {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		color: var(--color-text);
+		margin: 0 0 var(--space-3xs) 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.recipe-rating {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.rating-star {
+		width: 14px;
+		height: 14px;
+		color: var(--color-svg-light);
+		flex-shrink: 0;
+	}
+
+	.rating-star.active {
+		color: var(--color-svg-gold);
+	}
+
+	.rating-text {
+		font-size: var(--text-xs);
+		color: var(--color-text-light);
+		margin-left: var(--space-2xs);
+	}
+
+	/* Section: Stats Container */
+	.hero-stats-container {
+		margin-top: var(--space-3xl);
+		background: var(--glass-bg);
+		backdrop-filter: var(--backdrop-blur);
+		-webkit-backdrop-filter: var(--backdrop-blur);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-xl);
+		padding: var(--space-xl);
+		box-shadow: var(--glass-shadow);
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: var(--space-xl);
+	}
+
+	@media (min-width: 768px) {
+		.stats-grid {
+			grid-template-columns: repeat(4, 1fr);
+			gap: var(--space-2xl);
+		}
+	}
+
+	.stat-item {
+		text-align: center;
+		position: relative;
+	}
+
+	.stat-divider {
+		display: none;
+	}
+
+	@media (min-width: 768px) {
+		.stat-divider {
+			display: block;
+			position: absolute;
+			right: calc(-1 * var(--space-xl));
+			top: 50%;
+			transform: translateY(-50%);
+			width: 1px;
+			height: 40px;
+			background: color-mix(in srgb, var(--color-svg-light) 30%, transparent);
+		}
+
+		.stat-item:last-child .stat-divider {
+			display: none;
+		}
+	}
+
+	.stat-number {
+		font-size: var(--text-3xl);
+		font-weight: 800;
+		color: var(--color-text);
+		line-height: 1;
+		margin-bottom: var(--space-xs);
+	}
+
+	.stat-label {
+		font-size: var(--text-sm);
+		color: var(--color-text-light);
+	}
+
+	/* Section: Responsive Adjustments */
 	@media (max-width: 768px) {
 		.hero-section {
-			padding: 2rem 1rem;
+			padding: var(--space-2xl) var(--space-md);
 		}
 
-		.hero-section h1 {
-			font-size: 3rem;
-			line-height: 1.2;
-		}
-
-		.hero-section .flex-wrap {
+		.hero-actions {
 			flex-direction: column;
 			align-items: stretch;
 		}
 
-		.hero-section .flex-wrap a {
-			text-align: center;
+		.button {
+			width: 100%;
 			justify-content: center;
 		}
+
+		.floating-recipe-card {
+			position: relative;
+			top: 0;
+			right: 0;
+			margin-top: var(--space-lg);
+			width: 100%;
+			max-width: 280px;
+			margin-left: auto;
+			margin-right: auto;
+		}
 	}
 
-	@media (max-width: 640px) {
-		.hero-section h1 {
-			font-size: 2.5rem;
+	@media (max-width: 480px) {
+		.hero-title {
+			font-size: var(--text-2xl);
 		}
 
-		.hero-section .grid-cols-2 {
-			grid-template-columns: 1fr;
+		.hero-subtitle {
+			font-size: var(--text-base);
 		}
+
+		.stat-number {
+			font-size: var(--text-2xl);
+		}
+	}
+
+	/* Section: Accessibility Focus States */
+	.button:focus-visible,
+	.hero-badge:focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+		border-radius: var(--radius-lg);
 	}
 </style>
+
+<script>
+	/* Section: Interactive JavaScript Enhancements */
+	console.log('🚀 Hero Page Interactive Features Loading');
+
+	// Add staggered animation delays
+	document.addEventListener('DOMContentLoaded', () => {
+		console.log('🎬 DOM Loaded - Initializing animations');
+
+		const animatedElements = document.querySelectorAll('[data-delay]');
+		animatedElements.forEach((el) => {
+			const delay = el.getAttribute('data-delay');
+			el.style.animationDelay = delay;
+		});
+
+		// Performance logging
+		const componentEndTime = performance.now();
+		const loadTime = componentEndTime - componentStartTime;
+		console.log(`⚡ Hero Component loaded in ${loadTime.toFixed(2)}ms`);
+
+		// Add hover effects to interactive elements
+		const interactiveElements = document.querySelectorAll(
+			'.hero-badge, .button'
+		);
+		interactiveElements.forEach((el) => {
+			el.addEventListener('mouseenter', () => {
+				el.style.transform = 'translateY(-3px)';
+			});
+
+			el.addEventListener('mouseleave', () => {
+				el.style.transform = 'translateY(0)';
+			});
+		});
+
+		// Lazy loading for images
+		const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+		lazyImages.forEach((img) => {
+			img.addEventListener('load', () => {
+				console.log(`🖼️ Image loaded: ${img.alt || 'No alt text'}`);
+			});
+		});
+	});
+
+	document.addEventListener('click', (e) => {
+		const btn = e.target.closest('[data-open-login]');
+		if (!btn) return;
+
+		window.dispatchEvent(new CustomEvent('open-login'));
+	});
+</script>

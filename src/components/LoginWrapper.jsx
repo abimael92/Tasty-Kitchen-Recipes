@@ -28,6 +28,14 @@ export default function LoginWrapper({ locale }) {
 		}
 		loadUser();
 	}, []);
+	
+useEffect(() => {
+	const open = () => setIsModalOpen(true);
+	window.addEventListener('open-login', open);
+	return () => window.removeEventListener('open-login', open);
+}, []);
+
+
 
 	const handleLogin = async (email, password) => {
 		setLoading(true);

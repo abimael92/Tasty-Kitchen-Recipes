@@ -1,0 +1,124 @@
+---
+const features = [
+	{
+		title: 'Gestión de Recetas',
+		description:
+			'Guarda, organiza y personaliza tus recetas favoritas con información nutricional completa',
+	},
+	{
+		title: 'Planificador Semanal',
+		description:
+			'Planifica tus comidas de la semana y mantén el control de tu alimentación',
+	},
+	{
+		title: 'Lista de Compras',
+		description:
+			'Genera automáticamente tu lista de supermercado desde tus recetas planificadas',
+	},
+	{
+		title: 'Análisis Nutricional',
+		description:
+			'Controla calorías, macros y alcanza tus objetivos nutricionales fácilmente',
+	},
+	{
+		title: 'Inventario de Despensa',
+		description:
+			'Mantén un registro de tus ingredientes y evita compras innecesarias',
+	},
+	{
+		title: 'Importar Recetas',
+		description:
+			'Importa recetas desde cualquier URL y guárdalas en tu colección personal',
+	},
+];
+---
+
+<section id='features' class='features-section'>
+	<div class='container'>
+		<div class='features-header'>
+			<h2>Todo lo que necesitas</h2>
+			<p>
+				Herramientas profesionales para organizar tu cocina y disfrutar
+				cocinando
+			</p>
+		</div>
+		<div class='features-grid'>
+			{
+				features.map((feature) => (
+					<div class='feature-card'>
+						<div class='feature-icon' />
+						<h3>{feature.title}</h3>
+						<p>{feature.description}</p>
+					</div>
+				))
+			}
+		</div>
+	</div>
+
+	<style>
+		.features-section {
+			padding: 80px 24px;
+			background-color: #ffffff;
+			border-radius: 8px;
+		}
+		.container {
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+		.features-header {
+			text-align: center;
+			margin-bottom: 64px;
+		}
+		.features-header h2 {
+			font-size: 48px;
+			font-weight: bold;
+			margin-bottom: 16px;
+		}
+		.features-header p {
+			font-size: 18px;
+			color: #6b7280;
+		}
+		.features-grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 32px;
+		}
+		@media (min-width: 768px) {
+			.features-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+		@media (min-width: 1024px) {
+			.features-grid {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+		.feature-card {
+			background: linear-gradient(135deg, #fff7ed, #fee2e2);
+			border-radius: 24px;
+			padding: 32px;
+			transition: box-shadow 0.3s ease;
+		}
+		.feature-card:hover {
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+		}
+		.feature-icon {
+			width: 56px;
+			height: 56px;
+			background-color: #f97316;
+			border-radius: 16px;
+			margin-bottom: 24px;
+		}
+		.feature-card h3 {
+			font-size: 20px;
+			font-weight: bold;
+			margin-bottom: 12px;
+			color: #111827;
+		}
+		.feature-card p {
+			font-size: 16px;
+			color: #4b5563;
+			margin: 0;
+		}
+	</style>
+</section>
