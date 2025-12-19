@@ -224,23 +224,163 @@ try {
 
 						{/* Section: Recipe Metadata Grid */}
 						<div class='recipe-meta-grid'>
-							<div class='meta-card author-card'>
+							{/* Author Card */}
+							<div class='meta-card author-card animate-scale-in'>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+										<circle cx='12' cy='7' r='4' />
+									</svg>
+									<h3 class='meta-card-title'>Chef</h3>
+								</div>
 								<AuthorMeta name={recipe.chef} date={recipe.date} />
+								<div class='meta-card-footer'>
+									<button
+										class='view-profile'
+										onclick="console.log('View chef profile')"
+									>
+										View Profile
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											width='16'
+											height='16'
+											viewBox='0 0 24 24'
+											fill='none'
+											stroke='currentColor'
+											stroke-width='2'
+											stroke-linecap='round'
+											stroke-linejoin='round'
+										>
+											<path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' />
+											<polyline points='15 3 21 3 21 9' />
+											<line x1='10' y1='14' x2='21' y2='3' />
+										</svg>
+									</button>
+								</div>
 							</div>
 
-							<div class='meta-card nutrition-card'>
+							{/* Nutrition Card */}
+							<div
+								class='meta-card nutrition-card animate-scale-in'
+								style='animation-delay: 0.1s;'
+							>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
+									</svg>
+									<h3 class='meta-card-title'>Nutrition</h3>
+								</div>
 								<NutritionInfo
 									calories={recipe.calories}
 									servings={recipe.servings}
 								/>
+								<div class='meta-card-footer'>
+									<button
+										class='nutrition-details'
+										onclick='showNutritionDetails()'
+									>
+										View Full Nutrition
+									</button>
+								</div>
 							</div>
+						</div>
 
-							<div class='meta-card rating-card'>
+						{/* Section: Recipe Checklist */}
+
+						<div class='recipe-meta-grid'>
+							{/* Rating Card */}
+							<div
+								class='meta-card rating-card animate-scale-in'
+								style='animation-delay: 0.2s;'
+							>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' />
+									</svg>
+									<h3 class='meta-card-title'>Rating</h3>
+								</div>
+
 								<RecipeRatingDisplay recipeId={recipe._id} client:load />
+								{/* <div class='rating-stats'>
+									<div class='stat-item'>
+										<span class='stat-label'>Community</span>
+										<span class='stat-value'>4.8</span>
+									</div>
+									<div class='stat-divider' />
+									<div class='stat-item'>
+										<span class='stat-label'>Reviews</span>
+										<span class='stat-value'>128</span>
+									</div>
+								</div> */}
+								<div class='meta-card-footer'>
+									<button class='rate-recipe' onclick='openRatingModal()'>
+										Rate this Recipe
+									</button>
+								</div>
 							</div>
 
-							<div class='meta-card tags-card'>
+							{/* Tags Card */}
+							<div
+								class='meta-card tags-card animate-scale-in'
+								style='animation-delay: 0.3s;'
+							>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z' />
+										<line x1='7' y1='7' x2='7.01' y2='7' />
+									</svg>
+									<h3 class='meta-card-title'>Tags & Categories</h3>
+								</div>
 								<RecipeTags tags={recipe.tags} />
+								<div class='meta-card-footer'>
+									<button class='add-tag' onclick='openTagModal()'>
+										+ Add Custom Tag
+									</button>
+								</div>
 							</div>
 						</div>
 
@@ -698,7 +838,12 @@ try {
 	.recipe-title-section {
 		position: relative;
 		padding: var(--space-xl);
-		background: var(--glass-bg);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-svg-light) 60%, transparent) 0%,
+			color-mix(in srgb, var(--color-svg-cream) 60%, rgba(255, 255, 255, 0.9))
+				100%
+		);
 		backdrop-filter: var(--backdrop-blur);
 		border-radius: var(--radius-lg);
 		margin-top: calc(var(--space-2xl) * -1);
@@ -800,23 +945,453 @@ try {
 	/* Section: Recipe Metadata Grid */
 	.recipe-meta-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 		gap: var(--space-lg);
 		margin: var(--space-2xl) 0;
+		position: relative;
 	}
 
 	.meta-card {
-		background: var(--color-surface);
-		border-radius: var(--radius-lg);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-svg-light) 30%, transparent) 0%,
+			color-mix(in srgb, var(--color-svg-cream) 40%, rgba(255, 255, 255, 0.9))
+				100%
+		);
+		border-radius: var(--radius-xl);
 		padding: var(--space-lg);
 		border: 1px solid var(--glass-border);
 		transition: all var(--transition-medium) var(--animation-timing);
+		position: relative;
+		overflow: hidden;
+		backdrop-filter: var(--backdrop-blur);
+		display: flex;
+		flex-direction: column;
+		min-height: 200px;
+	}
+
+	.meta-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: linear-gradient(
+			90deg,
+			var(--color-primary),
+			var(--color-svg-fresh)
+		);
+		opacity: 0;
+		transition: opacity var(--transition-medium);
+	}
+
+	.meta-card:hover::before {
+		opacity: 1;
 	}
 
 	.meta-card:hover {
-		transform: translateY(-4px);
-		box-shadow: var(--shadow-lg);
+		transform: translateY(-6px);
+		box-shadow: var(--shadow-xl);
+		border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+	}
+
+	/* Card Header */
+	.meta-card-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-md);
+		padding-bottom: var(--space-sm);
+		border-bottom: 1px solid var(--color-text-light);
+	}
+
+	.meta-icon {
+		width: 24px;
+		height: 24px;
+		color: var(--color-primary);
+		flex-shrink: 0;
+	}
+
+	.meta-card-title {
+		font-size: var(--text-lg);
+		font-weight: 700;
+		color: var(--color-svg-dark);
+		margin: 0;
+	}
+
+	/* Card Content */
+	.meta-card-content {
+		flex: 1;
+		padding: var(--space-sm) 0;
+	}
+
+	/* Author Card Specific */
+	.author-card .meta-card-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.chef-name {
+		font-size: var(--text-xl);
+		font-weight: 700;
+		color: var(--color-svg-dark);
+		margin: 0;
+		line-height: 1.2;
+	}
+
+	.recipe-date {
+		font-size: var(--text-sm);
+		color: var(--color-text-light);
+		margin: 0;
+	}
+
+	/* Nutrition Card Specific */
+	.nutrition-grid {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		gap: var(--space-md);
+		align-items: center;
+	}
+
+	.nutrition-item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.nutrition-label {
+		font-size: var(--text-sm);
+		color: var(--color-text-light);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.nutrition-value {
+		font-size: var(--text-xl);
+		font-weight: 800;
+		color: var(--color-svg-accent);
+		line-height: 1.2;
+	}
+
+	.nutrition-detail {
+		display: block;
+		font-size: var(--text-xs);
+		color: var(--color-text-light);
+		font-weight: 400;
+		margin-top: 2px;
+	}
+
+	.nutrition-divider {
+		width: 1px;
+		height: 40px;
+		background: var(--glass-border);
+	}
+
+	.serving-controls {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-top: var(--space-xs);
+	}
+
+	.serving-btn {
+		width: 32px;
+		height: 32px;
+		border-radius: var(--radius-full);
+		border: 1px solid var(--glass-border);
+		background: var(--color-surface);
+		color: var(--color-text);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.serving-btn:hover {
+		background: var(--color-primary);
+		color: white;
 		border-color: var(--color-primary);
+		transform: scale(1.1);
+	}
+
+	.serving-btn.decrease svg,
+	.serving-btn.increase svg {
+		stroke-width: 3;
+	}
+
+	.serving-count {
+		font-size: var(--text-lg);
+		font-weight: 700;
+		color: var(--color-svg-dark);
+		min-width: 36px;
+		text-align: center;
+	}
+
+	/* Rating Card Specific */
+	.rating-display {
+		margin-bottom: var(--space-md);
+	}
+
+	.rating-stats {
+		display: flex;
+		justify-content: space-around;
+		gap: var(--space-sm);
+		padding: var(--space-sm);
+		background: color-mix(in srgb, var(--color-background) 50%, transparent);
+		border-radius: var(--radius-lg);
+	}
+
+	.stat-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.stat-label {
+		font-size: var(--text-xs);
+		color: var(--color-text-light);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.stat-value {
+		font-size: var(--text-lg);
+		font-weight: 800;
+		color: var(--color-svg-dark);
+	}
+
+	.stat-divider {
+		width: 1px;
+		height: 100%;
+		background: var(--glass-border);
+	}
+
+	/* Tags Card Specific */
+	.tags-cloud {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		margin-bottom: var(--space-md);
+	}
+
+	.tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: var(--space-xs) var(--space-sm);
+		background: color-mix(in srgb, var(--color-background) 80%, transparent);
+		color: var(--color-text);
+		border-radius: var(--radius-full);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+		transition: all var(--transition-medium) var(--animation-timing);
+		animation: tagPopIn 0.3s ease-out var(--tag-delay) both;
+		border: 1px solid transparent;
+	}
+
+	.tag:hover {
+		background: var(--color-primary);
+		color: white;
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+		border-color: var(--color-primary);
+	}
+
+	.tag-icon {
+		opacity: 0;
+		transition: opacity var(--transition-fast);
+		width: 12px;
+		height: 12px;
+	}
+
+	.tag:hover .tag-icon {
+		opacity: 1;
+	}
+
+	.no-tags {
+		color: var(--color-text-light);
+		font-style: italic;
+		text-align: center;
+		padding: var(--space-md);
+	}
+
+	.tag-categories {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		margin-top: var(--space-md);
+	}
+
+	.category-badge {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 6px 12px;
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-full);
+		font-size: var(--text-xs);
+		font-weight: 600;
+		color: var(--color-text);
+		transition: all var(--transition-fast);
+	}
+
+	.category-badge.vegan {
+		color: var(--color-svg-herb);
+		border-color: color-mix(in srgb, var(--color-svg-herb) 30%, transparent);
+		background: color-mix(in srgb, var(--color-svg-herb) 10%, transparent);
+	}
+
+	.category-badge.gluten-free {
+		color: var(--color-svg-gold);
+		border-color: color-mix(in srgb, var(--color-svg-gold) 30%, transparent);
+		background: color-mix(in srgb, var(--color-svg-gold) 10%, transparent);
+	}
+
+	.category-badge.quick {
+		color: var(--color-primary);
+		border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+		background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+	}
+
+	.category-badge.dessert {
+		color: var(--color-svg-accent);
+		border-color: color-mix(in srgb, var(--color-svg-accent) 30%, transparent);
+		background: color-mix(in srgb, var(--color-svg-accent) 10%, transparent);
+	}
+
+	/* Card Footer */
+	.meta-card-footer {
+		margin-top: auto;
+		padding-top: var(--space-md);
+		border-top: 1px solid var(--color-text-light);
+	}
+
+	.view-profile,
+	.nutrition-details,
+	.rate-recipe,
+	.add-tag {
+		width: 100%;
+		padding: var(--space-sm);
+		background: transparent;
+		border: 1px solid var(--color-text-light);
+		color: var(--color-text);
+		border-radius: var(--radius-md);
+		font-size: var(--text-sm);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+	}
+
+	.view-profile:hover,
+	.nutrition-details:hover,
+	.rate-recipe:hover,
+	.add-tag:hover {
+		background: var(--color-primary);
+		color: white;
+		border-color: var(--color-primary);
+		transform: translateY(-2px);
+	}
+
+	/* Animations */
+	@keyframes tagPopIn {
+		0% {
+			opacity: 0;
+			transform: scale(0.8) translateY(10px);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1) translateY(0);
+		}
+	}
+
+	@keyframes cardFloat {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-5px);
+		}
+	}
+
+	.meta-card:hover {
+		animation: cardFloat 3s ease-in-out infinite;
+	}
+
+	/* Responsive Design */
+	@media (max-width: 1024px) {
+		.recipe-meta-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.recipe-meta-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.nutrition-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-lg);
+		}
+
+		.nutrition-divider {
+			width: 100%;
+			height: 1px;
+		}
+
+		.tag-categories {
+			justify-content: center;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.meta-card {
+			padding: var(--space-md);
+		}
+
+		.tag {
+			font-size: var(--text-xs);
+			padding: 4px 8px;
+		}
+
+		.category-badge {
+			font-size: 10px;
+			padding: 4px 8px;
+		}
+	}
+
+	/* Print Styles */
+	@media print {
+		.meta-card {
+			break-inside: avoid;
+			box-shadow: none !important;
+			border: 1px solid #ddd !important;
+			margin-bottom: 1rem !important;
+		}
+
+		.meta-card-footer,
+		.serving-controls,
+		.tag-icon {
+			display: none !important;
+		}
+
+		.tag {
+			background: #f5f5f5 !important;
+			color: #333 !important;
+			border: 1px solid #ddd !important;
+		}
 	}
 
 	/* Section: Collapsible Sections */
