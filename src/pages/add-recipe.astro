@@ -2,161 +2,889 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { t } from '../utils/i18n';
 
-const { currentLocale } = Astro;
+const currentLocale = Astro.props.currentLocale || 'es';
 
-// Obtener traducciones para usar en JavaScript
 const jsMessages = {
-	submitting: t('addRecipe.messages.submitting'),
-	success: t('addRecipe.messages.success'),
-	error: t('addRecipe.messages.error'),
-	failed: t('addRecipe.messages.failed'),
+	submitting: t('addRecipe.messages.submitting', currentLocale),
+	success: t('addRecipe.messages.success', currentLocale),
+	error: t('addRecipe.messages.error', currentLocale),
+	failed: t('addRecipe.messages.failed', currentLocale),
+	title: t('addRecipe.title', currentLocale),
+	submit: t('addRecipe.form.submit', currentLocale),
+};
+
+const formLabels = {
+	title: t('addRecipe.form.title', currentLocale),
+	titlePlaceholder: t('addRecipe.form.titlePlaceholder', currentLocale),
+	ingredients: t('addRecipe.form.ingredients', currentLocale),
+	ingredientsPlaceholder: t(
+		'addRecipe.form.ingredientsPlaceholder',
+		currentLocale
+	),
+	instructions: t('addRecipe.form.instructions', currentLocale),
+	instructionsPlaceholder: t(
+		'addRecipe.form.instructionsPlaceholder',
+		currentLocale
+	),
+	image: t('addRecipe.form.image', currentLocale),
+	video: t('addRecipe.form.video', currentLocale),
 };
 ---
 
-<BaseLayout title={t('addRecipe.title')}>
+<BaseLayout title={jsMessages.title}>
 	<div
-		class='max-w-2xl mx-auto p-8 bg-white rounded-xl shadow-lg border border-gray-300'
+		class='recipe-form-container animate-fade-in'
+		role='main'
+		aria-label='Add new recipe form'
 	>
-		<div class='recipe-form-wrapper'>
-			<h1>{t('addRecipe.title')}</h1>
-			<form id='recipeForm' enctype='multipart/form-data' class='space-y-6'>
-				<div>
-					<label
-						for='title'
-						class='block mb-3 font-semibold text-gray-800 text-lg'
-					>
-						{t('addRecipe.form.title')}
-						<span class='text-red-600'>*</span>
-					</label>
-					<input
-						type='text'
-						id='title'
-						name='title'
-						required
-						placeholder={t('addRecipe.form.titlePlaceholder')}
-						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
-						focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition'
-					/>
-				</div>
+		<div class='container'>
+			<!-- Form Header with Animation -->
+			<div class='form-header animate-slide-in' data-delay='0.1s'>
+				<h1 class='form-title'>{jsMessages.title}</h1>
+				<p class='form-subtitle'>
+					{t('hero.subtitle', currentLocale)}
+				</p>
+			</div>
 
-				<div>
-					<label
-						for='ingredients'
-						class='block mb-3 font-semibold text-gray-800 text-lg'
-					>
-						{t('addRecipe.form.ingredients')}
-						<span class='text-red-600'>*</span>
-					</label>
-					<textarea
-						id='ingredients'
-						name='ingredients'
-						rows='6'
-						required
-						placeholder={t('addRecipe.form.ingredientsPlaceholder')}
-						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
-						resize-y focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition font-mono'
-					></textarea>
-				</div>
-
-				<div>
-					<label
-						for='instructions'
-						class='block mb-3 font-semibold text-gray-800 text-lg'
-					>
-						{t('addRecipe.form.instructions')}
-						<span class='text-red-600'>*</span>
-					</label>
-					<textarea
-						id='instructions'
-						name='instructions'
-						rows='8'
-						required
-						placeholder={t('addRecipe.form.instructionsPlaceholder')}
-						class='w-full rounded-lg border border-gray-300 p-4 text-lg font-medium text-gray-900 shadow-sm
-						resize-y focus:outline-none focus:ring-3 focus:ring-primary focus:border-primary transition font-mono'
-					></textarea>
-				</div>
-
-				<div>
-					<label
-						for='image'
-						class='block mb-3 font-semibold text-gray-800 text-lg'
-					>
-						{t('addRecipe.form.image')}
-					</label>
-					<input
-						type='file'
-						id='image'
-						name='image'
-						accept='image/*'
-						class='block w-full text-gray-700 font-medium'
-					/>
-				</div>
-
-				<div>
-					<label
-						for='video'
-						class='block mb-3 font-semibold text-gray-800 text-lg'
-					>
-						{t('addRecipe.form.video')}
-					</label>
-					<input
-						type='file'
-						id='video'
-						name='video'
-						accept='video/mp4,video/webm'
-						class='block w-full text-gray-700 font-medium'
-					/>
-				</div>
-
-				<button
-					type='submit'
-					class='w-full bg-primary text-white py-4 rounded-xl font-bold text-xl hover:bg-primary-dark shadow-lg
-					transition-colors duration-300 ease-in-out focus:ring-4 focus:ring-primary/60'
+			<!-- Main Form -->
+			<div class='form-card animate-scale-in' data-delay='0.2s'>
+				<form
+					id='recipeForm'
+					class='recipe-form'
+					enctype='multipart/form-data'
+					aria-labelledby='form-title'
 				>
-					{t('addRecipe.form.submit')}
-				</button>
-			</form>
+					<!-- Title Input -->
+					<div class='form-group animate-fade-in' data-delay='0.3s'>
+						<label for='title' class='form-label'>
+							{formLabels.title}
+							<span class='required-indicator' aria-hidden='true'>*</span>
+						</label>
+						<div class='input-wrapper'>
+							<input
+								type='text'
+								id='title'
+								name='title'
+								required
+								placeholder={formLabels.titlePlaceholder}
+								class='form-input'
+								aria-required='true'
+								aria-describedby='title-help'
+							/>
+							<div class='input-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path
+										d='M4 7h16M4 12h16M4 17h7'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'></path>
+								</svg>
+							</div>
+						</div>
+						<div id='title-help' class='help-text'>
+							{t('addRecipe.form.titlePlaceholder', currentLocale)}
+						</div>
+					</div>
 
-			<div id='formStatus' class='mt-6 text-center text-lg'></div>
+					<!-- Ingredients Textarea -->
+					<div class='form-group animate-fade-in' data-delay='0.4s'>
+						<label for='ingredients' class='form-label'>
+							{formLabels.ingredients}
+							<span class='required-indicator' aria-hidden='true'>*</span>
+						</label>
+						<div class='textarea-wrapper'>
+							<textarea
+								id='ingredients'
+								name='ingredients'
+								rows='6'
+								required
+								placeholder={formLabels.ingredientsPlaceholder}
+								class='form-textarea'
+								aria-required='true'
+								aria-describedby='ingredients-help'></textarea>
+							<div class='textarea-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path
+										d='M9 5h6M9 10h6M9 15h1m4 0h1M5 20h14a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v14a1 1 0 001 1z'
+										stroke-width='2'></path>
+								</svg>
+							</div>
+						</div>
+						<div id='ingredients-help' class='help-text'>
+							{t('addRecipe.form.ingredientsPlaceholder', currentLocale)}
+						</div>
+					</div>
+
+					<!-- Instructions Textarea -->
+					<div class='form-group animate-fade-in' data-delay='0.5s'>
+						<label for='instructions' class='form-label'>
+							{formLabels.instructions}
+							<span class='required-indicator' aria-hidden='true'>*</span>
+						</label>
+						<div class='textarea-wrapper'>
+							<textarea
+								id='instructions'
+								name='instructions'
+								rows='8'
+								required
+								placeholder={formLabels.instructionsPlaceholder}
+								class='form-textarea'
+								aria-required='true'
+								aria-describedby='instructions-help'></textarea>
+							<div class='textarea-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path d='M12 6v6l4 2' stroke-width='2' stroke-linecap='round'
+									></path>
+									<path d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' stroke-width='2'
+									></path>
+								</svg>
+							</div>
+						</div>
+						<div id='instructions-help' class='help-text'>
+							{t('addRecipe.form.instructionsPlaceholder', currentLocale)}
+						</div>
+					</div>
+
+					<!-- File Upload Section -->
+					<div class='form-row animate-fade-in' data-delay='0.6s'>
+						<!-- Image Upload -->
+						<div class='form-group file-upload-group'>
+							<label for='image' class='form-label'>
+								{formLabels.image}
+							</label>
+							<div class='file-upload-wrapper'>
+								<input
+									type='file'
+									id='image'
+									name='image'
+									accept='image/*'
+									class='file-input'
+									aria-describedby='image-help'
+								/>
+								<label
+									for='image'
+									class='file-upload-label'
+									tabindex='0'
+									role='button'
+								>
+									<svg
+										class='file-icon'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										aria-hidden='true'
+									>
+										<path
+											d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+											stroke-width='2'
+											stroke-linecap='round'
+											stroke-linejoin='round'></path>
+									</svg>
+									<span class='file-upload-text'
+										>{
+											t('common.chooseFile', currentLocale) || 'Choose file'
+										}</span
+									>
+								</label>
+							</div>
+							<div id='image-help' class='help-text'>
+								PNG, JPG, GIF up to 5MB
+							</div>
+						</div>
+
+						<div
+							id='imagePreviewContainer'
+							class='image-preview-container'
+							style='display:none;'
+						>
+							<img id='imagePreview' src='' alt='Recipe image preview' />
+						</div>
+
+						<!-- Video Upload -->
+						<div class='form-group file-upload-group'>
+							<label for='video' class='form-label'>
+								{formLabels.video}
+							</label>
+							<div class='file-upload-wrapper'>
+								<input
+									type='file'
+									id='video'
+									name='video'
+									accept='video/mp4,video/webm'
+									class='file-input'
+									aria-describedby='video-help'
+								/>
+								<label
+									for='video'
+									class='file-upload-label'
+									tabindex='0'
+									role='button'
+								>
+									<svg
+										class='file-icon'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										aria-hidden='true'
+									>
+										<path
+											d='M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z'
+											stroke-width='2'></path>
+										<rect
+											x='3'
+											y='6'
+											width='13'
+											height='12'
+											rx='2'
+											stroke-width='2'></rect>
+									</svg>
+									<span class='file-upload-text'
+										>{
+											t('common.chooseFile', currentLocale) || 'Choose file'
+										}</span
+									>
+								</label>
+							</div>
+							<div id='video-help' class='help-text'>MP4, WebM up to 50MB</div>
+						</div>
+					</div>
+
+					<!-- Submit Button -->
+					<div class='form-actions animate-fade-in' data-delay='0.7s'>
+						<button
+							type='submit'
+							class='submit-button'
+							aria-label='Submit recipe form'
+							aria-describedby='submit-help'
+						>
+							<span class='button-text'>{jsMessages.submit}</span>
+							<svg
+								class='button-icon'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								aria-hidden='true'
+							>
+								<path
+									d='M17 8l4 4m0 0l-4 4m4-4H3'
+									stroke-width='2'
+									stroke-linecap='round'
+									stroke-linejoin='round'></path>
+							</svg>
+						</button>
+						<div id='submit-help' class='help-text'>
+							{t('addRecipe.messages.submitting', currentLocale)}
+						</div>
+					</div>
+				</form>
+
+				<!-- Form Status Messages -->
+				<div
+					id='formStatus'
+					class='form-status'
+					role='status'
+					aria-live='polite'
+				>
+				</div>
+			</div>
+
+			<!-- Form Tips -->
+			<div class='form-tips animate-fade-in' data-delay='0.8s'>
+				<h3 class='tips-title'>{t('aiCookingTips.title', currentLocale)}</h3>
+				<ul class='tips-list'>
+					<li class='tip-item'>{t('aiCookingTips.newTip', currentLocale)}</li>
+					<li class='tip-item'>{t('about.feature1Text', currentLocale)}</li>
+					<li class='tip-item'>{t('about.feature2Text', currentLocale)}</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 
+	<!-- Inline Styles using ONLY Global CSS Variables -->
 	<style>
-		:root {
-			--primary-color: #d2691e;
-			--primary-color-dark: #b25418;
+		/* Section: Add Recipe Form Container */
+		.recipe-form-container {
+			position: relative;
+			width: 100%;
+			min-height: 100vh;
+			padding: var(--space-3xl) var(--space-lg);
+			background: linear-gradient(
+				135deg,
+				color-mix(in srgb, var(--color-background) 95%, white),
+				color-mix(in srgb, var(--color-background) 85%, white)
+			);
+			animation: fadeIn var(--transition-medium) var(--animation-timing);
 		}
-		.text-primary {
-			color: var(--primary-color);
+
+		/* Section: Form Header */
+		.form-header {
+			text-align: center;
+			margin-bottom: var(--space-3xl);
+			padding: var(--space-xl);
+			background: var(--glass-bg);
+			backdrop-filter: var(--backdrop-blur);
+			-webkit-backdrop-filter: var(--backdrop-blur);
+			border: 1px solid var(--glass-border);
+			border-radius: var(--radius-xl);
+			box-shadow: var(--glass-shadow);
 		}
-		.bg-primary {
-			background-color: var(--primary-color);
+
+		.form-title {
+			font-size: var(--text-3xl);
+			color: var(--color-text);
+			margin-bottom: var(--space-md);
+			background: linear-gradient(
+				135deg,
+				var(--color-primary),
+				var(--color-svg-accent)
+			);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
 		}
-		.bg-primary-dark {
-			background-color: var(--primary-color-dark);
+
+		.form-subtitle {
+			font-size: var(--text-lg);
+			color: var(--color-text-light);
+			line-height: 1.6;
+			max-width: 600px;
+			margin: 0 auto;
+		}
+
+		/* Section: Form Card */
+		.form-card {
+			background: var(--glass-bg);
+			backdrop-filter: var(--backdrop-blur);
+			-webkit-backdrop-filter: var(--backdrop-blur);
+			border: 1px solid var(--glass-border);
+			border-radius: var(--radius-xl);
+			padding: var(--space-2xl);
+			box-shadow: var(--glass-shadow);
+			margin-bottom: var(--space-2xl);
+			transition: all var(--transition-medium) var(--animation-timing);
+		}
+
+		.form-card:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-xl);
+			border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+		}
+
+		/* Section: Form Layout */
+		.recipe-form {
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-xl);
+		}
+
+		.form-row {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: var(--space-xl);
+		}
+
+		@media (min-width: 768px) {
+			.form-row {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		/* Section: Form Groups */
+		.form-group {
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-sm);
+		}
+
+		.form-label {
+			font-size: var(--text-base);
+			font-weight: 600;
+			color: var(--color-text);
+			display: flex;
+			align-items: center;
+			gap: var(--space-2xs);
+		}
+
+		.required-indicator {
+			color: var(--color-svg-warm);
+			font-size: var(--text-lg);
+			line-height: 1;
+		}
+
+		/* Section: Input Wrappers */
+		.input-wrapper,
+		.textarea-wrapper {
+			position: relative;
+			width: 100%;
+		}
+
+		.input-icon,
+		.textarea-icon {
+			position: absolute;
+			left: var(--space-md);
+			top: 50%;
+			transform: translateY(-50%);
+			width: 20px;
+			height: 20px;
+			color: var(--color-text-light);
+			pointer-events: none;
+			z-index: 1;
+		}
+
+		.textarea-icon {
+			top: var(--space-md);
+			transform: none;
+		}
+
+		/* Section: Form Inputs */
+		.form-input,
+		.form-textarea {
+			width: 100%;
+			padding: var(--space-md) var(--space-md) var(--space-md)
+				calc(var(--space-md) * 2 + 20px);
+			background: var(--color-surface);
+			border: 2px solid
+				color-mix(in srgb, var(--color-svg-light) 30%, transparent);
+			border-radius: var(--radius-lg);
+			font-family: var(--font-body);
+			font-size: var(--text-base);
+			color: var(--color-text);
+			transition: all var(--transition-medium) var(--animation-timing);
+			resize: vertical;
+		}
+
+		.form-textarea {
+			min-height: 150px;
+			font-family: var(--font-mono);
+			line-height: 1.6;
+		}
+
+		.form-input:focus,
+		.form-textarea:focus {
+			outline: none;
+			border-color: var(--color-primary);
+			box-shadow: 0 0 0 3px var(--color-focus);
+			background: color-mix(in srgb, var(--color-surface) 95%, white);
+		}
+
+		.form-input:hover,
+		.form-textarea:hover {
+			border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
+		}
+
+		/* Section: File Upload */
+		.file-upload-group {
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-sm);
+		}
+
+		.file-upload-wrapper {
+			position: relative;
+			width: 100%;
+		}
+
+		.file-input {
+			position: absolute;
+			width: 0.1px;
+			height: 0.1px;
+			opacity: 0;
+			overflow: hidden;
+			z-index: -1;
+		}
+
+		.file-upload-label {
+			display: flex;
+			align-items: center;
+			gap: var(--space-sm);
+			padding: var(--space-md) var(--space-lg);
+			background: var(--color-surface);
+			border: 2px dashed
+				color-mix(in srgb, var(--color-svg-light) 40%, transparent);
+			border-radius: var(--radius-lg);
+			font-family: var(--font-body);
+			font-size: var(--text-base);
+			color: var(--color-text);
+			cursor: pointer;
+			transition: all var(--transition-medium) var(--animation-timing);
+			user-select: none;
+		}
+
+		.file-upload-label:hover,
+		.file-upload-label:focus-within {
+			border-color: var(--color-primary);
+			background: color-mix(in srgb, var(--color-hover) 10%, transparent);
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-md);
+		}
+
+		.file-upload-label:active {
+			transform: translateY(0);
+		}
+
+		.file-icon {
+			width: 24px;
+			height: 24px;
+			color: var(--color-primary);
+			flex-shrink: 0;
+		}
+
+		.file-upload-text {
+			flex: 1;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.image-preview-container {
+			margin-top: var(--space-md);
+			text-align: center;
+		}
+		.image-preview-container img {
+			max-width: 100%;
+			max-height: 200px;
+			border-radius: var(--radius-md);
+			object-fit: cover;
+			box-shadow: var(--shadow-md);
+		}
+
+		/* Section: Submit Button */
+		.form-actions {
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-sm);
+			margin-top: var(--space-xl);
+		}
+
+		.submit-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: var(--space-sm);
+			padding: var(--space-lg) var(--space-2xl);
+			background: linear-gradient(
+				135deg,
+				var(--color-primary),
+				var(--color-svg-accent)
+			);
+			color: white;
+			border: none;
+			border-radius: var(--radius-lg);
+			font-family: var(--font-body);
+			font-size: var(--text-lg);
+			font-weight: 600;
+			cursor: pointer;
+			transition: all var(--transition-medium) var(--animation-timing);
+			position: relative;
+			overflow: hidden;
+			user-select: none;
+			min-height: 56px;
+		}
+
+		.submit-button::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(255, 255, 255, 0.2),
+				transparent
+			);
+			transition: left 0.7s ease;
+		}
+
+		.submit-button:hover::before {
+			left: 100%;
+		}
+
+		.submit-button:hover {
+			transform: translateY(-3px);
+			box-shadow: var(--shadow-xl);
+			background: linear-gradient(
+				135deg,
+				var(--color-svg-accent),
+				var(--color-primary)
+			);
+		}
+
+		.submit-button:active {
+			transform: translateY(0);
+			transition-duration: 100ms;
+		}
+
+		.submit-button:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none !important;
+		}
+
+		.button-text {
+			position: relative;
+			z-index: 1;
+		}
+
+		.button-icon {
+			width: 20px;
+			height: 20px;
+			stroke-width: 2;
+			flex-shrink: 0;
+			transition: transform var(--transition-fast);
+		}
+
+		.submit-button:hover .button-icon {
+			transform: translateX(4px);
+		}
+
+		/* Section: Help Text */
+		.help-text {
+			font-size: var(--text-sm);
+			color: var(--color-text-light);
+			line-height: 1.4;
+			margin-top: var(--space-2xs);
+		}
+
+		/* Section: Form Status */
+		.form-status {
+			margin-top: var(--space-xl);
+			padding: var(--space-lg);
+			border-radius: var(--radius-lg);
+			font-size: var(--text-base);
+			font-weight: 500;
+			text-align: center;
+			animation: fadeIn var(--transition-fast);
+			transition: all var(--transition-fast);
+		}
+
+		.form-status[data-status='success'] {
+			background: color-mix(in srgb, var(--color-success) 15%, transparent);
+			color: var(--color-success);
+			border: 1px solid
+				color-mix(in srgb, var(--color-success) 30%, transparent);
+		}
+
+		.form-status[data-status='error'] {
+			background: color-mix(in srgb, var(--color-svg-warm) 15%, transparent);
+			color: var(--color-svg-warm);
+			border: 1px solid
+				color-mix(in srgb, var(--color-svg-warm) 30%, transparent);
+		}
+
+		.form-status[data-status='loading'] {
+			background: color-mix(in srgb, var(--color-svg-light) 15%, transparent);
+			color: var(--color-text-light);
+			border: 1px solid
+				color-mix(in srgb, var(--color-svg-light) 30%, transparent);
+		}
+
+		/* Section: Form Tips */
+		.form-tips {
+			background: color-mix(in srgb, var(--color-svg-fresh) 5%, transparent);
+			border: 1px solid
+				color-mix(in srgb, var(--color-svg-fresh) 20%, transparent);
+			border-radius: var(--radius-xl);
+			padding: var(--space-xl);
+			margin-top: var(--space-2xl);
+		}
+
+		.tips-title {
+			font-size: var(--text-xl);
+			color: var(--color-svg-herb);
+			margin-bottom: var(--space-md);
+		}
+
+		.tips-list {
+			display: flex;
+			flex-direction: column;
+			gap: var(--space-sm);
+			list-style: none;
+		}
+
+		.tip-item {
+			display: flex;
+			align-items: flex-start;
+			gap: var(--space-sm);
+			font-size: var(--text-base);
+			color: var(--color-text);
+			line-height: 1.6;
+		}
+
+		.tip-item::before {
+			content: '';
+			width: 8px;
+			height: 8px;
+			background: var(--color-svg-fresh);
+			border-radius: 50%;
+			margin-top: var(--space-xs);
+			flex-shrink: 0;
+		}
+
+		/* Section: Responsive Design */
+		@media (max-width: 768px) {
+			.recipe-form-container {
+				padding: var(--space-xl) var(--space-md);
+			}
+
+			.form-card {
+				padding: var(--space-xl);
+			}
+
+			.form-title {
+				font-size: var(--text-2xl);
+			}
+
+			.form-subtitle {
+				font-size: var(--text-base);
+			}
+
+			.submit-button {
+				padding: var(--space-md) var(--space-xl);
+				font-size: var(--text-base);
+			}
+		}
+
+		@media (max-width: 480px) {
+			.recipe-form-container {
+				padding: var(--space-lg) var(--space-sm);
+			}
+
+			.form-card {
+				padding: var(--space-lg);
+			}
+
+			.form-title {
+				font-size: var(--text-xl);
+			}
+
+			.form-input,
+			.form-textarea {
+				font-size: var(--text-sm);
+			}
+		}
+
+		/* Section: Accessibility */
+		.form-input:focus-visible,
+		.form-textarea:focus-visible,
+		.file-upload-label:focus-visible,
+		.submit-button:focus-visible {
+			outline: 2px solid var(--color-focus);
+			outline-offset: 2px;
 		}
 	</style>
 
 	<script>
-		// Traducciones pasadas desde Astro
-		const addRecipeMessages = {
-			submitting: '{jsMessages.submitting}',
-			success: '{jsMessages.success}',
-			error: '{jsMessages.error}',
-			failed: '{jsMessages.failed}',
-		};
+		console.log('📝 Add Recipe Form JavaScript Initializing');
 
-		document
-			.getElementById('recipeForm')
-			.addEventListener('submit', async (e) => {
+		document.addEventListener('DOMContentLoaded', () => {
+			const form = document.getElementById('recipeForm');
+			const statusEl = document.getElementById('formStatus');
+			const ingredientsInput = document.getElementById('ingredients');
+			const instructionsInput = document.getElementById('instructions');
+			const imageInput = document.getElementById('image');
+			const imagePreviewContainer = document.getElementById(
+				'imagePreviewContainer'
+			);
+			const imagePreview = document.getElementById('imagePreview');
+
+			// Form translations
+			const addRecipeMessages = {
+				submitting: 'Submitting...',
+				success: 'Recipe submitted successfully!',
+				error: 'Error: ',
+				failed: 'Failed to submit recipe.',
+			};
+
+			// Animated elements delay
+			document.querySelectorAll('[data-delay]').forEach((el) => {
+				const delay = el.getAttribute('data-delay');
+				el.style.animationDelay = delay;
+			});
+
+			// Ingredients bullets
+			ingredientsInput.addEventListener('input', (e) => {
+				const lines = e.target.value.split('\n');
+				e.target.value = lines
+					.map((line) => {
+						const trimmed = line.trim();
+						if (!trimmed) return '';
+						return '• ' + trimmed.replace(/^[•\-*]\s*/, '');
+					})
+					.filter(Boolean)
+					.join('\n');
+			});
+
+			// Instructions numbering
+			instructionsInput.addEventListener('input', (e) => {
+				const lines = e.target.value.split('\n');
+				let step = 1;
+				e.target.value = lines
+					.map((line) => {
+						const trimmed = line.trim();
+						if (!trimmed) return '';
+						return step++ + '. ' + trimmed.replace(/^\d+\.\s*/, '');
+					})
+					.filter(Boolean)
+					.join('\n');
+			});
+
+			// File input preview
+			const fileInputs = document.querySelectorAll('.file-input');
+			fileInputs.forEach((input) => {
+				input.addEventListener('change', (e) => {
+					const file = e.target.files[0];
+					const label = e.target.nextElementSibling;
+					const textSpan = label.querySelector('.file-upload-text');
+					textSpan.textContent = file
+						? file.name
+						: '{{t("common.chooseFile", currentLocale)}}';
+
+					if (input.id === 'image') {
+						if (file) {
+							const reader = new FileReader();
+							reader.onload = (ev) => {
+								imagePreview.src = ev.target.result;
+								imagePreviewContainer.style.display = 'block';
+							};
+							reader.readAsDataURL(file);
+						} else {
+							imagePreview.src = '';
+							imagePreviewContainer.style.display = 'none';
+						}
+					}
+				});
+			});
+
+			// Form submission
+			form.addEventListener('submit', async (e) => {
 				e.preventDefault();
-				const form = e.target;
-				const formData = new FormData(form);
-				const statusEl = document.getElementById('formStatus');
 
+				const formData = new FormData(form);
+
+				// Show loading
 				statusEl.textContent = addRecipeMessages.submitting;
-				statusEl.style.color = 'var(--primary-color)';
+				statusEl.setAttribute('data-status', 'loading');
+				statusEl.style.display = 'block';
+
+				const submitBtn = form.querySelector('.submit-button');
+				submitBtn.disabled = true;
 
 				try {
 					const res = await fetch('/api/submit-recipe', {
@@ -164,36 +892,36 @@ const jsMessages = {
 						body: formData,
 					});
 					const data = await res.json();
-					if (res.ok) {
+
+					if (data.success) {
 						statusEl.textContent = addRecipeMessages.success;
-						statusEl.style.color = 'green';
+						statusEl.setAttribute('data-status', 'success');
 						form.reset();
+						imagePreview.src = '';
+						imagePreviewContainer.style.display = 'none';
+						document.querySelectorAll('.file-upload-text').forEach((span) => {
+							span.textContent = '{{t("common.chooseFile", currentLocale)}}';
+						});
 					} else {
-						statusEl.textContent = addRecipeMessages.error + data.message;
-						statusEl.style.color = 'red';
+						statusEl.textContent = `❌ ${data.message || addRecipeMessages.failed}`;
+						statusEl.setAttribute('data-status', 'error');
 					}
-				} catch {
-					statusEl.textContent = addRecipeMessages.failed;
-					statusEl.style.color = 'red';
+				} catch (err) {
+					statusEl.textContent = `${addRecipeMessages.error} ${err.message}`;
+					statusEl.setAttribute('data-status', 'error');
+				} finally {
+					setTimeout(() => {
+						submitBtn.disabled = false;
+						submitBtn.innerHTML = submitBtn.innerHTML =
+							'<span class="button-text">' +
+							'Submit Recipe' +
+							'</span>' +
+							'<svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
+							'<path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+							'</svg>';
+					}, 3000);
 				}
 			});
-
-		// Auto-insert bullets into ingredients textarea
-		document.getElementById('ingredients').addEventListener('input', (e) => {
-			const lines = e.target.value.split('\n');
-			e.target.value = lines
-				.map((line) => (line.startsWith('•') ? line : `• ${line}`))
-				.join('\n');
-		});
-
-		// Auto-insert numbered steps into instructions textarea
-		document.getElementById('instructions').addEventListener('input', (e) => {
-			const lines = e.target.value.split('\n');
-			e.target.value = lines
-				.map((line, i) =>
-					line.match(/^\d+\.\s+/) ? line : `${i + 1}. ${line}`
-				)
-				.join('\n');
 		});
 	</script>
 </BaseLayout>
