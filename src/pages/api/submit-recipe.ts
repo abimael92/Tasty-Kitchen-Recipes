@@ -1,4 +1,5 @@
-import { client } from '../../lib/sanity';
+import { serverClient } from '../../lib/sanity';
+import { Buffer } from 'node:buffer';
 
 export const prerender = false;
 
@@ -6,50 +7,47 @@ export const POST = async ({ request }) => {
 	try {
 		const formData = await request.formData();
 
-		const title = formData.get('title')?.toString() || '';
-		const ingredients = formData.get('ingredients')?.toString() || '';
-		const instructions = formData.get('instructions')?.toString() || '';
+		const title = String(formData.get('title') || '');
+		const ingredients = String(formData.get('ingredients') || '');
+		const instructions = String(formData.get('instructions') || '');
 
 		if (!title) {
 			return new Response(
 				JSON.stringify({ success: false, message: 'Missing title' }),
-				{
-					status: 400,
-					headers: { 'Content-Type': 'application/json' },
-				}
+				{ status: 400 }
 			);
 		}
 
-		// Upload image if present
-		let imageRef = undefined;
+		let imageRef = null;
+		let videoRef = null;
+
+		// IMAGE (OPTIONAL)
 		const imageFile = formData.get('image');
-		if (imageFile && imageFile instanceof File) {
-			const arrayBuffer = await imageFile.arrayBuffer();
-			const buffer = Buffer.from(arrayBuffer);
-			const filename = imageFile.name || 'upload.jpg'; // fallback filename
-			const imageAsset = await client.assets.upload('image', buffer, {
-				filename,
-				contentType: imageFile.type || 'image/jpeg',
+		if (imageFile && imageFile.size > 0) {
+			const buffer = Buffer.from(await imageFile.arrayBuffer());
+			const asset = await client.assets.upload('image', buffer, {
+				filename: imageFile.name,
+				contentType: imageFile.type,
 			});
+
 			imageRef = {
 				_type: 'image',
-				asset: { _type: 'reference', _ref: imageAsset._id },
+				asset: { _type: 'reference', _ref: asset._id },
 			};
 		}
-		// Upload video if present
-		let videoRef = undefined;
+
+		// VIDEO (OPTIONAL)
 		const videoFile = formData.get('video');
-		if (videoFile && videoFile instanceof File) {
-			const arrayBuffer = await videoFile.arrayBuffer();
-			const buffer = Buffer.from(arrayBuffer);
-			const filename = videoFile.name || 'upload.mp4'; // fallback filename
-			const videoAsset = await client.assets.upload('file', buffer, {
-				filename,
-				contentType: videoFile.type || 'video/mp4',
+		if (videoFile && videoFile.size > 0) {
+			const buffer = Buffer.from(await videoFile.arrayBuffer());
+			const asset = await client.assets.upload('file', buffer, {
+				filename: videoFile.name,
+				contentType: videoFile.type,
 			});
+
 			videoRef = {
 				_type: 'file',
-				asset: { _type: 'reference', _ref: videoAsset._id },
+				asset: { _type: 'reference', _ref: asset._id },
 			};
 		}
 
@@ -58,24 +56,20 @@ export const POST = async ({ request }) => {
 			title,
 			ingredients,
 			instructions,
-			image: imageRef,
-			video: videoRef,
+			...(imageRef && { image: imageRef }),
+			...(videoRef && { video: videoRef }),
 		};
 
-		const created = await client.create(doc);
+	const created = await serverClient.create(doc);
 
 		return new Response(JSON.stringify({ success: true, id: created._id }), {
 			status: 200,
-			headers: { 'Content-Type': 'application/json' },
 		});
 	} catch (err) {
-		console.error(err);
+		console.error('SUBMIT RECIPE ERROR:', err);
 		return new Response(
 			JSON.stringify({ success: false, message: 'Server error' }),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			}
+			{ status: 500 }
 		);
 	}
 };
