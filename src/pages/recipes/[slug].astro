@@ -1,4 +1,5 @@
 ---
+/* Section: Recipe Content View Component */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RecipeNotFound from '../../components/RecipeNotFound.astro';
 import { getCollection } from 'astro:content';
@@ -21,15 +22,22 @@ import AuthGroceryWrapper from '../../components/AuthGroceryWrapper';
 
 const { slug, currentLocale } = Astro.params;
 
+console.log('Section: Starting recipe data flow for slug:', slug);
+performance.mark('recipeLoadStart');
+
 let recipe = null;
 
 try {
 	// Load local recipes collection
 	const local = await getCollection('recipes');
+	console.log('Section: Local recipes loaded, count:', local.length);
+
 	// Find local recipe by comparing slug.value (Slug object)
 	const localRecipe = local.find((r) => r.slug?.value === slug);
+	console.log('Section: Local recipe found:', !!localRecipe);
 
 	// Fetch Sanity recipe by slug
+	console.log('Section: Fetching Sanity recipe...');
 	const sanityRecipe = await client.fetch(
 		`*[_type == "recipe" && slug.current == $slug][0]{
       _id,
@@ -48,208 +56,643 @@ try {
 		{ slug }
 	);
 
+	console.log('Section: Sanity recipe fetched:', !!sanityRecipe);
+
 	recipe = localRecipe?.data || sanityRecipe || null;
 
 	if (!recipe) {
+		console.error('Section: Recipe not found in any source');
 		throw new Error('Recipe not found');
 	}
+
+	performance.mark('recipeLoadEnd');
+	performance.measure('recipeDataLoad', 'recipeLoadStart', 'recipeLoadEnd');
+	console.log(
+		'Section: Recipe data loaded in',
+		performance.getEntriesByName('recipeDataLoad')[0].duration.toFixed(2),
+		'ms'
+	);
 } catch (err) {
-	console.error('Error loading recipe:', err);
+	console.error('Section: Error loading recipe:', err);
 }
 ---
 
 {
 	recipe ? (
 		<BaseLayout title={recipe.title}>
-			<div class='header-buttons'>
-				<button onclick='history.back()' class='back-button'>
-					{t('common.back', currentLocale)}
-				</button>
-				<button onclick='window.print()' class='add-recipe-button'>
-					<span class='print-icon'>
-						<svg
-							xmlns='http://www.w3.org/2000/svg'
-							width='20'
-							height='20'
-							fill='currentColor'
-							viewBox='0 0 24 24'
+			{/* Section: Header Navigation */}
+			<header class='recipe-header'>
+				<div class='container'>
+					<div class='header-buttons staggered'>
+						<button
+							onclick='history.back()'
+							class='back-button animate-scale-in'
 						>
-							<path d='M19 8H5V3h14v5zm0 2c1.1 0 2 .9 2 2v6h-4v3H7v-3H3v-6c0-1.1.9-2 2-2h14zm-4 7v3h-6v-3h6z' />
-						</svg>
-					</span>
-					{t('recipes.print', currentLocale)}
-				</button>
-			</div>
-
-			<article class='recipe-view'>
-				<AuthFavoriteWrapper recipeId={recipe._id} client:load />
-
-				{recipe.image && (
-					<img src={recipe.image} alt={recipe.title} class='hero-img' />
-				)}
-				<h1>{recipe.title}</h1>
-
-				<div class='social-share'>
-					<a
-						href={`https://wa.me/?text=${encodeURIComponent(
-							recipe.title + ' ' + Astro.url
-						)}`}
-						target='_blank'
-						class='app-icon whatsapp'
-					>
-						<span class='icon'>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
-								viewBox='0 0 32 32'
 								width='24'
 								height='24'
-								fill='currentColor'
-							>
-								<path d='M16.013 2.986c-7.352 0-13.314 5.963-13.314 13.314 0 2.354.611 4.635 1.777 6.656l-1.914 5.568 5.789-1.883c1.978 1.08 4.215 1.65 6.662 1.65 7.35 0 13.312-5.963 13.312-13.314 0-7.352-5.963-13.315-13.313-13.315zm0 24.395c-2.131 0-4.216-.574-6.041-1.662l-.433-.26-3.434 1.118 1.14-3.326-.281-.472c-1.127-1.893-1.723-4.059-1.723-6.26 0-6.671 5.428-12.1 12.1-12.1 6.67 0 12.1 5.429 12.1 12.1 0 6.67-5.429 12.099-12.1 12.099zm6.568-8.893c-.362-.181-2.146-1.06-2.479-1.179-.333-.12-.576-.18-.819.182s-.939 1.179-1.151 1.424c-.211.242-.39.271-.752.09-.362-.181-1.528-.563-2.911-1.794-1.075-.96-1.799-2.144-2.01-2.506-.211-.362-.023-.558.158-.738.163-.162.362-.422.543-.633.181-.211.242-.362.363-.604.12-.241.06-.454-.03-.635-.09-.18-.818-1.969-1.121-2.692-.294-.708-.594-.612-.819-.623-.212-.009-.453-.011-.694-.011s-.635.09-.968.453c-.333.362-1.271 1.242-1.271 3.023 0 1.781 1.303 3.505 1.485 3.747.181.241 2.566 3.922 6.225 5.498.869.375 1.547.599 2.076.768.872.278 1.666.239 2.292.145.698-.104 2.146-.875 2.448-1.719.301-.845.301-1.57.211-1.719-.091-.15-.33-.241-.694-.422z' />
-							</svg>
-						</span>
-						<span class='label'>WhatsApp</span>
-					</a>
-
-					<a
-						href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
-							Astro.url
-						)}`}
-						target='_blank'
-						class='app-icon pinterest'
-					>
-						<span class='icon'>
-							<svg
-								xmlns='http://www.w3.org/2000/svg'
 								viewBox='0 0 24 24'
-								width='24'
-								height='24'
-								fill='currentColor'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='2'
+								stroke-linecap='round'
+								stroke-linejoin='round'
 							>
-								<path d='M12 0C5.37 0 0 5.37 0 12c0 4.75 3.06 8.79 7.36 10.31-.1-.88-.18-2.23.04-3.2.2-.86 1.29-5.47 1.29-5.47s-.33-.65-.33-1.62c0-1.52.88-2.65 1.98-2.65.94 0 1.39.71 1.39 1.56 0 .95-.6 2.38-.9 3.71-.26 1.1.56 2 1.65 2 1.98 0 3.49-2.09 3.49-5.1 0-2.67-1.92-4.53-4.66-4.53-3.18 0-5.05 2.38-5.05 4.84 0 .95.36 1.98.81 2.54.09.11.1.21.07.33-.08.36-.25 1.12-.29 1.28-.05.21-.17.25-.4.15-1.5-.7-2.44-2.89-2.44-4.66 0-3.78 2.75-7.27 7.94-7.27 4.17 0 7.4 2.98 7.4 6.96 0 4.14-2.61 7.47-6.24 7.47-1.22 0-2.37-.63-2.76-1.38l-.75 2.85c-.27 1.03-1.01 2.32-1.5 3.1 1.13.35 2.32.55 3.57.55 6.63 0 12-5.37 12-12S18.63 0 12 0z' />
+								<path d='M19 12H5' />
+								<path d='M12 19l-7-7 7-7' />
 							</svg>
-						</span>
-						<span class='label'>Pinterest</span>
-					</a>
-
-					<a
-						href={`https://twitter.com/share?url=${encodeURIComponent(
-							Astro.url
-						)}&text=${encodeURIComponent(recipe.title)}`}
-						target='_blank'
-						class='app-icon twitter'
-					>
-						<span class='icon'>
+							<span>{t('common.back', currentLocale)}</span>
+						</button>
+						<button
+							onclick='window.print()'
+							class='print-button animate-scale-in'
+							style='animation-delay: 0.1s;'
+						>
 							<svg
 								xmlns='http://www.w3.org/2000/svg'
-								viewBox='0 0 24 24'
 								width='24'
 								height='24'
-								fill='currentColor'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='2'
+								stroke-linecap='round'
+								stroke-linejoin='round'
 							>
-								<path d='M4 4h3.5l5 7 5-7H21l-7 9.5L21 20h-3.5l-5-7-5 7H3l7-9.5L4 4Z' />
+								<path d='M6 9V2h12v7' />
+								<path d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2' />
+								<path d='M6 14h12v8H6z' />
 							</svg>
-						</span>
-						<span class='label'>Twitter</span>
-					</a>
+							<span>{t('recipes.print', currentLocale)}</span>
+						</button>
+					</div>
 				</div>
+			</header>
 
-				<div class='meta-row'>
-					<AuthorMeta name={recipe.chef} date={recipe.date} />
-					<NutritionInfo
-						calories={recipe.calories}
-						servings={recipe.servings}
-					/>
-				</div>
+			{/* Section: Main Recipe Content */}
+			<main class='recipe-main'>
+				<div class='container'>
+					<article class='recipe-card animate-fade-in'>
+						{/* Section: Recipe Hero with Favorite */}
+						<div class='recipe-hero'>
+							{recipe.image && (
+								<div class='hero-image-container'>
+									<img
+										src={recipe.image}
+										alt={recipe.title}
+										class='hero-img lazy-image'
+										loading='lazy'
+										onload="console.log('Section: Hero image loaded successfully')"
+									/>
+									<div class='image-overlay' />
+									<div class='favorite-wrapper'>
+										<AuthFavoriteWrapper recipeId={recipe._id} client:load />
+									</div>
+								</div>
+							)}
 
-				<div class='meta-rating-tags'>
-					<RecipeRatingDisplay recipeId={recipe._id} client:load />
-					<RecipeTags tags={recipe.tags} />
-				</div>
+							<div class='recipe-title-section'>
+								<h1 class='recipe-title animate-slide-in'>{recipe.title}</h1>
 
-				<section class='section'>
-					<h2>{t('recipes.ingredients', currentLocale)}</h2>
-					<p class='ingredients-list'>
-						{(() => {
-							let makeNextBold = false;
-							return (
-								Array.isArray(recipe.ingredients)
-									? recipe.ingredients
-									: recipe.ingredients?.split('\n') || []
-							).map((line, i) => {
-								const trimmed = line.trim();
-								if (trimmed === '') {
-									makeNextBold = true;
-									return <br key={i} />;
-								}
-								// Fix bug: split('.'[1]) is wrong, replace with line.split('.')[1] or whole line
-								const content = makeNextBold ? (
-									<strong>{line.split('.')[1] ?? line}</strong>
-								) : (
-									line
-								);
-								makeNextBold = false;
-								return (
-									<span key={i}>
-										{content}
-										<br />
+								{/* Section: Social Share with Icons */}
+								<div class='social-share-bar'>
+									<p class='share-label'>
+										{t('common.share', currentLocale) || 'Share this recipe'}:
+									</p>
+									<div class='share-buttons'>
+										<a
+											href={`https://wa.me/?text=${encodeURIComponent(
+												recipe.title + ' ' + Astro.url
+											)}`}
+											target='_blank'
+											class='share-button whatsapp'
+											aria-label='Share on WhatsApp'
+										>
+											<svg
+												xmlns='http://www.w3.org/2000/svg'
+												viewBox='0 0 32 32'
+												width='20'
+												height='20'
+												fill='currentColor'
+											>
+												<path d='M16.013 2.986c-7.352 0-13.314 5.963-13.314 13.314 0 2.354.611 4.635 1.777 6.656l-1.914 5.568 5.789-1.883c1.978 1.08 4.215 1.65 6.662 1.65 7.35 0 13.312-5.963 13.312-13.314 0-7.352-5.963-13.315-13.313-13.315zm0 24.395c-2.131 0-4.216-.574-6.041-1.662l-.433-.26-3.434 1.118 1.14-3.326-.281-.472c-1.127-1.893-1.723-4.059-1.723-6.26 0-6.671 5.428-12.1 12.1-12.1 6.67 0 12.1 5.429 12.1 12.1 0 6.67-5.429 12.099-12.1 12.099zm6.568-8.893c-.362-.181-2.146-1.06-2.479-1.179-.333-.12-.576-.18-.819.182s-.939 1.179-1.151 1.424c-.211.242-.39.271-.752.09-.362-.181-1.528-.563-2.911-1.794-1.075-.96-1.799-2.144-2.01-2.506-.211-.362-.023-.558.158-.738.163-.162.362-.422.543-.633.181-.211.242-.362.363-.604.12-.241.06-.454-.03-.635-.09-.18-.818-1.969-1.121-2.692-.294-.708-.594-.612-.819-.623-.212-.009-.453-.011-.694-.011s-.635.09-.968.453c-.333.362-1.271 1.242-1.271 3.023 0 1.781 1.303 3.505 1.485 3.747.181.241 2.566 3.922 6.225 5.498.869.375 1.547.599 2.076.768.872.278 1.666.239 2.292.145.698-.104 2.146-.875 2.448-1.719.301-.845.301-1.57.211-1.719-.091-.15-.33-.241-.694-.422z' />
+											</svg>
+										</a>
+
+										<a
+											href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(
+												Astro.url
+											)}`}
+											target='_blank'
+											class='share-button pinterest'
+											aria-label='Save to Pinterest'
+										>
+											<svg
+												xmlns='http://www.w3.org/2000/svg'
+												viewBox='0 0 24 24'
+												width='20'
+												height='20'
+												fill='currentColor'
+											>
+												<path d='M12 0C5.37 0 0 5.37 0 12c0 4.75 3.06 8.79 7.36 10.31-.1-.88-.18-2.23.04-3.2.2-.86 1.29-5.47 1.29-5.47s-.33-.65-.33-1.62c0-1.52.88-2.65 1.98-2.65.94 0 1.39.71 1.39 1.56 0 .95-.6 2.38-.9 3.71-.26 1.1.56 2 1.65 2 1.98 0 3.49-2.09 3.49-5.1 0-2.67-1.92-4.53-4.66-4.53-3.18 0-5.05 2.38-5.05 4.84 0 .95.36 1.98.81 2.54.09.11.1.21.07.33-.08.36-.25 1.12-.29 1.28-.05.21-.17.25-.4.15-1.5-.7-2.44-2.89-2.44-4.66 0-3.78 2.75-7.27 7.94-7.27 4.17 0 7.4 2.98 7.4 6.96 0 4.14-2.61 7.47-6.24 7.47-1.22 0-2.37-.63-2.76-1.38l-.75 2.85c-.27 1.03-1.01 2.32-1.5 3.1 1.13.35 2.32.55 3.57.55 6.63 0 12-5.37 12-12S18.63 0 12 0z' />
+											</svg>
+										</a>
+
+										<a
+											href={`https://twitter.com/share?url=${encodeURIComponent(
+												Astro.url
+											)}&text=${encodeURIComponent(recipe.title)}`}
+											target='_blank'
+											class='share-button twitter'
+											aria-label='Share on Twitter'
+										>
+											<svg
+												xmlns='http://www.w3.org2000/svg'
+												viewBox='0 0 24 24'
+												width='20'
+												height='20'
+												fill='currentColor'
+											>
+												<path d='M4 4h3.5l5 7 5-7H21l-7 9.5L21 20h-3.5l-5-7-5 7H3l7-9.5L4 4Z' />
+											</svg>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{/* Section: Recipe Metadata Grid */}
+						<div class='recipe-meta-grid'>
+							{/* Author Card */}
+							<div class='meta-card author-card animate-scale-in'>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+										<circle cx='12' cy='7' r='4' />
+									</svg>
+									<h3 class='meta-card-title'>Chef</h3>
+								</div>
+								<AuthorMeta name={recipe.chef} date={recipe.date} />
+								<div class='meta-card-footer'>
+									<button
+										class='view-profile'
+										onclick="console.log('View chef profile')"
+									>
+										View Profile
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											width='16'
+											height='16'
+											viewBox='0 0 24 24'
+											fill='none'
+											stroke='currentColor'
+											stroke-width='2'
+											stroke-linecap='round'
+											stroke-linejoin='round'
+										>
+											<path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6' />
+											<polyline points='15 3 21 3 21 9' />
+											<line x1='10' y1='14' x2='21' y2='3' />
+										</svg>
+									</button>
+								</div>
+							</div>
+
+							{/* Nutrition Card */}
+							<div
+								class='meta-card nutrition-card animate-scale-in'
+								style='animation-delay: 0.1s;'
+							>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
+									</svg>
+									<h3 class='meta-card-title'>Nutrition</h3>
+								</div>
+								<NutritionInfo
+									calories={recipe.calories}
+									servings={recipe.servings}
+								/>
+								<div class='meta-card-footer'>
+									<button
+										class='nutrition-details'
+										onclick='showNutritionDetails()'
+									>
+										View Full Nutrition
+									</button>
+								</div>
+							</div>
+						</div>
+
+						{/* Section: Recipe Checklist */}
+
+						<div class='recipe-meta-grid'>
+							{/* Rating Card */}
+							<div
+								class='meta-card rating-card animate-scale-in'
+								style='animation-delay: 0.2s;'
+							>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' />
+									</svg>
+									<h3 class='meta-card-title'>Rating</h3>
+								</div>
+
+								<RecipeRatingDisplay recipeId={recipe._id} client:load />
+								{/* <div class='rating-stats'>
+									<div class='stat-item'>
+										<span class='stat-label'>Community</span>
+										<span class='stat-value'>4.8</span>
+									</div>
+									<div class='stat-divider' />
+									<div class='stat-item'>
+										<span class='stat-label'>Reviews</span>
+										<span class='stat-value'>128</span>
+									</div>
+								</div> */}
+								<div class='meta-card-footer'>
+									<button class='rate-recipe' onclick='openRatingModal()'>
+										Rate this Recipe
+									</button>
+								</div>
+							</div>
+
+							{/* Tags Card */}
+							<div
+								class='meta-card tags-card animate-scale-in'
+								style='animation-delay: 0.3s;'
+							>
+								<div class='meta-card-header'>
+									<svg
+										class='meta-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='24'
+										height='24'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z' />
+										<line x1='7' y1='7' x2='7.01' y2='7' />
+									</svg>
+									<h3 class='meta-card-title'>Tags & Categories</h3>
+								</div>
+								<RecipeTags tags={recipe.tags} />
+								<div class='meta-card-footer'>
+									<button class='add-tag' onclick='openTagModal()'>
+										+ Add Custom Tag
+									</button>
+								</div>
+							</div>
+						</div>
+
+						{/* Section: Collapsible Ingredients */}
+						<section class='recipe-section ingredients-section'>
+							<div class='section-header' onclick='toggleCollapse(this)'>
+								<h2 class='section-title'>
+									<svg
+										class='collapse-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='20'
+										height='20'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M6 9l6 6 6-6' />
+									</svg>
+									{t('recipes.ingredients', currentLocale)}
+									<span class='ingredient-count'>
+										(
+										{Array.isArray(recipe.ingredients)
+											? recipe.ingredients.length
+											: recipe.ingredients?.split('\n').filter((l) => l.trim())
+													?.length || 0}
+										)
 									</span>
-								);
-							});
-						})()}
-					</p>
+								</h2>
+							</div>
 
-					<AuthGroceryWrapper
-						ingredients={recipe.ingredients}
-						recipeId={recipe._id}
-						client:load
-					/>
-				</section>
+							<div class='section-content'>
+								<div class='ingredients-grid'>
+									{(() => {
+										console.log('Section: Processing ingredients display');
+										let makeNextBold = false;
+										const ingredients = Array.isArray(recipe.ingredients)
+											? recipe.ingredients
+											: recipe.ingredients?.split('\n') || [];
 
-				<section class='section'>
-					<h2>{t('recipes.instructions', currentLocale)}</h2>
-					<p class='instructions-list'>
-						{(() => {
-							let numberingEnabled = true;
+										return ingredients.map((line, i) => {
+											const trimmed = line.trim();
+											if (trimmed === '') {
+												makeNextBold = true;
+												return null;
+											}
 
-							return (
-								Array.isArray(recipe.instructions)
-									? recipe.instructions
-									: recipe.instructions?.split('\n') || []
-							).map((line, i) => {
-								const trimmed = line.trim();
+											const content = makeNextBold ? (
+												<strong class='ingredient-category'>
+													{line.split('.')[1] ?? line}
+												</strong>
+											) : (
+												<span class='ingredient-item'>
+													<svg
+														class='ingredient-icon'
+														xmlns='http://www.w3.org/2000/svg'
+														width='16'
+														height='16'
+														viewBox='0 0 24 24'
+														fill='none'
+														stroke='currentColor'
+														stroke-width='2'
+														stroke-linecap='round'
+														stroke-linejoin='round'
+													>
+														<path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' />
+													</svg>
+													{line}
+												</span>
+											);
 
-								if (/^\d+\.$/.test(trimmed)) {
-									numberingEnabled = false;
-									return <br key={i} />;
-								}
+											makeNextBold = false;
+											return (
+												<div
+													class={`ingredient-row ${makeNextBold ? 'category-row' : ''}`}
+													key={i}
+												>
+													{content}
+												</div>
+											);
+										});
+									})()}
+								</div>
 
-								let content = line;
-								if (numberingEnabled) {
-									content = `${line}`;
-								}
+								<div class='grocery-actions'>
+									<AuthGroceryWrapper
+										ingredients={recipe.ingredients}
+										recipeId={recipe._id}
+										client:load
+									/>
+								</div>
+							</div>
+						</section>
 
-								if (trimmed !== '') {
-									numberingEnabled = true;
-								}
-
-								return (
-									<span key={i}>
-										{content}
-										<br />
+						{/* Section: Interactive Instructions */}
+						<section class='recipe-section instructions-section'>
+							<div class='section-header' onclick='toggleCollapse(this)'>
+								<h2 class='section-title'>
+									<svg
+										class='collapse-icon'
+										xmlns='http://www.w3.org/2000/svg'
+										width='20'
+										height='20'
+										viewBox='0 0 24 24'
+										fill='none'
+										stroke='currentColor'
+										stroke-width='2'
+										stroke-linecap='round'
+										stroke-linejoin='round'
+									>
+										<path d='M6 9l6 6 6-6' />
+									</svg>
+									{t('recipes.instructions', currentLocale)}
+									<span class='step-count'>
+										(
+										{Array.isArray(recipe.instructions)
+											? recipe.instructions.length
+											: recipe.instructions?.split('\n').filter((l) => l.trim())
+													?.length || 0}{' '}
+										steps)
 									</span>
-								);
-							});
-						})()}
-					</p>
-				</section>
+								</h2>
+							</div>
 
-				<AICookingTips currentLocale={currentLocale} />
+							<div class='section-content'>
+								<div class='instructions-steps'>
+									{(() => {
+										console.log('Section: Processing instructions display');
+										let numberingEnabled = true;
+										const instructions = Array.isArray(recipe.instructions)
+											? recipe.instructions
+											: recipe.instructions?.split('\n') || [];
 
-				<AuthRatingWrapper recipeId={recipe._id} client:load />
+										return instructions.map((line, i) => {
+											const trimmed = line.trim();
 
-				<CommentsSectionWrapper recipeId={recipe._id} client:load />
-			</article>
+											if (/^\d+\.$/.test(trimmed)) {
+												numberingEnabled = false;
+												return null;
+											}
+
+											let content = line;
+											if (numberingEnabled && trimmed) {
+												content = (
+													<div class='step-content'>
+														<span class='step-number'>{i + 1}.</span>
+														<span class='step-text'>{line}</span>
+													</div>
+												);
+											}
+
+											if (trimmed !== '') {
+												numberingEnabled = true;
+												return (
+													<div class='instruction-step' key={i}>
+														<div class='step-checkbox'>
+															<input
+																type='checkbox'
+																id={`step-${i}`}
+																class='step-check'
+															/>
+															<label for={`step-${i}`} class='check-label' />
+														</div>
+														{content}
+													</div>
+												);
+											}
+
+											return null;
+										});
+									})()}
+								</div>
+							</div>
+						</section>
+
+						{/* Section: Video Player if available */}
+						{recipe.video && (
+							<section class='recipe-section video-section'>
+								<h2 class='section-title'>Cooking Video</h2>
+								<div class='video-wrapper'>
+									<video
+										controls
+										class='recipe-video'
+										poster={recipe.image}
+										preload='metadata'
+									>
+										<source src={recipe.video} type='video/mp4' />
+										Your browser does not support the video tag.
+									</video>
+								</div>
+							</section>
+						)}
+
+						{/* Section: AI Cooking Tips */}
+						<div class='ai-tips-wrapper'>
+							<AICookingTips currentLocale={currentLocale} />
+						</div>
+
+						{/* Section: Interactive Rating */}
+						<div class='rating-section'>
+							<AuthRatingWrapper recipeId={recipe._id} client:load />
+						</div>
+
+						{/* Section: Comments Section */}
+						<div class='comments-section'>
+							<CommentsSectionWrapper recipeId={recipe._id} client:load />
+						</div>
+					</article>
+				</div>
+			</main>
+
+			{/* Section: Interactive JavaScript */}
+			<script>
+				{`
+          console.log('Section: Initializing recipe view interactions');
+          
+          // Performance monitoring
+          const perfObserver = new PerformanceObserver((list) => {
+            list.getEntries().forEach((entry) => {
+              console.log(\`Section: \${entry.name} took \${entry.duration.toFixed(2)}ms\`);
+            });
+          });
+          
+          perfObserver.observe({ entryTypes: ['measure', 'largest-contentful-paint'] });
+          
+          // Collapsible sections
+          function toggleCollapse(header) {
+            console.log('Section: Toggling collapsible section');
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.collapse-icon');
+            
+            content.classList.toggle('collapsed');
+            icon.style.transform = content.classList.contains('collapsed') 
+              ? 'rotate(-90deg)' 
+              : 'rotate(0deg)';
+            
+            // Performance optimization
+            if (!content.classList.contains('collapsed')) {
+              content.style.height = content.scrollHeight + 'px';
+            } else {
+              content.style.height = '0px';
+            }
+          }
+          
+          // Lazy loading for images
+          const lazyImages = document.querySelectorAll('.lazy-image');
+          const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.add('loaded');
+                observer.unobserve(img);
+                console.log('Section: Lazy loaded image:', img.alt);
+              }
+            });
+          });
+          
+          lazyImages.forEach(img => imageObserver.observe(img));
+          
+          // Step completion tracking
+          document.querySelectorAll('.step-check').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+              const step = this.closest('.instruction-step');
+              step.classList.toggle('completed', this.checked);
+              console.log('Section: Step', this.id, this.checked ? 'completed' : 'unchecked');
+              
+              // Animate completion
+              if (this.checked) {
+                step.style.animation = 'stepComplete 0.3s ease';
+                setTimeout(() => step.style.animation = '', 300);
+              }
+            });
+          });
+          
+          // Draggable recipe cards (optional reordering)
+          let draggedItem = null;
+          document.addEventListener('dragstart', (e) => {
+            if (e.target.classList.contains('draggable')) {
+              draggedItem = e.target;
+              e.target.style.opacity = '0.5';
+              console.log('Section: Started dragging item');
+            }
+          });
+          
+          document.addEventListener('dragend', (e) => {
+            if (draggedItem) {
+              draggedItem.style.opacity = '1';
+              draggedItem = null;
+              console.log('Section: Ended dragging');
+            }
+          });
+          
+          // Responsive adjustments
+          function handleResize() {
+            const isMobile = window.innerWidth <= 768;
+            document.body.classList.toggle('mobile-view', isMobile);
+            console.log('Section: Viewport changed, mobile:', isMobile);
+          }
+          
+          window.addEventListener('resize', handleResize);
+          handleResize(); // Initial check
+          
+          // Add animation for loaded state
+          document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded');
+            console.log('Section: DOM fully loaded and interactive');
+          });
+        `}
+			</script>
 		</BaseLayout>
 	) : (
 		<BaseLayout title={t('recipes.notFound', currentLocale)}>
@@ -263,394 +706,1022 @@ try {
 }
 
 <style>
-	:root {
-		--primary-color: #d2691e;
-		--secondary-color: #c14e39;
-		--light-bg: #fff6f6;
-		--border-color: #f5c6c6;
-		--text-color: #5a2e2e;
-		--scroll-thumb: #f08080;
-		--scroll-track: #ffecec;
+	/* Section: Recipe View Specific Styles */
+	.recipe-header {
+		background: var(--glass-bg);
+		backdrop-filter: var(--backdrop-blur);
+		border-bottom: 1px solid var(--glass-border);
+		padding: var(--space-md) 0;
+		position: sticky;
+		top: 0;
+		z-index: 100;
 	}
-	.recipe-view {
-		width: 100%;
-		margin: 0.5rem auto;
-		padding: var(--spacing-large);
-		color: var(--color-dark);
-		border-radius: var(--border-radius);
+
+	.header-buttons {
 		display: flex;
-		flex-direction: column;
-		gap: 1rem;
+		gap: var(--space-md);
+		justify-content: space-between;
+	}
+
+	.back-button,
+	.print-button {
+		display: flex;
+		align-items: center;
+		gap: var(--space-xs);
+		padding: var(--space-sm) var(--space-lg);
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-lg);
+		color: var(--color-text);
 		font-family: var(--font-body);
-		background-color: #fff;
-		box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
+		font-size: var(--text-sm);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-medium) var(--animation-timing);
+		backdrop-filter: var(--backdrop-blur);
+	}
+
+	.back-button:hover,
+	.print-button:hover {
+		background: var(--color-hover);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+		border-color: var(--color-primary);
+	}
+
+	.back-button svg,
+	.print-button svg {
+		width: 20px;
+		height: 20px;
+		transition: transform var(--transition-fast);
+	}
+
+	.back-button:hover svg {
+		transform: translateX(-2px);
+	}
+
+	.print-button:hover svg {
+		transform: scale(1.1);
+	}
+
+	/* Section: Main Recipe Card */
+	.recipe-main {
+		padding: var(--space-xl) 0;
+		min-height: 100vh;
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-background) 97%, white),
+			color-mix(in srgb, var(--color-background) 93%, white)
+		);
+	}
+
+	.recipe-card {
+		background: var(--glass-bg);
+		backdrop-filter: var(--backdrop-blur);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-xl);
+		padding: var(--space-xl);
+		box-shadow: var(--shadow-xl);
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	/* Section: Hero Image with Overlay */
+	.recipe-hero {
+		position: relative;
+		margin-bottom: var(--space-2xl);
+		border-radius: var(--radius-xl);
+		overflow: hidden;
+	}
+
+	.hero-image-container {
+		position: relative;
+		width: 100%;
+		height: 400px;
+		border-radius: var(--radius-lg);
+		overflow: hidden;
 	}
 
 	.hero-img {
 		width: 100%;
-		border-radius: 1rem;
-		max-height: 420px;
+		height: 100%;
 		object-fit: cover;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+		transition: transform var(--transition-slow) ease;
 	}
 
-	h1 {
-		font-family: var(--font-heading);
-		font-size: clamp(2.2rem, 5vw, 2.75rem);
-		font-weight: 700;
-		color: var(--color-primary);
-		margin-bottom: 0.75rem;
+	.hero-img:hover {
+		transform: scale(1.05);
+	}
+
+	.image-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: linear-gradient(
+			to bottom,
+			transparent 60%,
+			color-mix(in srgb, var(--color-svg-dark) 40%, transparent)
+		);
+		pointer-events: none;
+	}
+
+	.favorite-wrapper {
+		position: absolute;
+		top: var(--space-lg);
+		right: var(--space-lg);
+		z-index: 10;
+	}
+
+	/* Section: Recipe Title */
+	.recipe-title-section {
+		position: relative;
+		padding: var(--space-xl);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-svg-light) 60%, transparent) 0%,
+			color-mix(in srgb, var(--color-svg-cream) 60%, rgba(255, 255, 255, 0.9))
+				100%
+		);
+		backdrop-filter: var(--backdrop-blur);
+		border-radius: var(--radius-lg);
+		margin-top: calc(var(--space-2xl) * -1);
+		margin-left: var(--space-xl);
+		margin-right: var(--space-xl);
+		border: 1px solid var(--glass-border);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.recipe-title {
+		font-size: var(--text-3xl);
+		margin-bottom: var(--space-lg);
 		text-align: center;
-		border-bottom: 2px solid #f3d3c4;
-		padding-bottom: 0.5rem;
+		background: linear-gradient(
+			135deg,
+			var(--color-primary),
+			var(--color-svg-accent)
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
 	}
 
-	.meta-row {
+	/* Section: Social Share Bar */
+	.social-share-bar {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		gap: var(--spacing-medium);
-		margin-bottom: 1rem;
-		background-color: #f4e4df;
-		padding: var(--spacing-medium);
-		border-radius: var(--border-radius);
-		box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
-		font-size: 0.95rem;
-		color: var(--color-header);
-	}
-
-	.meta-rating-tags {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--spacing-small);
-		margin-bottom: var(--spacing-large);
-		padding: var(--spacing-medium);
-		background-color: #fef0eb;
-		border-radius: var(--border-radius);
-		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-	}
-
-	.meta-rating-tags .rating-label {
-		font-weight: 600;
-		color: var(--color-header);
-		letter-spacing: 0.05em;
-	}
-
-	.meta-rating-tags .rating-value {
-		font-weight: 700;
-		font-size: 1.3rem;
-		color: var(--color-secondary);
-	}
-
-	.meta-rating-tags .tags {
-		display: flex;
-		flex-wrap: wrap;
 		justify-content: center;
-		gap: 0.5rem;
-		margin-top: var(--spacing-small);
-	}
-
-	.meta-rating-tags .tag {
-		background-color: var(--color-secondary);
-		color: var(--color-light);
-		border-radius: 9999px;
-		padding: 0.4rem 1rem;
-		font-size: 0.9rem;
-		cursor: pointer;
-		transition: background-color 0.3s ease;
-	}
-
-	.meta-rating-tags .tag:hover {
-		background-color: var(--color-primary);
-	}
-
-	.section {
-		margin-top: var(--spacing-large);
-		padding: var(--spacing-medium);
-		background-color: #fff7f4;
-		border-radius: var(--border-radius);
-		box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
-		transition: background-color 0.2s ease;
-	}
-
-	h2 {
-		font-family: var(--font-heading);
-		font-size: 1.6rem;
-		margin-bottom: 1rem;
-		color: var(--color-primary);
-		border-bottom: 1px solid #f3d3c4;
-		padding-bottom: 0.3rem;
-	}
-
-	.section p {
-		line-height: 1.65;
-		font-size: 1rem;
-		color: var(--color-dark);
-	}
-
-	.section span:hover {
-		background-color: #fff0ea;
-		border-radius: 4px;
-		transition: background 0.2s ease;
-	}
-
-	.container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-	.rating {
-		display: flex;
-		gap: 2rem;
-		font-weight: 800;
-		font-size: 0.9rem;
-		font-size: 1.5rem;
-
-		color: #2c3e50;
-		background: linear-gradient(135deg, #fe9f8e 0%, #f8f9fa 100%);
-		padding: 0px 12px;
-		margin: 3rem auto;
-		/* border: 5px solid var(--color-accent); */
-		border-radius: 20px;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-		user-select: none;
-		transition:
-			background 0.3s ease,
-			box-shadow 0.3s ease;
-	}
-	.heading {
-		color: #333;
-		font-weight: 800;
-		text-align: center;
-		font-size: 1.8rem;
-	}
-	.ratingButton {
-		background: none;
-		border: none;
-		cursor: pointer;
-		padding: 0;
-		outline: none;
-	}
-
-	.rating:hover {
-		background: linear-gradient(135deg, #f8f9fa 0%, #fe9f8e 100%);
-		/* box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8); */
-		cursor: default;
-	}
-	.video-wrapper {
-		margin-top: var(--spacing-large);
-		padding: var(--spacing-medium);
-		background-color: #fff7f3;
-		border-radius: var(--border-radius);
-		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-	}
-
-	/* Header buttons */
-	.header-buttons {
-		display: flex;
-		gap: 15px;
-		margin: 15px;
-	}
-	.back-button,
-	.add-recipe-button {
-		padding: 10px 15px;
-		border: none;
-		border-radius: 5px;
-		cursor: pointer;
-		font-weight: bold;
-		text-decoration: none;
-		transition:
-			transform 0.2s,
-			box-shadow 0.2s;
-	}
-
-	.back-button {
-		background: var(--primary-color);
-		color: white;
-	}
-
-	.add-recipe-button {
-		background: var(--secondary-color);
-		color: white;
-	}
-
-	.print-icon {
-		color: white;
-		font-weight: bold;
-		margin-right: 0.3rem;
-		font-size: 1.5rem;
-	}
-	.back-button:hover,
-	.add-recipe-button:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-	}
-
-	.social-share {
-		display: flex;
-		align-items: center;
-		gap: 12px;
-		margin: 0.5rem 0;
-	}
-
-	.app-icon {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		padding: 10px 15px;
-		border-radius: 8px;
-		font-weight: bold;
-		text-decoration: none;
-		color: white;
-	}
-
-	.app-icon svg {
-		width: 20px;
-		height: 20px;
-		fill: white;
-	}
-
-	.app-icon.whatsapp {
-		background-color: #25d366;
-	}
-
-	.app-icon.pinterest {
-		background-color: #e60023;
-	}
-
-	.app-icon.twitter {
-		background-color: #000000; /* black for X */
-	}
-
-	.app-icon:hover {
-		opacity: 0.8;
+		gap: var(--space-lg);
+		padding: var(--space-md);
+		background: color-mix(in srgb, var(--color-surface) 95%, transparent);
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--glass-border);
 	}
 
 	.share-label {
-		margin-left: auto;
-		font-weight: bold;
-		color: #555;
-		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--color-text-light);
+		font-size: var(--text-sm);
 	}
 
-	video {
+	.share-buttons {
+		display: flex;
+		gap: var(--space-sm);
+	}
+
+	.share-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border-radius: var(--radius-full);
+		transition: all var(--transition-medium) var(--animation-timing);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.share-button::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: -100%;
 		width: 100%;
-		border-radius: var(--border-radius);
-		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+		height: 100%;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			rgba(255, 255, 255, 0.3),
+			transparent
+		);
+		transition: left 0.6s ease;
 	}
 
-	@media print {
-		/* Hide all elements by default */
-		body * {
-			visibility: hidden;
+	.share-button:hover::before {
+		left: 100%;
+	}
+
+	.share-button.whatsapp {
+		background: #25d366;
+		color: white;
+	}
+
+	.share-button.pinterest {
+		background: #e60023;
+		color: white;
+	}
+
+	.share-button.twitter {
+		background: #1da1f2;
+		color: white;
+	}
+
+	.share-button:hover {
+		transform: translateY(-3px) scale(1.1);
+		box-shadow: var(--shadow-lg);
+	}
+
+	/* Section: Recipe Metadata Grid */
+	.recipe-meta-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: var(--space-lg);
+		margin: var(--space-2xl) 0;
+		position: relative;
+	}
+
+	.meta-card {
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-svg-light) 30%, transparent) 0%,
+			color-mix(in srgb, var(--color-svg-cream) 40%, rgba(255, 255, 255, 0.9))
+				100%
+		);
+		border-radius: var(--radius-xl);
+		padding: var(--space-lg);
+		border: 1px solid var(--glass-border);
+		transition: all var(--transition-medium) var(--animation-timing);
+		position: relative;
+		overflow: hidden;
+		backdrop-filter: var(--backdrop-blur);
+		display: flex;
+		flex-direction: column;
+		min-height: 200px;
+	}
+
+	.meta-card::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 4px;
+		background: linear-gradient(
+			90deg,
+			var(--color-primary),
+			var(--color-svg-fresh)
+		);
+		opacity: 0;
+		transition: opacity var(--transition-medium);
+	}
+
+	.meta-card:hover::before {
+		opacity: 1;
+	}
+
+	.meta-card:hover {
+		transform: translateY(-6px);
+		box-shadow: var(--shadow-xl);
+		border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+	}
+
+	/* Card Header */
+	.meta-card-header {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-bottom: var(--space-md);
+		padding-bottom: var(--space-sm);
+		border-bottom: 1px solid var(--color-text-light);
+	}
+
+	.meta-icon {
+		width: 24px;
+		height: 24px;
+		color: var(--color-primary);
+		flex-shrink: 0;
+	}
+
+	.meta-card-title {
+		font-size: var(--text-lg);
+		font-weight: 700;
+		color: var(--color-svg-dark);
+		margin: 0;
+	}
+
+	/* Card Content */
+	.meta-card-content {
+		flex: 1;
+		padding: var(--space-sm) 0;
+	}
+
+	/* Author Card Specific */
+	.author-card .meta-card-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.chef-name {
+		font-size: var(--text-xl);
+		font-weight: 700;
+		color: var(--color-svg-dark);
+		margin: 0;
+		line-height: 1.2;
+	}
+
+	.recipe-date {
+		font-size: var(--text-sm);
+		color: var(--color-text-light);
+		margin: 0;
+	}
+
+	/* Nutrition Card Specific */
+	.nutrition-grid {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+		gap: var(--space-md);
+		align-items: center;
+	}
+
+	.nutrition-item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-xs);
+	}
+
+	.nutrition-label {
+		font-size: var(--text-sm);
+		color: var(--color-text-light);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.nutrition-value {
+		font-size: var(--text-xl);
+		font-weight: 800;
+		color: var(--color-svg-accent);
+		line-height: 1.2;
+	}
+
+	.nutrition-detail {
+		display: block;
+		font-size: var(--text-xs);
+		color: var(--color-text-light);
+		font-weight: 400;
+		margin-top: 2px;
+	}
+
+	.nutrition-divider {
+		width: 1px;
+		height: 40px;
+		background: var(--glass-border);
+	}
+
+	.serving-controls {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin-top: var(--space-xs);
+	}
+
+	.serving-btn {
+		width: 32px;
+		height: 32px;
+		border-radius: var(--radius-full);
+		border: 1px solid var(--glass-border);
+		background: var(--color-surface);
+		color: var(--color-text);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+	}
+
+	.serving-btn:hover {
+		background: var(--color-primary);
+		color: white;
+		border-color: var(--color-primary);
+		transform: scale(1.1);
+	}
+
+	.serving-btn.decrease svg,
+	.serving-btn.increase svg {
+		stroke-width: 3;
+	}
+
+	.serving-count {
+		font-size: var(--text-lg);
+		font-weight: 700;
+		color: var(--color-svg-dark);
+		min-width: 36px;
+		text-align: center;
+	}
+
+	/* Rating Card Specific */
+	.rating-display {
+		margin-bottom: var(--space-md);
+	}
+
+	.rating-stats {
+		display: flex;
+		justify-content: space-around;
+		gap: var(--space-sm);
+		padding: var(--space-sm);
+		background: color-mix(in srgb, var(--color-background) 50%, transparent);
+		border-radius: var(--radius-lg);
+	}
+
+	.stat-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.stat-label {
+		font-size: var(--text-xs);
+		color: var(--color-text-light);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.stat-value {
+		font-size: var(--text-lg);
+		font-weight: 800;
+		color: var(--color-svg-dark);
+	}
+
+	.stat-divider {
+		width: 1px;
+		height: 100%;
+		background: var(--glass-border);
+	}
+
+	/* Tags Card Specific */
+	.tags-cloud {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		margin-bottom: var(--space-md);
+	}
+
+	.tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: var(--space-xs) var(--space-sm);
+		background: color-mix(in srgb, var(--color-background) 80%, transparent);
+		color: var(--color-text);
+		border-radius: var(--radius-full);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		cursor: pointer;
+		transition: all var(--transition-medium) var(--animation-timing);
+		animation: tagPopIn 0.3s ease-out var(--tag-delay) both;
+		border: 1px solid transparent;
+	}
+
+	.tag:hover {
+		background: var(--color-primary);
+		color: white;
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+		border-color: var(--color-primary);
+	}
+
+	.tag-icon {
+		opacity: 0;
+		transition: opacity var(--transition-fast);
+		width: 12px;
+		height: 12px;
+	}
+
+	.tag:hover .tag-icon {
+		opacity: 1;
+	}
+
+	.no-tags {
+		color: var(--color-text-light);
+		font-style: italic;
+		text-align: center;
+		padding: var(--space-md);
+	}
+
+	.tag-categories {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-xs);
+		margin-top: var(--space-md);
+	}
+
+	.category-badge {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 6px 12px;
+		background: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		border-radius: var(--radius-full);
+		font-size: var(--text-xs);
+		font-weight: 600;
+		color: var(--color-text);
+		transition: all var(--transition-fast);
+	}
+
+	.category-badge.vegan {
+		color: var(--color-svg-herb);
+		border-color: color-mix(in srgb, var(--color-svg-herb) 30%, transparent);
+		background: color-mix(in srgb, var(--color-svg-herb) 10%, transparent);
+	}
+
+	.category-badge.gluten-free {
+		color: var(--color-svg-gold);
+		border-color: color-mix(in srgb, var(--color-svg-gold) 30%, transparent);
+		background: color-mix(in srgb, var(--color-svg-gold) 10%, transparent);
+	}
+
+	.category-badge.quick {
+		color: var(--color-primary);
+		border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+		background: color-mix(in srgb, var(--color-primary) 10%, transparent);
+	}
+
+	.category-badge.dessert {
+		color: var(--color-svg-accent);
+		border-color: color-mix(in srgb, var(--color-svg-accent) 30%, transparent);
+		background: color-mix(in srgb, var(--color-svg-accent) 10%, transparent);
+	}
+
+	/* Card Footer */
+	.meta-card-footer {
+		margin-top: auto;
+		padding-top: var(--space-md);
+		border-top: 1px solid var(--color-text-light);
+	}
+
+	.view-profile,
+	.nutrition-details,
+	.rate-recipe,
+	.add-tag {
+		width: 100%;
+		padding: var(--space-sm);
+		background: transparent;
+		border: 1px solid var(--color-text-light);
+		color: var(--color-text);
+		border-radius: var(--radius-md);
+		font-size: var(--text-sm);
+		font-weight: 600;
+		cursor: pointer;
+		transition: all var(--transition-fast);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-xs);
+	}
+
+	.view-profile:hover,
+	.nutrition-details:hover,
+	.rate-recipe:hover,
+	.add-tag:hover {
+		background: var(--color-primary);
+		color: white;
+		border-color: var(--color-primary);
+		transform: translateY(-2px);
+	}
+
+	/* Animations */
+	@keyframes tagPopIn {
+		0% {
+			opacity: 0;
+			transform: scale(0.8) translateY(10px);
+		}
+		100% {
+			opacity: 1;
+			transform: scale(1) translateY(0);
+		}
+	}
+
+	@keyframes cardFloat {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-5px);
+		}
+	}
+
+	.meta-card:hover {
+		animation: cardFloat 3s ease-in-out infinite;
+	}
+
+	/* Responsive Design */
+	@media (max-width: 1024px) {
+		.recipe-meta-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	@media (max-width: 768px) {
+		.recipe-meta-grid {
+			grid-template-columns: 1fr;
 		}
 
-		/* Show only the recipe content */
-		.recipe-view,
-		.recipe-view * {
-			visibility: visible;
+		.nutrition-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-lg);
 		}
 
-		/* Position the recipe content properly */
-		.recipe-view {
-			position: absolute;
-			left: 0;
-			top: 0;
+		.nutrition-divider {
 			width: 100%;
-			margin: 0;
-			padding: 20px;
-			box-shadow: none;
-			background: white !important;
+			height: 1px;
 		}
 
-		/* Hide interactive elements */
-		.header-buttons,
-		.rating,
-		.comments-section,
-		button {
+		.tag-categories {
+			justify-content: center;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.meta-card {
+			padding: var(--space-md);
+		}
+
+		.tag {
+			font-size: var(--text-xs);
+			padding: 4px 8px;
+		}
+
+		.category-badge {
+			font-size: 10px;
+			padding: 4px 8px;
+		}
+	}
+
+	/* Print Styles */
+	@media print {
+		.meta-card {
+			break-inside: avoid;
+			box-shadow: none !important;
+			border: 1px solid #ddd !important;
+			margin-bottom: 1rem !important;
+		}
+
+		.meta-card-footer,
+		.serving-controls,
+		.tag-icon {
 			display: none !important;
 		}
 
-		/* Adjust images for print */
-		.hero-img {
-			max-width: 90% !important;
-			height: auto !important;
-			max-height: 300px !important;
-			page-break-inside: avoid;
+		.tag {
+			background: #f5f5f5 !important;
+			color: #333 !important;
+			border: 1px solid #ddd !important;
+		}
+	}
+
+	/* Section: Collapsible Sections */
+	.recipe-section {
+		background: var(--color-surface);
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--glass-border);
+		margin-bottom: var(--space-xl);
+		overflow: hidden;
+	}
+
+	.section-header {
+		padding: var(--space-lg);
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-primary) 10%, transparent),
+			color-mix(in srgb, var(--color-svg-fresh) 10%, transparent)
+		);
+		cursor: pointer;
+		user-select: none;
+		transition: background var(--transition-fast);
+	}
+
+	.section-header:hover {
+		background: linear-gradient(
+			135deg,
+			color-mix(in srgb, var(--color-primary) 15%, transparent),
+			color-mix(in srgb, var(--color-svg-fresh) 15%, transparent)
+		);
+	}
+
+	.section-title {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+		margin: 0;
+		font-size: var(--text-xl);
+		color: var(--color-primary);
+	}
+
+	.collapse-icon {
+		transition: transform var(--transition-medium) var(--animation-timing);
+	}
+
+	.ingredient-count,
+	.step-count {
+		margin-left: auto;
+		font-size: var(--text-sm);
+		color: var(--color-text-light);
+		font-weight: 500;
+	}
+
+	.section-content {
+		padding: var(--space-lg);
+		transition: all var(--transition-medium) ease;
+		max-height: 1000px;
+		overflow: hidden;
+	}
+
+	.section-content.collapsed {
+		max-height: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+
+	/* Section: Ingredients Grid */
+	.ingredients-grid {
+		display: grid;
+		gap: var(--space-sm);
+	}
+
+	.ingredient-row {
+		padding: var(--space-sm) var(--space-md);
+		border-radius: var(--radius-md);
+		transition: all var(--transition-fast);
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.ingredient-row:hover {
+		background: var(--color-hover);
+		transform: translateX(4px);
+	}
+
+	.ingredient-category {
+		font-size: var(--text-lg);
+		color: var(--color-primary);
+		padding: var(--space-sm) 0;
+		border-bottom: 2px solid var(--color-svg-fresh);
+		width: 100%;
+	}
+
+	.ingredient-item {
+		display: flex;
+		align-items: center;
+		gap: var(--space-sm);
+	}
+
+	.ingredient-icon {
+		color: var(--color-svg-fresh);
+		flex-shrink: 0;
+	}
+
+	/* Section: Instructions Steps */
+	.instructions-steps {
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-lg);
+	}
+
+	.instruction-step {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: var(--space-md);
+		align-items: start;
+		padding: var(--space-md);
+		background: var(--glass-bg);
+		border-radius: var(--radius-md);
+		border: 1px solid var(--glass-border);
+		transition: all var(--transition-medium) var(--animation-timing);
+		position: relative;
+	}
+
+	.instruction-step:hover {
+		transform: translateX(4px);
+		border-color: var(--color-primary);
+		box-shadow: var(--shadow-md);
+	}
+
+	.instruction-step.completed {
+		background: color-mix(in srgb, var(--color-svg-fresh) 10%, transparent);
+		border-color: var(--color-svg-fresh);
+	}
+
+	.step-checkbox {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.step-check {
+		display: none;
+	}
+
+	.check-label {
+		width: 24px;
+		height: 24px;
+		border: 2px solid var(--color-text-light);
+		border-radius: var(--radius-full);
+		cursor: pointer;
+		position: relative;
+		transition: all var(--transition-fast);
+	}
+
+	.step-check:checked + .check-label {
+		background: var(--color-svg-fresh);
+		border-color: var(--color-svg-fresh);
+	}
+
+	.step-check:checked + .check-label::after {
+		content: '✓';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		color: white;
+		font-weight: bold;
+	}
+
+	.step-content {
+		display: flex;
+		gap: var(--space-sm);
+		align-items: baseline;
+	}
+
+	.step-number {
+		font-weight: 700;
+		color: var(--color-primary);
+		font-size: var(--text-lg);
+		min-width: 30px;
+	}
+
+	.step-text {
+		line-height: 1.6;
+		color: var(--color-text);
+	}
+
+	/* Section: Video Section */
+	.video-section {
+		margin: var(--space-2xl) 0;
+	}
+
+	.video-wrapper {
+		position: relative;
+		padding-top: 56.25%; /* 16:9 Aspect Ratio */
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		background: var(--color-svg-dark);
+	}
+
+	.recipe-video {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border: none;
+	}
+
+	/* Section: Grocery Actions */
+	.grocery-actions {
+		margin-top: var(--space-xl);
+		padding-top: var(--space-lg);
+		border-top: 1px solid var(--glass-border);
+	}
+
+	/* Section: Animation Keyframes */
+	@keyframes stepComplete {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.02);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes shimmer {
+		0% {
+			background-position: -1000px 0;
+		}
+		100% {
+			background-position: 1000px 0;
+		}
+	}
+
+	/* Section: Responsive Design */
+	@media (max-width: 768px) {
+		.recipe-meta-grid {
+			grid-template-columns: 1fr;
 		}
 
-		/* Improve text readability */
-		h1,
-		h2,
-		p,
-		span {
-			color: black !important;
-			font-family: 'Times New Roman', serif !important;
+		.recipe-title-section {
+			margin-left: var(--space-sm);
+			margin-right: var(--space-sm);
+			padding: var(--space-lg);
 		}
 
-		/* Remove background colors and shadows */
-		.meta-row,
-		.meta-rating-tags,
-		.section {
-			background: white !important;
+		.hero-image-container {
+			height: 300px;
+		}
+
+		.social-share-bar {
+			flex-direction: column;
+			gap: var(--space-md);
+		}
+
+		.instruction-step {
+			grid-template-columns: 1fr;
+			gap: var(--space-sm);
+		}
+
+		.step-checkbox {
+			order: -1;
+			justify-content: flex-start;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.recipe-card {
+			padding: var(--space-md);
+		}
+
+		.recipe-title {
+			font-size: var(--text-2xl);
+		}
+
+		.hero-image-container {
+			height: 250px;
+		}
+
+		.header-buttons {
+			flex-direction: column;
+		}
+
+		.back-button,
+		.print-button {
+			width: 100%;
+			justify-content: center;
+		}
+	}
+
+	/* Section: Print Styles */
+	@media print {
+		.recipe-header,
+		.share-buttons,
+		.favorite-wrapper,
+		.grocery-actions,
+		.ai-tips-wrapper,
+		.rating-section,
+		.comments-section,
+		.section-header,
+		.step-checkbox,
+		.video-section {
+			display: none !important;
+		}
+
+		.recipe-card {
 			box-shadow: none !important;
 			border: none !important;
 			padding: 0 !important;
-			margin: 1rem 0 !important;
 		}
 
-		/* Ensure proper page breaks */
-		.section {
-			page-break-inside: avoid;
-		}
-
-		/* Author and nutrition info */
-		.meta-row {
-			display: flex !important;
-			justify-content: space-between !important;
-		}
-
-		/* Remove rating stars */
-		.rating-wrapper {
-			display: none !important;
-		}
-	}
-
-	@media print {
-		.meta-rating-tags .tags {
-			display: none !important;
-		}
-		/* Tags styling - plain text version */
-		.meta-rating-tags {
-			display: flex !important;
-			flex-direction: column !important;
-			align-items: center !important;
-			gap: 0.5rem !important;
+		.recipe-section {
+			break-inside: avoid;
+			border: none !important;
 			background: none !important;
-			box-shadow: none !important;
+		}
+
+		.section-content {
+			max-height: none !important;
 			padding: 0 !important;
 		}
 
-		.meta-rating-tags .tags {
-			display: flex !important;
-			flex-wrap: wrap !important;
-			justify-content: center !important;
-			gap: 0.5rem !important;
-		}
-
-		.meta-rating-tags .tag {
-			all: initial !important;
-			display: inline !important;
+		* {
 			color: black !important;
-			font-size: 12pt !important;
-			font-family: inherit !important;
-			padding: 0 !important;
-			margin: 0 !important;
-		}
-
-		.meta-rating-tags .tag:not(:last-child)::after {
-			content: ', ';
+			background: white !important;
 		}
 	}
 </style>
