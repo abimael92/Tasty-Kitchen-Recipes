@@ -3,6 +3,17 @@
     "language": "Language",
     "home": {
         "title": "Tasty Kitchen Recipes",
+        "hero.title": "Cook with\nConfidence and\nCreativity",
+        "hero.subtitle": "Organize your favorite recipes, plan weekly menus and discover new flavors with our community of home chefs",
+        "hero.badge": "More than 50,000 saved recipes",
+        "hero.cta.download": "Download App",
+        "hero.cta.demo": "View Demo",
+        "hero.image.alt": "RecetApp Interface",
+        "hero.recipe.name": "Pasta Carbonara",
+        "hero.stats.users": "Active Users",
+        "hero.stats.recipes": "Recipes",
+        "hero.stats.rating": "Rating",
+        "hero.stats.countries": "Countries",
         "nav": {
             "home": "Home",
             "recipes": "Recipes",
