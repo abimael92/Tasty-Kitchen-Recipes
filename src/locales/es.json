@@ -4,15 +4,36 @@
     "language": "Idioma",
     "home": {
         "title": "Recetas de Cocina Sabrosas",
-        "nav": {
-            "home": "Inicio",
-            "recipes": "Recetas",
-            "about": "Acerca de nosotros",
-            "profile": "Perfil",
-            "favorites": "Favoritos",
-            "groceryList": "Mi Lista de Compras",
-            "removeFromList": "Eliminar de la Lista de Compras"
+        "hero": {
+            "title": "Cocina con\nConfianza y\nCreatividad",
+            "subtitle": "Organiza tus recetas favoritas, planifica menús semanales y descubre nuevos sabores con nuestra comunidad de chefs caseros",
+            "badge": "Más de 50,000 recetas guardadas",
+            "cta": {
+                "download": "Descargar App",
+                "demo": "Ver Demo"
+            },
+            "image": {
+                "alt": "Interfaz de RecetApp"
+            },
+            "recipe": {
+                "name": "Pasta Carbonara"
+            },
+            "stats": {
+                "users": "Usuarios Activos",
+                "recipes": "Recetas",
+                "rating": "Rating",
+                "countries": "Países"
+            }
         }
+    },
+    "nav": {
+        "home": "Inicio",
+        "recipes": "Recetas",
+        "about": "Acerca de nosotros",
+        "profile": "Perfil",
+        "favorites": "Favoritos",
+        "groceryList": "Mi Lista de Compras",
+        "removeFromList": "Eliminar de la Lista de Compras"
     },
     "auth": {
         "login": "Iniciar sesión",
