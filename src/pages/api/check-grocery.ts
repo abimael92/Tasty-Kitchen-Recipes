@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
-import { client } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const { userId, recipeId } = await request.json();
 
 		// Check if recipe exists in user's grocery list
-		const groceryList = await client.fetch(
+		const groceryList = await serverSanityClient.fetch(
 			`*[_type == "groceryList" && user._ref == $userId][0]{
         recipes[]->{_id}
       }`,
