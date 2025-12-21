@@ -1,7 +1,7 @@
 // src/pages/api/submit-comment.ts
 import type { APIRoute } from 'astro';
 import { contentModerator } from '../../utils/contentModeration';
-import { serverClient as client } from '../../lib/sanity';
+import { serverSanityClient as client } from '../../lib/sanity';
 import { broadcastToRecipeClients } from './comments-stream';
 
 export const POST: APIRoute = async ({ request }) => {
