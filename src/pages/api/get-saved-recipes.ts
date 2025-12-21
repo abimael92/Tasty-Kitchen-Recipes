@@ -1,4 +1,4 @@
-import { client } from '../../lib/sanity';
+import { publicSanityClient } from '../../lib/sanity';
 
 export async function GET({ url }) {
 	const userId = url.searchParams.get('userId');
@@ -15,7 +15,7 @@ export async function GET({ url }) {
       recipe->{ title, slug, image }
     }`;
 
-		const recipes = await client.fetch(query, { userId });
+		const recipes = await publicSanityClient.fetch(query, { userId });
 
 		return new Response(JSON.stringify(recipes), {
 			headers: { 'Content-Type': 'application/json' },

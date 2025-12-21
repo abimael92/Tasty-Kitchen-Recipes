@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { client } from '../../lib/sanity';
+import { publicSanityClient } from '../../lib/sanity';
 import RecipeList from '../../components/RecipeList';
 import { t } from '../../utils/i18n';
 
@@ -15,7 +15,7 @@ const localRecipes = (await getCollection('recipes')).map((entry) => ({
 
 let sanityRecipes = [];
 try {
-	sanityRecipes = await client.fetch(`
+	sanityRecipes = await publicSanityClient.fetch(`
     *[_type == "recipe"]{
       _id,
       title,

@@ -1,4 +1,4 @@
-import { client } from '../../lib/sanity';
+import { serverSanityClient as client } from '../../lib/sanity.js';
 
 export async function POST({ request }) {
 	const { userId, recipeId } = await request.json();

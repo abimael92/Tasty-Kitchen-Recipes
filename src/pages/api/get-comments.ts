@@ -1,6 +1,6 @@
 // src/pages/api/get-comments.ts
 import type { APIRoute } from 'astro';
-import { client } from '../../lib/sanity.ts';
+import { serverSanityClient } from '../../lib/sanity.ts';
 
 // src/pages/api/get-comments.ts (Simplified)
 export const GET: APIRoute = async ({ url }) => {
@@ -52,7 +52,7 @@ export const GET: APIRoute = async ({ url }) => {
       }
     }`;
 
-		const comments = await client.fetch(query, { recipeId });
+		const comments = await serverSanityClient.fetch(query, { recipeId });
 		console.log('✅ Found comments:', comments?.length || 0);
 
 		return new Response(

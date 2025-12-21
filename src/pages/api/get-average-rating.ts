@@ -1,5 +1,5 @@
 // /src/pages/api/average-rating.ts
-import { client } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 
 export async function GET({ url }) {
 	const recipeId = url.searchParams.get('recipeId');
@@ -10,7 +10,7 @@ export async function GET({ url }) {
 		});
 	}
 
-	const ratings = await client.fetch(
+	const ratings = await serverSanityClient.fetch(
 		`*[
 			_type == "recipeRating" &&
 			(recipe._ref == $recipeId || recipe._ref == $draftId)

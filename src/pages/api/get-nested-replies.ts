@@ -1,6 +1,6 @@
 // src/pages/api/get-nested-replies.ts
 import type { APIRoute } from 'astro';
-import { client } from '../../lib/sanity.ts';
+import { publicSanityClient } from '../../lib/sanity.ts';
 
 export const GET: APIRoute = async ({ url }) => {
 	try {
@@ -36,7 +36,9 @@ export const GET: APIRoute = async ({ url }) => {
       "hasNestedReplies": count(*[_type == "comment" && parentComment._ref == ^._id]) > 0
     }`;
 
-		const nestedReplies = await client.fetch(query, { parentCommentId });
+		const nestedReplies = await publicSanityClient.fetch(query, {
+			parentCommentId,
+		});
 		console.log(
 			`✅ Found ${nestedReplies.length} nested replies for ${parentCommentId}`
 		);
