@@ -3,7 +3,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RecipeNotFound from '../../components/RecipeNotFound.astro';
 import { getCollection } from 'astro:content';
-import { client as sanityClient } from '../../lib/sanity.js';
+import { publicSanityClient as sanityClient } from '../../lib/sanity.js';
 import { t } from '../../utils/i18n.js';
 
 import AuthorMeta from '../../components/AuthorMeta.astro';
@@ -64,7 +64,6 @@ try {
 		console.error('Section: Recipe not found in any source');
 		throw new Error('Recipe not found');
 	}
-
 } catch (err) {
 	console.error('Section: Error loading recipe:', err);
 }
