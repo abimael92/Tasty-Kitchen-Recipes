@@ -75,7 +75,6 @@ const componentStartTime = performance.now();
 								stroke-linejoin='round'></path>
 						</svg>
 					</a>
-
 				</div>
 			</div>
 
@@ -678,7 +677,7 @@ const componentStartTime = performance.now();
 </style>
 
 <script>
-	/* Section: Interactive JavaScript Enhancements */
+	// Section: Interactive JavaScript Enhancements
 	console.log('🚀 Hero Page Interactive Features Loading');
 
 	// Add staggered animation delays
@@ -691,8 +690,8 @@ const componentStartTime = performance.now();
 			el.style.animationDelay = delay;
 		});
 
-		// Performance logging
 		const componentEndTime = performance.now();
+		// Performance logging
 		const loadTime = componentEndTime - componentStartTime;
 		console.log(`⚡ Hero Component loaded in ${loadTime.toFixed(2)}ms`);
 
@@ -714,7 +713,7 @@ const componentStartTime = performance.now();
 		const lazyImages = document.querySelectorAll('img[loading="lazy"]');
 		lazyImages.forEach((img) => {
 			img.addEventListener('load', () => {
-				console.log(`🖼️ Image loaded: ${img.alt || 'No alt text'}`);
+				console.log(`Image loaded: ${img.alt || 'No alt text'}`);
 			});
 		});
 	});
