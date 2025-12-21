@@ -25,7 +25,7 @@ export const POST = async ({ request }) => {
 		const imageFile = formData.get('image');
 		if (imageFile && imageFile.size > 0) {
 			const buffer = Buffer.from(await imageFile.arrayBuffer());
-			const asset = await client.assets.upload('image', buffer, {
+			const asset = await serverSanityClient.assets.upload('image', buffer, {
 				filename: imageFile.name,
 				contentType: imageFile.type,
 			});
@@ -40,7 +40,7 @@ export const POST = async ({ request }) => {
 		const videoFile = formData.get('video');
 		if (videoFile && videoFile.size > 0) {
 			const buffer = Buffer.from(await videoFile.arrayBuffer());
-			const asset = await client.assets.upload('file', buffer, {
+			const asset = await serverSanityClient.assets.upload('file', buffer, {
 				filename: videoFile.name,
 				contentType: videoFile.type,
 			});
