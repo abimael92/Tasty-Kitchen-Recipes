@@ -1,4 +1,4 @@
-import { client } from '../../lib/sanity';
+import { publicSanityClient } from '../../lib/sanity';
 
 export async function GET({ url }) {
 	const recipeId = url.searchParams.get('recipeId');
@@ -14,7 +14,7 @@ export async function GET({ url }) {
 	const cleanId = recipeId.replace(/^drafts\./, '');
 
 	// Find rating by user for recipe
-	const result = await client.fetch(
+	const result = await publicSanityClient.fetch(
 		`*[_type == "recipeRating" && user._ref == $userId && (recipe._ref == $cleanId || recipe._ref == $draftId)][0]{
       rating
     }`,
