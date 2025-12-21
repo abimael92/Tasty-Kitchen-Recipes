@@ -1,5 +1,5 @@
 // src/pages/api/submit-rating.ts
-import { client } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 
 export async function POST({ request }) {
 	const { recipeId, rating, userId } = await request.json();
@@ -12,14 +12,14 @@ export async function POST({ request }) {
 
 	try {
 		// Check if rating by this user for this recipe already exists
-		const existing = await client.fetch(
+		const existing = await serverSanityClient.fetch(
 			`*[_type == "recipeRating" && user._ref == $userId && recipe._ref == $recipeId][0]`,
 			{ userId, recipeId }
 		);
 
 		if (existing) {
 			// Update existing rating
-			await client
+			await serverSanityClient
 				.patch(existing._id)
 				.set({
 					rating,
@@ -28,7 +28,7 @@ export async function POST({ request }) {
 				.commit();
 		} else {
 			// Create new rating
-			await client.create({
+			await serverSanityClient.create({
 				_type: 'recipeRating',
 				rating,
 				ratedAt: new Date().toISOString(),
