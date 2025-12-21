@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { client } from '../../lib/sanity.js';
+import { serverSanityClient } from '../../lib/sanity.js';
 
 export async function POST({ request }) {
 	const { userId, recipeId } = await request.json();
@@ -12,7 +12,7 @@ export async function POST({ request }) {
 	}
 
 	try {
-		const existingCollection = await client.fetch(
+		const existingCollection = await serverSanityClient.fetch(
 			`*[_type == "collection" && user._ref == $userId][0]{ _id, recipes[] }`,
 			{ userId }
 		);
@@ -33,18 +33,18 @@ export async function POST({ request }) {
 		}
 
 		if (collectionId) {
-			await client
+			await serverSanityClient
 				.patch(collectionId)
 				.set({ recipes: updatedRecipes })
 				.commit();
 		} else {
-			const user = await client.fetch(
+			const user = await serverSanityClient.fetch(
 				`*[_type == "user" && _id == $userId][0]{ name }`,
 				{ userId }
 			);
 			const userName = user?.name || 'User';
 
-			await client.create({
+			await serverSanityClient.create({
 				_type: 'collection',
 				title: `${userName}'s Favorites List`,
 				user: { _type: 'reference', _ref: userId },
