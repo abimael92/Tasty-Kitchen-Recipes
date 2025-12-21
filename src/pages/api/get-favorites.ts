@@ -1,4 +1,4 @@
-import { client } from '../../lib/sanity.js';
+import { publicSanityClient } from '../../lib/sanity.js';
 
 export async function POST({ request }) {
 	const { userId } = await request.json();
@@ -10,7 +10,7 @@ export async function POST({ request }) {
 	}
 
 	try {
-		const collection = await client.fetch(
+		const collection = await publicSanityClient.fetch(
 			`*[_type == "collection" && user._ref == $userId][0]{
         _id,
         title,
