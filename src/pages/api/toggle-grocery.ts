@@ -1,12 +1,12 @@
 import type { APIRoute } from 'astro';
-import { client } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
 		const { userId, recipeId, items } = await request.json();
 
 		// Get existing grocery list - DON'T create new one if exists
-		let groceryList = await client.fetch(
+		let groceryList = await serverSanityClient.fetch(
 			`*[_type == "groceryList" && user._ref == $userId][0]{
         _id,
         items,
@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request }) => {
 			// Add to EXISTING grocery list
 			if (!groceryList) {
 				// Only create if it doesn't exist
-				groceryList = await client.create({
+				groceryList = await serverSanityClient.create({
 					_type: 'groceryList',
 					user: { _type: 'reference', _ref: userId },
 					items: [],
@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 
 			// Add to existing items array
-			await client
+			await serverSanityClient
 				.patch(groceryList._id)
 				.set({
 					items: [
