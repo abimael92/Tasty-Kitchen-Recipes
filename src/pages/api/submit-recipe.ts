@@ -1,4 +1,4 @@
-import { serverClient } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 import { Buffer } from 'node:buffer';
 
 export const prerender = false;
@@ -60,7 +60,7 @@ export const POST = async ({ request }) => {
 			...(videoRef && { video: videoRef }),
 		};
 
-	const created = await serverClient.create(doc);
+	const created = await serverSanityClient.create(doc);
 
 		return new Response(JSON.stringify({ success: true, id: created._id }), {
 			status: 200,
