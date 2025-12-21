@@ -1,6 +1,6 @@
 // src/pages/api/delete-comment.ts
 import type { APIRoute } from 'astro';
-import { serverClient as client } from '../../lib/sanity';
+import { serverSanityClient as client } from '../../lib/sanity';
 
 export const DELETE: APIRoute = async ({ request }) => {
 	try {
