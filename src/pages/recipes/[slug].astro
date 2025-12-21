@@ -3,7 +3,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import RecipeNotFound from '../../components/RecipeNotFound.astro';
 import { getCollection } from 'astro:content';
-import { client } from '../../lib/sanity.js';
+import { client as sanityClient } from '../../lib/sanity.js';
 import { t } from '../../utils/i18n.js';
 
 import AuthorMeta from '../../components/AuthorMeta.astro';
@@ -38,7 +38,7 @@ try {
 
 	// Fetch Sanity recipe by slug
 	console.log('Section: Fetching Sanity recipe...');
-	const sanityRecipe = await client.fetch(
+	const sanityRecipe = await sanityClient.fetch(
 		`*[_type == "recipe" && slug.current == $slug][0]{
       _id,
       title,
@@ -65,13 +65,6 @@ try {
 		throw new Error('Recipe not found');
 	}
 
-	performance.mark('recipeLoadEnd');
-	performance.measure('recipeDataLoad', 'recipeLoadStart', 'recipeLoadEnd');
-	console.log(
-		'Section: Recipe data loaded in',
-		performance.getEntriesByName('recipeDataLoad')[0].duration.toFixed(2),
-		'ms'
-	);
 } catch (err) {
 	console.error('Section: Error loading recipe:', err);
 }
@@ -599,14 +592,6 @@ try {
 				{`
           console.log('Section: Initializing recipe view interactions');
           
-          // Performance monitoring
-          const perfObserver = new PerformanceObserver((list) => {
-            list.getEntries().forEach((entry) => {
-              console.log(\`Section: \${entry.name} took \${entry.duration.toFixed(2)}ms\`);
-            });
-          });
-          
-          perfObserver.observe({ entryTypes: ['measure', 'largest-contentful-paint'] });
           
           // Collapsible sections
           function toggleCollapse(header) {
