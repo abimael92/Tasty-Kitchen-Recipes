@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { client } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 
 export const POST: APIRoute = async ({ request }) => {
 	const { userId, itemKey } = await request.json();
@@ -8,7 +8,7 @@ export const POST: APIRoute = async ({ request }) => {
 		return new Response(null, { status: 400 });
 	}
 
-	const result = await client.fetch(
+	const result = await serverSanityClient.fetch(
 		`*[_type == "groceryList" && user._ref == $userId][0]{ _id, items }`,
 		{ userId }
 	);
@@ -21,7 +21,10 @@ export const POST: APIRoute = async ({ request }) => {
 		item._key === itemKey ? { ...item, completed: !item.completed } : item
 	);
 
-	await client.patch(result._id).set({ items: updatedItems }).commit();
+	await serverSanityClient
+		.patch(result._id)
+		.set({ items: updatedItems })
+		.commit();
 
 	return new Response(JSON.stringify(updatedItems), {
 		headers: { 'Content-Type': 'application/json' },
