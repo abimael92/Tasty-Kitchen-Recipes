@@ -1,6 +1,6 @@
 // src/pages/api/edit-comment.ts
 import type { APIRoute } from 'astro';
-import { serverClient as client } from '../../lib/sanity';
+import { serverSanityClient as client } from '../../lib/sanity';
 import { contentModerator } from '../../utils/contentModeration';
 
 export const PUT: APIRoute = async ({ request }) => {
