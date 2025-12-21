@@ -1,9 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { client } from '../lib/sanity.js';
-import RecipeList from '../components/RecipeList.jsx';
-import { t } from '../utils/i18n.js';
+import { client } from '../../lib/sanity';
+import RecipeList from '../../components/RecipeList';
+import { t } from '../../utils/i18n';
 
 const { currentLocale } = Astro;
 
