@@ -27,6 +27,17 @@ const { currentLocale } = Astro;
 
 		<!-- Section: Right side controls -->
 		<div class='header-controls'>
+			<!-- Mobile Menu Toggle (Hamburger) -->
+			<button
+				class='mobile-menu-toggle'
+				id='mobile-menu-toggle'
+				aria-label='Toggle menu'
+			>
+				<span class='hamburger-line'></span>
+				<span class='hamburger-line'></span>
+				<span class='hamburger-line'></span>
+			</button>
+
 			<div class='header-actions'>
 				<LanguageSelector />
 				<button
@@ -66,7 +77,7 @@ const { currentLocale } = Astro;
 	</div>
 
 	<!-- Section: Navigation below header -->
-	<div class='header-nav'>
+	<div class='header-nav' id='header-nav'>
 		<Navbar />
 	</div>
 </header>
@@ -99,6 +110,67 @@ const { currentLocale } = Astro;
 	}
 
 	themeToggle?.addEventListener('click', toggleTheme);
+
+	// Mobile menu toggle functionality
+	const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+	const headerNav = document.getElementById('header-nav');
+
+	function toggleMobileMenu() {
+		const isExpanded =
+			mobileMenuToggle.getAttribute('aria-expanded') === 'true';
+		mobileMenuToggle.setAttribute('aria-expanded', !isExpanded);
+		headerNav.classList.toggle('mobile-menu-active');
+		document.body.classList.toggle('mobile-menu-open');
+	}
+
+	function closeMobileMenu() {
+		mobileMenuToggle.setAttribute('aria-expanded', 'false');
+		headerNav.classList.remove('mobile-menu-active');
+		document.body.classList.remove('mobile-menu-open');
+	}
+
+	// Initialize mobile menu
+	mobileMenuToggle?.setAttribute('aria-expanded', 'false');
+	mobileMenuToggle?.addEventListener('click', toggleMobileMenu);
+
+	// Close mobile menu when clicking on a nav link
+	document.querySelectorAll('#header-nav a').forEach((link) => {
+		link.addEventListener('click', closeMobileMenu);
+	});
+
+	// Close mobile menu when clicking outside
+	document.addEventListener('click', (event) => {
+		const isClickInsideNav = headerNav?.contains(event.target);
+		const isClickOnToggle = mobileMenuToggle?.contains(event.target);
+
+		if (
+			!isClickInsideNav &&
+			!isClickOnToggle &&
+			headerNav?.classList.contains('mobile-menu-active')
+		) {
+			closeMobileMenu();
+		}
+	});
+
+	// Close mobile menu on escape key
+	document.addEventListener('keydown', (event) => {
+		if (
+			event.key === 'Escape' &&
+			headerNav?.classList.contains('mobile-menu-active')
+		) {
+			closeMobileMenu();
+		}
+	});
+
+	// Close mobile menu on resize (if resizing to desktop)
+	window.addEventListener('resize', () => {
+		if (
+			window.innerWidth > 767 &&
+			headerNav?.classList.contains('mobile-menu-active')
+		) {
+			closeMobileMenu();
+		}
+	});
 </script>
 
 <style>
@@ -186,7 +258,47 @@ const { currentLocale } = Astro;
 		gap: var(--space-sm);
 	}
 
-	/* Theme Toggle Button */ /* Theme Toggle Button - FIXED */ /* Theme toggle button - shows current theme */
+	/* Mobile Menu Toggle (Hamburger) */
+	.mobile-menu-toggle {
+		display: none; /* Hidden by default, shown on mobile */
+		background: none;
+		border: none;
+		padding: 0.5rem;
+		cursor: pointer;
+		flex-direction: column;
+		justify-content: space-between;
+		width: 30px;
+		height: 24px;
+		position: relative;
+		z-index: 101;
+	}
+
+	.hamburger-line {
+		display: block;
+		width: 100%;
+		height: 3px;
+		background-color: white;
+		border-radius: 3px;
+		transition: all 0.3s ease;
+	}
+
+	.mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(1) {
+		transform: translateY(7px) rotate(45deg);
+	}
+
+	.mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(2) {
+		opacity: 0;
+	}
+
+	.mobile-menu-toggle[aria-expanded='true'] .hamburger-line:nth-child(3) {
+		transform: translateY(-7px) rotate(-45deg);
+	}
+
+	.mobile-menu-toggle:hover .hamburger-line {
+		background-color: var(--color-svg-cream);
+	}
+
+	/* Theme Toggle Button */
 	.theme-toggle {
 		background: var(--color-svg-accent); /* Dark red */
 		color: white;
@@ -260,9 +372,15 @@ const { currentLocale } = Astro;
 		margin-top: var(--space-2xs);
 		padding: var(--space-sm);
 		background: var(--color-primary);
+		transition: all 0.3s ease;
 	}
 
-	/* Section: Responsive Design - FIXED FOR MOBILE */
+	/* Prevent body scroll when mobile menu is open */
+	body.mobile-menu-open {
+		overflow: hidden;
+	}
+
+	/* Section: Responsive Design */
 	@media (min-width: 768px) {
 		.header-container {
 			flex-direction: row;
@@ -297,8 +415,13 @@ const { currentLocale } = Astro;
 		}
 	}
 
-	/* MOBILE FIX - Clean, compact design */
+	/* MOBILE STYLES - Dropdown menu */
 	@media (max-width: 767px) {
+		/* Show hamburger menu toggle */
+		.mobile-menu-toggle {
+			display: flex;
+		}
+
 		.header {
 			padding: 0.75rem 0 0 0;
 		}
@@ -306,6 +429,9 @@ const { currentLocale } = Astro;
 		.header-container {
 			padding: 0 1rem;
 			gap: 1rem;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
 		}
 
 		/* Logo and title side by side */
@@ -316,6 +442,7 @@ const { currentLocale } = Astro;
 			gap: 0.75rem;
 			text-align: left;
 			flex-wrap: nowrap;
+			flex: 1;
 		}
 
 		.header-main :global(.logo) {
@@ -345,52 +472,110 @@ const { currentLocale } = Astro;
 
 		/* Compact controls layout */
 		.header-controls {
-			width: 100%;
+			width: auto;
 			flex-direction: row;
-			justify-content: space-between;
 			align-items: center;
 			gap: 0.75rem;
-		}
-
-		.header-actions {
-			order: 1;
-			flex-shrink: 0;
-			gap: 0.5rem;
-		}
-
-		.header-search {
-			order: 2;
-			flex: 1;
-			min-width: 0;
-		}
-
-		.search-wrapper {
 			margin: 0;
-			max-width: 100%;
 		}
 
-		.search-input {
-			padding: 0.5rem 0.5rem 0.5rem 2rem;
-			font-size: 0.9rem;
+		/* Hide header actions and search on mobile by default */
+		.header-actions,
+		.header-search {
+			display: none;
 		}
 
-		.search-icon {
-			left: 0.75rem;
-			width: 16px;
-			height: 16px;
-		}
-
-		/* Touch-friendly buttons */
-		.theme-toggle {
-			padding: 0.5rem 0.75rem;
-			min-width: 70px;
-			font-size: 0.85rem;
-		}
-
-		/* Fix nav spacing */
+		/* Mobile menu styles */
 		.header-nav {
-			margin-top: 0.5rem;
-			padding: 0.5rem 1rem;
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: rgba(0, 0, 0, 0.9);
+			backdrop-filter: blur(10px);
+			margin-top: 0;
+			padding: 5rem 1rem 2rem;
+			transform: translateY(-100%);
+			opacity: 0;
+			visibility: hidden;
+			overflow-y: auto;
+			z-index: 99;
+		}
+
+		.header-nav.mobile-menu-active {
+			transform: translateY(0);
+			opacity: 1;
+			visibility: visible;
+		}
+
+		/* Style for nav items in mobile menu */
+		.header-nav :global(nav) {
+			display: flex;
+			flex-direction: column;
+			gap: 1.5rem;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+		}
+
+		.header-nav :global(nav ul) {
+			flex-direction: column;
+			gap: 1.5rem;
+			width: 100%;
+			max-width: 300px;
+			margin: 0 auto;
+		}
+
+		.header-nav :global(nav li) {
+			width: 100%;
+			text-align: center;
+		}
+
+		.header-nav :global(nav a) {
+			display: block;
+			padding: 1rem;
+			font-size: 1.2rem;
+			color: white;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 8px;
+			transition: all 0.3s ease;
+		}
+
+		.header-nav :global(nav a:hover) {
+			background: rgba(255, 255, 255, 0.2);
+			transform: translateX(5px);
+		}
+
+		/* Show search and theme toggle inside mobile menu */
+		.header-nav.mobile-menu-active .header-search,
+		.header-nav.mobile-menu-active .header-actions {
+			display: flex;
+			width: 100%;
+			max-width: 300px;
+			margin: 2rem auto 0;
+		}
+
+		.header-nav.mobile-menu-active .header-actions {
+			justify-content: center;
+			gap: 1rem;
+		}
+
+		.header-nav.mobile-menu-active .search-wrapper {
+			margin: 0 auto;
+			width: 100%;
+		}
+
+		.header-nav.mobile-menu-active .search-input {
+			background: rgba(255, 255, 255, 0.95);
+			border-color: rgba(255, 255, 255, 0.5);
+		}
+
+		/* Move hamburger to top right when menu is open */
+		.mobile-menu-toggle[aria-expanded='true'] {
+			position: fixed;
+			top: 1rem;
+			right: 1rem;
 		}
 	}
 
@@ -405,23 +590,14 @@ const { currentLocale } = Astro;
 			font-size: 1rem;
 		}
 
-		.header-actions {
-			gap: 0.25rem;
+		.mobile-menu-toggle {
+			width: 28px;
+			height: 22px;
 		}
 
-		.theme-toggle {
-			min-width: 60px;
-			padding: 0.4rem 0.6rem;
-			font-size: 0.8rem;
-		}
-
-		.search-input {
-			padding: 0.4rem 0.4rem 0.4rem 1.75rem;
-			font-size: 0.85rem;
-		}
-
-		.search-icon {
-			left: 0.5rem;
+		.header-nav :global(nav a) {
+			font-size: 1.1rem;
+			padding: 0.875rem;
 		}
 	}
 </style>
