@@ -2,8 +2,8 @@
 let isDarkMode = localStorage.getItem('theme') === 'dark';
 
 function toggleTheme() {
-	isDarkMode = !isDarkMode;
-	localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+	let isDarkMode = false;
+	if (localStorage.getItem('theme') === 'dark') isDarkMode = true;
 	document.documentElement.setAttribute(
 		'data-theme',
 		isDarkMode ? 'dark' : 'light'
@@ -67,4 +67,3 @@ function toggleTheme() {
 	<h1>Welcome to the Theme Switcher!</h1>
 	<p>Click the button to toggle between light and dark themes.</p>
 </html>
-
