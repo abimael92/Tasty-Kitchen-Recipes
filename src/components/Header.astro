@@ -443,6 +443,9 @@ const { currentLocale } = Astro;
 			text-align: left;
 			flex-wrap: nowrap;
 			flex: 1;
+
+			min-width: 0; /* ADD THIS */
+			overflow: hidden; /* ADD THIS */
 		}
 
 		.header-main :global(.logo) {
@@ -455,6 +458,7 @@ const { currentLocale } = Astro;
 			flex: 1;
 			min-width: 0;
 			text-align: left;
+			overflow: hidden;
 		}
 
 		.blog-title {
@@ -463,6 +467,7 @@ const { currentLocale } = Astro;
 			overflow: hidden;
 			text-overflow: ellipsis;
 			line-height: 1.2;
+			max-width: calc(100vw - 200px);
 		}
 
 		/* HIDE subtitle on mobile */

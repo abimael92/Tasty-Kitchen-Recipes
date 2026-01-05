@@ -4,7 +4,7 @@ import RecipeCard from './RecipeCard.jsx';
 
 export default function RecipeList({ recipes, splitRegex }) {
 	const [filtered, setFiltered] = useState(recipes);
-	const [visibleCount, setVisibleCount] = useState(3); // Show first 6 recipes
+	const [visibleCount, setVisibleCount] = useState(9); // Show first recipes
 
 	const loadMore = () => {
 		setVisibleCount((prev) => prev + 3);
