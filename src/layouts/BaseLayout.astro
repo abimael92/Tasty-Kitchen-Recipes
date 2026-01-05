@@ -76,6 +76,7 @@ const { currentLocale } = Astro;
 		max-width: 1280px;
 		margin: 0 auto;
 		padding: 4rem 2rem;
+		box-sizing: border-box;
 		/* background-color: #fef4f2;
 		background: var(--color-background); */
 
@@ -89,7 +90,10 @@ const { currentLocale } = Astro;
 	@media (max-width: 768px) {
 		.content-wrapper {
 			padding: 2rem 1rem;
-			min-height: calc(100vh - 120px);
+			/* min-height: calc(100vh - 120px); */
+			max-width: 100% !important;
+			margin: 0 !important;
+			width: 100% !important;
 		}
 	}
 </style>
