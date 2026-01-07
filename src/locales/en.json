@@ -122,7 +122,8 @@
         "removeFromList": "Remove from Grocery List"
     },
     "common": {
-        "back": "Back"
+        "back": "Back",
+        "chooseFile": "Choose file"
     },
     "recipes": {
         "title": "Delicious Recipes",

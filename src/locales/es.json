@@ -121,7 +121,8 @@
         "addToList": "Agregar a Lista de Compras"
     },
     "common": {
-        "back": "Atrás"
+        "back": "Atrás",
+        "chooseFile": "Elegir archivo"
     },
     "recipes": {
         "title": "Recetas Deliciosas",
@@ -129,6 +130,11 @@
         "print": "Imprimir Receta",
         "ingredients": "Ingredientes",
         "instructions": "Instrucciones",
+        "calories": "Calories",
+        "servings": "Servings",
+        "chef": "Chef",
+        "tags": "Tags",
+        "video": "Cooking Video",
         "notFound": "Receta No Encontrada",
         "notFoundMessage": "Lo sentimos, esta receta no existe."
     },
