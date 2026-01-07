@@ -5,7 +5,6 @@ import { t } from '../utils/i18n';
 const currentLocale = Astro.props.currentLocale || 'es';
 
 const jsMessages = {
-	submitting: t('addRecipe.messages.submitting', currentLocale),
 	success: t('addRecipe.messages.success', currentLocale),
 	error: t('addRecipe.messages.error', currentLocale),
 	failed: t('addRecipe.messages.failed', currentLocale),
@@ -264,6 +263,142 @@ const formLabels = {
 						</div>
 					</div>
 
+					<!-- Calories Input -->
+					<div class='form-group animate-fade-in' data-delay='0.55s'>
+						<label for='calories' class='form-label'>
+							{t('recipes.calories', currentLocale) || 'Calories'}
+						</label>
+						<div class='input-wrapper'>
+							<input
+								type='number'
+								id='calories'
+								name='calories'
+								placeholder='e.g., 350'
+								class='form-input'
+								min='0'
+								step='10'
+								aria-describedby='calories-help'
+							/>
+							<div class='input-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path
+										d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'
+										stroke-width='2'></path>
+								</svg>
+							</div>
+						</div>
+						<div id='calories-help' class='help-text'>
+							Enter the approximate calories per serving
+						</div>
+					</div>
+
+					<!-- Servings Input -->
+					<div class='form-group animate-fade-in' data-delay='0.6s'>
+						<label for='servings' class='form-label'>
+							{t('recipes.servings', currentLocale) || 'Servings'}
+						</label>
+						<div class='input-wrapper'>
+							<input
+								type='number'
+								id='servings'
+								name='servings'
+								placeholder='e.g., 4'
+								class='form-input'
+								min='1'
+								step='1'
+								aria-describedby='servings-help'
+							/>
+							<div class='input-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path d='M12 13a3 3 0 100-6 3 3 0 000 6z' stroke-width='2'
+									></path>
+									<path
+										d='M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2'
+										stroke-width='2'></path>
+								</svg>
+							</div>
+						</div>
+						<div id='servings-help' class='help-text'>
+							Number of people this recipe serves
+						</div>
+					</div>
+
+					<!-- Chef Name Input -->
+					<div class='form-group animate-fade-in' data-delay='0.65s'>
+						<label for='chef' class='form-label'>
+							{t('recipes.chef', currentLocale) || 'Chef Name'}
+						</label>
+						<div class='input-wrapper'>
+							<input
+								type='text'
+								id='chef'
+								name='chef'
+								placeholder='e.g., Chef Maria'
+								class='form-input'
+								aria-describedby='chef-help'
+							/>
+							<div class='input-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path
+										d='M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2'
+										stroke-width='2'></path>
+									<circle cx='12' cy='7' r='4' stroke-width='2'></circle>
+								</svg>
+							</div>
+						</div>
+						<div id='chef-help' class='help-text'>
+							Enter your name or the chef's name
+						</div>
+					</div>
+
+					<!-- Tags Input -->
+					<div class='form-group animate-fade-in' data-delay='0.7s'>
+						<label for='tags' class='form-label'>
+							{t('recipes.tags', currentLocale) || 'Tags'}
+						</label>
+						<div class='input-wrapper'>
+							<input
+								type='text'
+								id='tags'
+								name='tags'
+								placeholder='e.g., vegetarian, quick, dessert (comma separated)'
+								class='form-input'
+								aria-describedby='tags-help'
+							/>
+							<div class='input-icon'>
+								<svg
+									viewBox='0 0 24 24'
+									fill='none'
+									stroke='currentColor'
+									aria-hidden='true'
+								>
+									<path
+										d='M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z'
+										stroke-width='2'></path>
+									<line x1='7' y1='7' x2='7.01' y2='7' stroke-width='2'></line>
+								</svg>
+							</div>
+						</div>
+						<div id='tags-help' class='help-text'>
+							Add tags separated by commas (vegetarian, quick, dessert, etc.)
+						</div>
+					</div>
+
 					<!-- Submit Button -->
 					<div class='form-actions animate-fade-in' data-delay='0.7s'>
 						<button
@@ -287,9 +422,6 @@ const formLabels = {
 									stroke-linejoin='round'></path>
 							</svg>
 						</button>
-						<div id='submit-help' class='help-text'>
-							{t('addRecipe.messages.submitting', currentLocale)}
-						</div>
 					</div>
 				</form>
 
@@ -894,14 +1026,9 @@ const formLabels = {
 					const data = await res.json();
 
 					if (data.success) {
-						statusEl.textContent = addRecipeMessages.success;
-						statusEl.setAttribute('data-status', 'success');
-						form.reset();
-						imagePreview.src = '';
-						imagePreviewContainer.style.display = 'none';
-						document.querySelectorAll('.file-upload-text').forEach((span) => {
-							span.textContent = '{{t("common.chooseFile", currentLocale)}}';
-						});
+					window.location.href = '/recipes';
+					return;
+
 					} else {
 						statusEl.textContent = `❌ ${data.message || addRecipeMessages.failed}`;
 						statusEl.setAttribute('data-status', 'error');
@@ -909,17 +1036,6 @@ const formLabels = {
 				} catch (err) {
 					statusEl.textContent = `${addRecipeMessages.error} ${err.message}`;
 					statusEl.setAttribute('data-status', 'error');
-				} finally {
-					setTimeout(() => {
-						submitBtn.disabled = false;
-						submitBtn.innerHTML = submitBtn.innerHTML =
-							'<span class="button-text">' +
-							'Submit Recipe' +
-							'</span>' +
-							'<svg class="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">' +
-							'<path d="M17 8l4 4m0 0l-4 4m4-4H3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
-							'</svg>';
-					}, 3000);
 				}
 			});
 		});
