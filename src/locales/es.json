@@ -1,209 +1,210 @@
 {
+  "title": "Recetas Rápidas",
+  "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
+  "language": "Idioma",
+  "home": {
     "title": "Recetas Rápidas",
-    "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
-    "language": "Idioma",
-    "home": {
-        "title": "Recetas Rápidas",
-        "hero": {
-            "title": "Cocina con\nConfianza y\nCreatividad",
-            "subtitle": "Organiza tus recetas favoritas, planifica menús semanales y descubre nuevos sabores con nuestra comunidad de chefs caseros",
-            "badge": "Más de 50,000 recetas guardadas",
-            "cta": {
-                "download": "Descargar App",
-                "demo": "Ver Demo"
-            },
-            "image": {
-                "alt": "Interfaz de RecetApp"
-            },
-            "recipe": {
-                "name": "Pasta Carbonara"
-            },
-            "stats": {
-                "users": "Usuarios Activos",
-                "recipes": "Recetas",
-                "rating": "Rating",
-                "countries": "Países"
-            }
-        }
-    },
-    "nav": {
-        "home": "Inicio",
-        "recipes": "Recetas",
-        "about": "Acerca de nosotros",
-        "profile": "Perfil",
-        "favorites": "Favoritos",
-        "groceryList": "Mi Lista de Compras",
-        "removeFromList": "Eliminar de la Lista de Compras"
-    },
-    "auth": {
-        "login": "Iniciar sesión",
-        "logout": "Cerrar sesión",
-        "register": "Registrarse",
-        "registering": "Registrándose...",
-        "welcome": "Bienvenido",
-        "user": "Usuario",
-        "cancel": "Cancelar",
-        "loggingIn": "Iniciando sesión...",
-        "email": "Correo electrónico",
-        "password": "Contraseña",
-        "haveAccount": "¿Ya tienes una cuenta?",
-        "noAccount": "¿No tienes una cuenta?",
-        "createOne": "Crea una",
-        "formLabels": {
-            "firstName": "Nombre",
-            "lastName": "Apellido",
-            "phone": "Teléfono",
-            "location": "Ubicación",
-            "shortBio": "Biografía corta",
-            "dietPreference": "Preferencia alimentaria",
-            "allergies": "Alergias (separadas por comas)",
-            "preferredCuisine": "Cocinas preferidas (separadas por comas)",
-            "role": "Rol",
-            "selectRole": "Selecciona un rol",
-            "client": "Cliente",
-            "chef": "Chef"
-        },
-        "errors": {
-            "loginFailed": "Error al iniciar sesión. Inténtalo de nuevo.",
-            "registrationFailed": "Error al registrarse. Inténtalo de nuevo.",
-            "profileFetchFailed": "No se pudo obtener el perfil de usuario.",
-            "networkProfileFetchFailed": "Error de red al obtener el perfil."
-        },
-        "loading": "Cargando..."
-    },
-    "addRecipe": {
-        "title": "Agregar Nueva Receta",
-        "form": {
-            "title": "Título",
-            "titlePlaceholder": "Ej. Rollos de Canela",
-            "ingredients": "Ingredientes",
-            "ingredientsPlaceholder": "Lista de ingredientes, uno por línea",
-            "instructions": "Instrucciones",
-            "instructionsPlaceholder": "Instrucciones paso a paso",
-            "image": "Imagen (opcional)",
-            "video": "Video (opcional)",
-            "submit": "Enviar Receta"
-        },
-        "messages": {
-            "submitting": "Enviando...",
-            "success": "✅ ¡Receta enviada exitosamente!",
-            "error": "❌ Error: ",
-            "failed": "❌ Falló el envío de la receta."
-        }
-    },
     "hero": {
-        "title": "Fresco, Simple y Delicioso",
-        "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
-        "cta": "Ver Recetas"
-    },
-    "footer": {
-        "about": {
-            "title": "Sobre Nosotros",
-            "description": "Nos apasiona compartir las mejores recetas, consejos y trucos.\n\nNuestro objetivo es ofrecer recetas rápidas y fáciles que todos puedan disfrutar."
-        },
-        "links": {
-            "title": "Enlaces Rápidos",
-            "home": "Inicio",
-            "about": "Acerca de nosotros",
-            "recipes": "Recetas"
-        },
-        "follow": {
-            "title": "Síguenos"
-        },
-        "rights": "Todos los derechos reservados."
-    },
-    "groceryList": {
-        "title": "Mi Lista de Compras",
-        "emptyMessage": "Tu lista de compras está vacía",
-        "updateFailed": "No se pudo actualizar el artículo. Por favor, inténtalo de nuevo.",
-        "processing": "Procesando...",
-        "inYourList": "✓ En Tu Lista",
-        "addToList": "Agregar a Lista de Compras"
-    },
-    "common": {
-        "back": "Atrás",
-        "chooseFile": "Elegir archivo"
-    },
-    "recipes": {
-        "title": "Recetas Deliciosas",
-        "addNew": "Agregar Nueva Receta",
-        "print": "Imprimir Receta",
-        "ingredients": "Ingredientes",
-        "instructions": "Instrucciones",
-        "calories": "Calories",
-        "servings": "Servings",
-        "chef": "Chef",
-        "tags": "Tags",
-        "video": "Cooking Video",
-        "notFound": "Receta No Encontrada",
-        "notFoundMessage": "Lo sentimos, esta receta no existe."
-    },
-    "aiCookingTips": {
-        "title": "Consejos del Chef",
-        "newTip": "Nuevo consejo"
-    },
-    "favorites": {
-        "title": "Tus Recetas Favoritas",
-        "empty": "Aún no tienes favoritos."
-    },
-     "about": {
-      "title": "Sobre Nuestro Blog de Recetas",
-      "heroTitle": "Sobre Nuestro Blog de Recetas",
-      "heroSubtitle": "Bienvenido a tu destino culinario, donde las recetas deliciosas se encuentran con consejos prácticos de cocina. Nos apasiona compartir las mejores recetas para inspirar tu viaje culinario.",
-      "missionTitle": "Nuestra Misión",
-      "missionText": "Crear una comunidad culinaria donde cada persona, desde principiantes hasta chefs experimentados, pueda encontrar inspiración, aprender técnicas y compartir el amor por la cocina casera.",
-      "visionTitle": "Nuestra Visión",
-      "visionText": "Ser el destino digital preferido para cocineros apasionados que buscan recetas confiables, consejos prácticos y una experiencia culinaria enriquecedora.",
-      "offeringsTitle": "Lo Que Ofrecemos",
-      "offering1Title": "Recetas Diversas",
-      "offering1Item1": "Cocina internacional",
-      "offering1Item2": "Platos tradicionales y modernos",
-      "offering1Item3": "Opción vegetariana y vegana",
-      "offering1Item4": "Comida apta para dietas específicas",
-      "offering2Title": "Para Todos los Niveles",
-      "offering2Item1": "Recetas de 30 minutos",
-      "offering2Item2": "Platos para ocasiones especiales",
-      "offering2Item3": "Tutoriales paso a paso",
-      "offering2Item4": "Consejos de preparación avanzada",
-      "offering3Title": "Recursos Educativos",
-      "offering3Item1": "Técnicas de cocina esenciales",
-      "offering3Item2": "Guías de ingredientes",
-      "offering3Item3": "Consejos de presentación",
-      "offering3Item4": "Información nutricional",
-      "offering4Title": "Para la Familia",
-      "offering4Item1": "Recetas para niños",
-      "offering4Item2": "Comidas para reuniones",
-      "offering4Item3": "Preparaciones económicas",
-      "offering4Item4": "Ideas para fiestas",
-      "featuresTitle": "¿Por Qué Elegirnos?",
-      "feature1Title": "Recetas Probadas",
-      "feature1Text": "Cada receta es preparada y perfeccionada por nuestro equipo antes de ser publicada.",
-      "feature2Title": "Accesible en Todos los Dispositivos",
-      "feature2Text": "Disfruta de nuestras recetas en tu teléfono, tableta o computadora.",
-      "feature3Title": "Contenido Bilingüe",
-      "feature3Text": "Accede a todas las recetas y consejos tanto en español como en inglés.",
-      "feature4Title": "Fotografías de Alta Calidad",
-      "feature4Text": "Imágenes profesionales que muestran exactamente cómo debe verse cada plato.",
-      "communityTitle": "Únete a Nuestra Comunidad",
-      "communityText": "Con más de 50,000 cocineros caseros activos, nuestra comunidad está creciendo cada día. Comparte tus creaciones, recibe consejos y conecta con otros amantes de la cocina.",
-      "recipes": "Recetas",
-      "members": "Miembros",
-      "comments": "Comentarios",
-      "support": "Soporte",
-      "exploreRecipes": "Explorar Recetas",
-      "subscribe": "Suscríbete",
-      "teamTitle": "Conoce a Nuestro Equipo",
-      "teamMember1Name": "María González",
-      "teamMember1Role": "Chef Principal",
-      "teamMember1Bio": "Más de 15 años de experiencia en cocina tradicional mexicana e internacional.",
-      "teamMember2Name": "Carlos Rodríguez",
-      "teamMember2Role": "Editor de Contenido",
-      "teamMember2Bio": "Especialista en crear recetas claras y fáciles de seguir para todos los niveles.",
-      "teamMember3Name": "Ana Martínez",
-      "teamMember3Role": "Fotógrafa Culinaria",
-      "teamMember3Bio": "Transforma cada plato en una obra de arte visual que inspira a cocinar.",
-      "contactTitle": "Contáctanos",
-      "contactText": "¿Tienes una receta especial que quieres compartir? ¿Sugerencias o preguntas? ¡Nos encantaría escucharte!",
-      "location": "Ciudad de México"
+      "title": "Cocina con\nConfianza y\nCreatividad",
+      "subtitle": "Organiza tus recetas favoritas, planifica menús semanales y descubre nuevos sabores con nuestra comunidad de chefs caseros",
+      "badge": "Más de 50,000 recetas guardadas",
+      "cta": {
+        "download": "Descargar App",
+        "demo": "Ver Demo"
+      },
+      "image": {
+        "alt": "Interfaz de RecetApp"
+      },
+      "recipe": {
+        "name": "Pasta Carbonara"
+      },
+      "stats": {
+        "users": "Usuarios Activos",
+        "recipes": "Recetas",
+        "rating": "Rating",
+        "countries": "Países"
+      }
     }
+  },
+  "nav": {
+    "home": "Inicio",
+    "recipes": "Recetas",
+    "about": "Acerca de nosotros",
+    "profile": "Perfil",
+    "favorites": "Favoritos",
+    "groceryList": "Mi Lista de Compras",
+    "removeFromList": "Eliminar de la Lista de Compras"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "register": "Registrarse",
+    "registering": "Registrándose...",
+    "welcome": "Bienvenido",
+    "user": "Usuario",
+    "cancel": "Cancelar",
+    "loggingIn": "Iniciando sesión...",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "noAccount": "¿No tienes una cuenta?",
+    "createOne": "Crea una",
+    "formLabels": {
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "phone": "Teléfono",
+      "location": "Ubicación",
+      "shortBio": "Biografía corta",
+      "dietPreference": "Preferencia alimentaria",
+      "allergies": "Alergias (separadas por comas)",
+      "preferredCuisine": "Cocinas preferidas (separadas por comas)",
+      "role": "Rol",
+      "selectRole": "Selecciona un rol",
+      "client": "Cliente",
+      "chef": "Chef"
+    },
+    "errors": {
+      "loginFailed": "Error al iniciar sesión. Inténtalo de nuevo.",
+      "registrationFailed": "Error al registrarse. Inténtalo de nuevo.",
+      "profileFetchFailed": "No se pudo obtener el perfil de usuario.",
+      "networkProfileFetchFailed": "Error de red al obtener el perfil."
+    },
+    "loading": "Cargando..."
+  },
+  "addRecipe": {
+    "title": "Agregar Nueva Receta",
+    "form": {
+      "title": "Título",
+      "titlePlaceholder": "Ej. Rollos de Canela",
+      "ingredients": "Ingredientes",
+      "ingredientsPlaceholder": "Lista de ingredientes, uno por línea",
+      "instructions": "Instrucciones",
+      "instructionsPlaceholder": "Instrucciones paso a paso",
+      "image": "Imagen (opcional)",
+      "video": "Video (opcional)",
+      "submit": "Enviar Receta"
+    },
+    "messages": {
+      "submitting": "Enviando...",
+      "success": "✅ ¡Receta enviada exitosamente!",
+      "error": "❌ Error: ",
+      "failed": "❌ Falló el envío de la receta."
+    }
+  },
+  "hero": {
+    "title": "Fresco, Simple y Delicioso",
+    "subtitle": "Descubre recetas paso a paso, consejos de cocina e ideas de comidas para preparar platos deliciosos cada día.",
+    "cta": "Ver Recetas"
+  },
+  "footer": {
+    "about": {
+      "title": "Sobre Nosotros",
+      "description": "Nos apasiona compartir las mejores recetas, consejos y trucos.\n\nNuestro objetivo es ofrecer recetas rápidas y fáciles que todos puedan disfrutar."
+    },
+    "links": {
+      "title": "Enlaces Rápidos",
+      "home": "Inicio",
+      "about": "Acerca de nosotros",
+      "recipes": "Recetas"
+    },
+    "follow": {
+      "title": "Síguenos"
+    },
+    "rights": "Todos los derechos reservados."
+  },
+  "groceryList": {
+    "title": "Mi Lista de Compras",
+    "emptyMessage": "Tu lista de compras está vacía",
+    "updateFailed": "No se pudo actualizar el artículo. Por favor, inténtalo de nuevo.",
+    "processing": "Procesando...",
+    "inYourList": "✓ En Tu Lista",
+    "addToList": "Agregar a Lista de Compras",
+    "removeFromList": "Eliminar de la Lista de Compras"
+  },
+  "common": {
+    "back": "Atrás",
+    "chooseFile": "Elegir archivo"
+  },
+  "recipes": {
+    "title": "Recetas Deliciosas",
+    "addNew": "Agregar Nueva Receta",
+    "print": "Imprimir Receta",
+    "ingredients": "Ingredientes",
+    "instructions": "Instrucciones",
+    "calories": "Calories",
+    "servings": "Servings",
+    "chef": "Chef",
+    "tags": "Tags",
+    "video": "Cooking Video",
+    "notFound": "Receta No Encontrada",
+    "notFoundMessage": "Lo sentimos, esta receta no existe."
+  },
+  "aiCookingTips": {
+    "title": "Consejos del Chef",
+    "newTip": "Nuevo consejo"
+  },
+  "favorites": {
+    "title": "Tus Recetas Favoritas",
+    "empty": "Aún no tienes favoritos."
+  },
+  "about": {
+    "title": "Sobre Nuestro Blog de Recetas",
+    "heroTitle": "Sobre Nuestro Blog de Recetas",
+    "heroSubtitle": "Bienvenido a tu destino culinario, donde las recetas deliciosas se encuentran con consejos prácticos de cocina. Nos apasiona compartir las mejores recetas para inspirar tu viaje culinario.",
+    "missionTitle": "Nuestra Misión",
+    "missionText": "Crear una comunidad culinaria donde cada persona, desde principiantes hasta chefs experimentados, pueda encontrar inspiración, aprender técnicas y compartir el amor por la cocina casera.",
+    "visionTitle": "Nuestra Visión",
+    "visionText": "Ser el destino digital preferido para cocineros apasionados que buscan recetas confiables, consejos prácticos y una experiencia culinaria enriquecedora.",
+    "offeringsTitle": "Lo Que Ofrecemos",
+    "offering1Title": "Recetas Diversas",
+    "offering1Item1": "Cocina internacional",
+    "offering1Item2": "Platos tradicionales y modernos",
+    "offering1Item3": "Opción vegetariana y vegana",
+    "offering1Item4": "Comida apta para dietas específicas",
+    "offering2Title": "Para Todos los Niveles",
+    "offering2Item1": "Recetas de 30 minutos",
+    "offering2Item2": "Platos para ocasiones especiales",
+    "offering2Item3": "Tutoriales paso a paso",
+    "offering2Item4": "Consejos de preparación avanzada",
+    "offering3Title": "Recursos Educativos",
+    "offering3Item1": "Técnicas de cocina esenciales",
+    "offering3Item2": "Guías de ingredientes",
+    "offering3Item3": "Consejos de presentación",
+    "offering3Item4": "Información nutricional",
+    "offering4Title": "Para la Familia",
+    "offering4Item1": "Recetas para niños",
+    "offering4Item2": "Comidas para reuniones",
+    "offering4Item3": "Preparaciones económicas",
+    "offering4Item4": "Ideas para fiestas",
+    "featuresTitle": "¿Por Qué Elegirnos?",
+    "feature1Title": "Recetas Probadas",
+    "feature1Text": "Cada receta es preparada y perfeccionada por nuestro equipo antes de ser publicada.",
+    "feature2Title": "Accesible en Todos los Dispositivos",
+    "feature2Text": "Disfruta de nuestras recetas en tu teléfono, tableta o computadora.",
+    "feature3Title": "Contenido Bilingüe",
+    "feature3Text": "Accede a todas las recetas y consejos tanto en español como en inglés.",
+    "feature4Title": "Fotografías de Alta Calidad",
+    "feature4Text": "Imágenes profesionales que muestran exactamente cómo debe verse cada plato.",
+    "communityTitle": "Únete a Nuestra Comunidad",
+    "communityText": "Con más de 50,000 cocineros caseros activos, nuestra comunidad está creciendo cada día. Comparte tus creaciones, recibe consejos y conecta con otros amantes de la cocina.",
+    "recipes": "Recetas",
+    "members": "Miembros",
+    "comments": "Comentarios",
+    "support": "Soporte",
+    "exploreRecipes": "Explorar Recetas",
+    "subscribe": "Suscríbete",
+    "teamTitle": "Conoce a Nuestro Equipo",
+    "teamMember1Name": "María González",
+    "teamMember1Role": "Chef Principal",
+    "teamMember1Bio": "Más de 15 años de experiencia en cocina tradicional mexicana e internacional.",
+    "teamMember2Name": "Carlos Rodríguez",
+    "teamMember2Role": "Editor de Contenido",
+    "teamMember2Bio": "Especialista en crear recetas claras y fáciles de seguir para todos los niveles.",
+    "teamMember3Name": "Ana Martínez",
+    "teamMember3Role": "Fotógrafa Culinaria",
+    "teamMember3Bio": "Transforma cada plato en una obra de arte visual que inspira a cocinar.",
+    "contactTitle": "Contáctanos",
+    "contactText": "¿Tienes una receta especial que quieres compartir? ¿Sugerencias o preguntas? ¡Nos encantaría escucharte!",
+    "location": "Ciudad de México"
+  }
 }

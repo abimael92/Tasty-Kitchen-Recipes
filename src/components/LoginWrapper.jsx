@@ -28,14 +28,12 @@ export default function LoginWrapper({ locale }) {
 		}
 		loadUser();
 	}, []);
-	
-useEffect(() => {
-	const open = () => setIsModalOpen(true);
-	window.addEventListener('open-login', open);
-	return () => window.removeEventListener('open-login', open);
-}, []);
 
-
+	useEffect(() => {
+		const open = () => setIsModalOpen(true);
+		window.addEventListener('open-login', open);
+		return () => window.removeEventListener('open-login', open);
+	}, []);
 
 	const handleLogin = async (email, password) => {
 		setLoading(true);
@@ -51,9 +49,7 @@ useEffect(() => {
 			});
 			const data = await response.json();
 			if (!response.ok)
-				throw new Error(
-					data.error || t('auth.errors.loginFailed', locale) || 'Login failed'
-				);
+				throw new Error(data.error || t('auth.errors.loginFailed', locale));
 			localStorage.setItem(
 				'userData',
 				JSON.stringify({ uid: data.uid, email: data.email, token: data.token })
@@ -64,11 +60,7 @@ useEffect(() => {
 			setIsModalOpen(false);
 		} catch (err) {
 			console.error('Login error:', err);
-			setError(
-				err.message ||
-					t('auth.errors.loginFailed', locale) ||
-					'Login failed. Please try again.'
-			);
+			setError(err.message || t('auth.errors.loginFailed', locale));
 		} finally {
 			setLoading(false);
 		}
@@ -89,19 +81,13 @@ useEffect(() => {
 			const data = await response.json();
 			if (!response.ok)
 				throw new Error(
-					data.error ||
-						t('auth.errors.registrationFailed', locale) ||
-						'Registration failed'
+					data.error || t('auth.errors.registrationFailed', locale)
 				);
 			setIsRegistering(false);
 			setIsModalOpen(false);
 		} catch (err) {
 			console.error('Registration error:', err);
-			setError(
-				err.message ||
-					t('auth.errors.registrationFailed', locale) ||
-					'Registration failed. Please try again.'
-			);
+			setError(err.message || t('auth.errors.registrationFailed', locale));
 		} finally {
 			setLoading(false);
 		}
@@ -121,17 +107,11 @@ useEffect(() => {
 			const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
-			if (!res.ok)
-				throw new Error(
-					t('auth.errors.profileFetchFailed', locale) ||
-						`Failed to fetch user profile: ${res.status}`
-				);
+			if (!res.ok) throw new Error(t('auth.errors.profileFetchFailed', locale));
 			return await res.json();
 		} catch (err) {
 			throw new Error(
-				err.message ||
-					t('auth.errors.networkProfileFetchFailed', locale) ||
-					'Network error fetching profile'
+				err.message || t('auth.errors.networkProfileFetchFailed', locale)
 			);
 		}
 	}
@@ -150,7 +130,7 @@ useEffect(() => {
 	}, [isDropdownOpen]);
 
 	if (loading) {
-		return <div>{t('auth.loading', locale) || 'Loading...'}</div>;
+		return <div className='loading-text'>{t('auth.loading', locale)}</div>;
 	}
 
 	return (
@@ -165,6 +145,7 @@ useEffect(() => {
 						className='dropdown-button'
 						aria-haspopup='true'
 						aria-expanded={isDropdownOpen}
+						aria-label={t('auth.user', locale)}
 					>
 						{user?.name && user?.lastname
 							? `${user.name} ${user.lastname}`
@@ -175,17 +156,17 @@ useEffect(() => {
 					{isDropdownOpen && (
 						<div className='dropdown-menu'>
 							<a href='/profile' className='menu-link'>
-								{t('home.nav.profile', locale) || 'Profile'}
+								{t('nav.profile', locale)}
 							</a>
 							<a href='/favorites' className='menu-link'>
-								{t('home.nav.favorites', locale) || 'Favorites'}
+								{t('nav.favorites', locale)}
 							</a>
 							<a href='/grocery-list' className='menu-link'>
-								{t('home.nav.groceryList', locale) || 'My Grocery List'}
+								{t('nav.groceryList', locale)}
 							</a>
 							<hr />
 							<button onClick={logout} className='logout-button'>
-								{t('auth.logout', locale) || 'Logout'}
+								{t('auth.logout', locale)}
 							</button>
 						</div>
 					)}
@@ -193,7 +174,7 @@ useEffect(() => {
 			) : (
 				<button
 					onClick={() => setIsModalOpen(true)}
-					className='dropdown-button'
+					className='dropdown-button login-btn'
 				>
 					{t('auth.login', locale)} ▼
 				</button>
@@ -216,15 +197,26 @@ useEffect(() => {
 			/>
 
 			<style>{`
-        .dropdown-button {
+        .dropdown-button, .login-btn {
           background: none;
           border: none;
           color: inherit;
           cursor: pointer;
           font: inherit;
+          padding: 8px 12px;
+          border-radius: 4px;
+          transition: all 0.2s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+        
+        .login-btn {
           text-decoration: underline;
-          padding: 0;
-          transition: color 0.2s ease;
+        }
+
+        .dropdown-button:hover, .login-btn:hover {
+          background-color: rgba(0, 0, 0, 0.05);
         }
 
         .dropdown-menu {
@@ -233,46 +225,66 @@ useEffect(() => {
           right: 0;
           background: white;
           border: 1px solid #ccc;
-          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-          padding: 0.5rem;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          padding: 8px 0;
           z-index: 1000;
-          min-width: 160px;
-          border-radius: 4px;
+          min-width: 180px;
+          border-radius: 8px;
           display: flex;
           flex-direction: column;
-          gap: 0.5rem;
+          gap: 4px;
         }
 
         .menu-link {
           text-decoration: none;
-          color: var(--color-primary);
-          padding: 0.25rem 0.5rem;
+          color: var(--color-primary, #333);
+          padding: 8px 16px;
+          transition: background-color 0.2s ease;
         }
 
         .menu-link:hover {
-          background-color: #eee;
+          background-color: #f5f5f5;
+          color: var(--color-primary-dark, #000);
         }
 
         hr {
-          margin: 0.5rem 0;
-          border-color: #eee;
+          margin: 8px 0;
+          border: none;
+          border-top: 1px solid #e0e0e0;
         }
 
         .logout-button {
           background: none;
           border: none;
-          color: red;
+          color: #d32f2f;
           cursor: pointer;
-          padding: 0.25rem 0.5rem;
+          padding: 8px 16px;
           text-align: left;
           font: inherit;
+          transition: background-color 0.2s ease;
         }
 
         .logout-button:hover {
-          background-color: #fee;
+          background-color: #ffebee;
+        }
+        
+        .loading-text {
+          padding: 8px 12px;
+          color: #666;
+          font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+          .dropdown-menu {
+            position: fixed;
+            top: auto;
+            right: 16px;
+            left: 16px;
+            bottom: 16px;
+            min-width: auto;
+          }
         }
       `}</style>
 		</>
 	);
 }
-
