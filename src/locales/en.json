@@ -1,205 +1,210 @@
 {
+  "title": "Tasty Kitchen Recipes",
+  "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",
+  "language": "Language",
+  "home": {
     "title": "Tasty Kitchen Recipes",
-    "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",
-    "language": "Language",
-    "home": {
-        "title": "Tasty Kitchen Recipes",
-        "hero": {
-            "title": "Cook with\nConfidence and\nCreativity",
-            "subtitle": "Organize your favorite recipes, plan weekly menus and discover new flavors with our community of home chefs",
-            "badge": "More than 50,000 saved recipes",
-            "cta": {
-                "download": "Download App",
-                "demo": "View Demo"
-            },
-            "image": {
-                "alt": "RecetApp Interface"
-            },
-            "recipe": {
-                "name": "Pasta Carbonara"
-            },
-            "stats": {
-                "users": "Active Users",
-                "recipes": "Recipes",
-                "rating": "Rating",
-                "countries": "Countries"
-            }
-        }
-    },
-    "nav": {
-        "home": "Home",
-        "recipes": "Recipes",
-        "about": "About",
-        "profile": "Profile",
-        "favorites": "Favorites",
-        "groceryList": "My Grocery List",
-        "removeFromList": "Remove from Grocery List"
-    },
-    "auth": {
-        "login": "Login",
-        "logout": "Logout",
-        "register": "Register",
-        "registering": "Registering...",
-        "welcome": "Welcome",
-        "user": "User",
-        "cancel": "Cancel",
-        "loggingIn": "Logging in...",
-        "email": "Email",
-        "password": "Password",
-        "haveAccount": "Already have an account?",
-        "noAccount": "Don't have an account?",
-        "createOne": "Create one",
-        "formLabels": {
-            "firstName": "First Name",
-            "lastName": "Last Name",
-            "phone": "Phone",
-            "location": "Location",
-            "shortBio": "Short Bio",
-            "dietPreference": "Diet Preference",
-            "allergies": "Allergies (comma-separated)",
-            "preferredCuisine": "Preferred Cuisines (comma-separated)",
-            "role": "Role",
-            "selectRole": "Select Role",
-            "client": "Client",
-            "chef": "Chef"
-        },
-        "errors": {
-            "loginFailed": "Login failed. Please try again.",
-            "registrationFailed": "Registration failed. Please try again.",
-            "profileFetchFailed": "Failed to fetch user profile.",
-            "networkProfileFetchFailed": "Network error fetching profile."
-        },
-        "loading": "Loading..."
-    },
-    "addRecipe": {
-        "title": "Add New Recipe",
-        "form": {
-            "title": "Title",
-            "titlePlaceholder": "Ex. Cinnamon Rolls",
-            "ingredients": "Ingredients",
-            "ingredientsPlaceholder": "List ingredients, one per line",
-            "instructions": "Instructions",
-            "instructionsPlaceholder": "Step-by-step instructions",
-            "image": "Image (optional)",
-            "video": "Video (optional)",
-            "submit": "Submit Recipe"
-        },
-        "messages": {
-            "submitting": "Submitting...",
-            "success": "✅ Recipe submitted successfully!",
-            "error": "❌ Error: ",
-            "failed": "❌ Failed to submit recipe."
-        }
-    },
     "hero": {
-        "title": "Fresh, Simple, and Tasty",
-        "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",
-        "cta": "View Recipes"
-    },
-    "footer": {
-        "about": {
-            "title": "About Us",
-            "description": "We are passionate about sharing the best recipes, tips, and tricks.\n\nOur goal is to provide quick and easy recipes that everyone can enjoy."
-        },
-        "links": {
-            "title": "Quick Links",
-            "home": "Home",
-            "about": "About",
-            "recipes": "Recipes"
-        },
-        "follow": {
-            "title": "Follow Us"
-        },
-        "rights": "All rights reserved."
-    },
-    "groceryList": {
-        "title": "My Grocery List",
-        "emptyMessage": "Your grocery list is empty",
-        "updateFailed": "Failed to update item. Please try again.",
-        "processing": "Processing...",
-        "inYourList": "✓ In Your List",
-        "addToList": "Add to Grocery List",
-        "removeFromList": "Remove from Grocery List"
-    },
-    "common": {
-        "back": "Back",
-        "chooseFile": "Choose file"
-    },
-    "recipes": {
-        "title": "Delicious Recipes",
-        "addNew": "Add New Recipe",
-        "print": "Print Recipe",
-        "ingredients": "Ingredients",
-        "instructions": "Instructions",
-        "notFound": "Recipe Not Found",
-        "notFoundMessage": "Sorry, this recipe does not exist."
-    },
-    "aiCookingTips": {
-        "title": "Chef's Pro Tips",
-        "newTip": "New tip"
-    },
-    "favorites": {
-        "title": "Your Favorite Recipes",
-        "empty": "You don't have any favorites yet."
-    },
-    "about": {
-        "title": "About Our Recipe Blog",
-        "heroTitle": "About Our Recipe Blog",
-        "heroSubtitle": "Welcome to your culinary destination where delicious recipes meet practical cooking tips. We are passionate about sharing the best recipes to inspire your culinary journey.",
-        "missionTitle": "Our Mission",
-        "missionText": "Create a culinary community where everyone, from beginners to experienced chefs, can find inspiration, learn techniques, and share the love for home cooking.",
-        "visionTitle": "Our Vision",
-        "visionText": "To be the preferred digital destination for passionate cooks seeking reliable recipes, practical tips, and an enriching culinary experience.",
-        "offeringsTitle": "What We Offer",
-        "offering1Title": "Diverse Recipes",
-        "offering1Item1": "International cuisine",
-        "offering1Item2": "Traditional and modern dishes",
-        "offering1Item3": "Vegetarian and vegan options",
-        "offering1Item4": "Diet-specific meals",
-        "offering2Title": "For All Skill Levels",
-        "offering2Item1": "30-minute recipes",
-        "offering2Item2": "Special occasion dishes",
-        "offering2Item3": "Step-by-step tutorials",
-        "offering2Item4": "Advanced preparation tips",
-        "offering3Title": "Educational Resources",
-        "offering3Item1": "Essential cooking techniques",
-        "offering3Item2": "Ingredient guides",
-        "offering3Item3": "Presentation tips",
-        "offering3Item4": "Nutritional information",
-        "offering4Title": "For the Family",
-        "offering4Item1": "Kid-friendly recipes",
-        "offering4Item2": "Meals for gatherings",
-        "offering4Item3": "Budget-friendly preparations",
-        "offering4Item4": "Party ideas",
-        "featuresTitle": "Why Choose Us?",
-        "feature1Title": "Tested Recipes",
-        "feature1Text": "Every recipe is prepared and perfected by our team before publishing.",
-        "feature2Title": "Accessible on All Devices",
-        "feature2Text": "Enjoy our recipes on your phone, tablet, or computer.",
-        "feature3Title": "Bilingual Content",
-        "feature3Text": "Access all recipes and tips in both Spanish and English.",
-        "feature4Title": "High-Quality Photos",
-        "feature4Text": "Professional images show exactly how each dish should look.",
-        "communityTitle": "Join Our Community",
-        "communityText": "With over 50,000 active home cooks, our community is growing every day. Share your creations, get tips, and connect with other cooking enthusiasts.",
+      "title": "Cook with\nConfidence and\nCreativity",
+      "subtitle": "Organize your favorite recipes, plan weekly menus and discover new flavors with our community of home chefs",
+      "badge": "More than 50,000 saved recipes",
+      "cta": {
+        "download": "Download App",
+        "demo": "View Demo"
+      },
+      "image": {
+        "alt": "RecetApp Interface"
+      },
+      "recipe": {
+        "name": "Pasta Carbonara"
+      },
+      "stats": {
+        "users": "Active Users",
         "recipes": "Recipes",
-        "members": "Members",
-        "comments": "Comments",
-        "support": "Support",
-        "exploreRecipes": "Explore Recipes",
-        "subscribe": "Subscribe",
-        "teamTitle": "Meet Our Team",
-        "teamMember1Name": "Maria Gonzalez",
-        "teamMember1Role": "Head Chef",
-        "teamMember1Bio": "Over 15 years of experience in traditional Mexican and international cuisine.",
-        "teamMember2Name": "Carlos Rodriguez",
-        "teamMember2Role": "Content Editor",
-        "teamMember2Bio": "Specializes in creating clear, easy-to-follow recipes for all skill levels.",
-        "teamMember3Name": "Ana Martinez",
-        "teamMember3Role": "Culinary Photographer",
-        "teamMember3Bio": "Transforms each dish into a visual masterpiece that inspires cooking.",
-        "contactTitle": "Contact Us",
-        "contactText": "Have a special recipe to share? Suggestions or questions? We'd love to hear from you!",
-        "location": "Mexico City"
+        "rating": "Rating",
+        "countries": "Countries"
+      }
     }
+  },
+  "nav": {
+    "home": "Home",
+    "recipes": "Recipes",
+    "about": "About",
+    "profile": "Profile",
+    "favorites": "Favorites",
+    "groceryList": "My Grocery List",
+    "removeFromList": "Remove from Grocery List"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "registering": "Registering...",
+    "welcome": "Welcome",
+    "user": "User",
+    "cancel": "Cancel",
+    "loggingIn": "Logging in...",
+    "email": "Email",
+    "password": "Password",
+    "haveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "createOne": "Create one",
+    "formLabels": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "phone": "Phone",
+      "location": "Location",
+      "shortBio": "Short Bio",
+      "dietPreference": "Diet Preference",
+      "allergies": "Allergies (comma-separated)",
+      "preferredCuisine": "Preferred Cuisines (comma-separated)",
+      "role": "Role",
+      "selectRole": "Select Role",
+      "client": "Client",
+      "chef": "Chef"
+    },
+    "errors": {
+      "loginFailed": "Login failed. Please try again.",
+      "registrationFailed": "Registration failed. Please try again.",
+      "profileFetchFailed": "Failed to fetch user profile.",
+      "networkProfileFetchFailed": "Network error fetching profile."
+    },
+    "loading": "Loading..."
+  },
+  "addRecipe": {
+    "title": "Add New Recipe",
+    "form": {
+      "title": "Title",
+      "titlePlaceholder": "Ex. Cinnamon Rolls",
+      "ingredients": "Ingredients",
+      "ingredientsPlaceholder": "List ingredients, one per line",
+      "instructions": "Instructions",
+      "instructionsPlaceholder": "Step-by-step instructions",
+      "image": "Image (optional)",
+      "video": "Video (optional)",
+      "submit": "Submit Recipe"
+    },
+    "messages": {
+      "submitting": "Submitting...",
+      "success": "✅ Recipe submitted successfully!",
+      "error": "❌ Error: ",
+      "failed": "❌ Failed to submit recipe."
+    }
+  },
+  "hero": {
+    "title": "Fresh, Simple, and Tasty",
+    "subtitle": "Explore step-by-step recipes, cooking tips, and meal ideas to make delicious dishes every day.",
+    "cta": "View Recipes"
+  },
+  "footer": {
+    "about": {
+      "title": "About Us",
+      "description": "We are passionate about sharing the best recipes, tips, and tricks.\n\nOur goal is to provide quick and easy recipes that everyone can enjoy."
+    },
+    "links": {
+      "title": "Quick Links",
+      "home": "Home",
+      "about": "About",
+      "recipes": "Recipes"
+    },
+    "follow": {
+      "title": "Follow Us"
+    },
+    "rights": "All rights reserved."
+  },
+  "groceryList": {
+    "title": "My Grocery List",
+    "emptyMessage": "Your grocery list is empty",
+    "updateFailed": "Failed to update item. Please try again.",
+    "processing": "Processing...",
+    "inYourList": "✓ In Your List",
+    "addToList": "Add to Grocery List",
+    "removeFromList": "Remove from Grocery List"
+  },
+  "common": {
+    "back": "Back",
+    "chooseFile": "Choose file"
+  },
+  "recipes": {
+    "title": "Delicious Recipes",
+    "addNew": "Add New Recipe",
+    "print": "Print Recipe",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "calories": "Calories",
+    "servings": "Servings",
+    "chef": "Chef",
+    "tags": "Tags",
+    "video": "Cooking Video",
+    "notFound": "Recipe Not Found",
+    "notFoundMessage": "Sorry, this recipe does not exist."
+  },
+  "aiCookingTips": {
+    "title": "Chef's Pro Tips",
+    "newTip": "New tip"
+  },
+  "favorites": {
+    "title": "Your Favorite Recipes",
+    "empty": "You don't have any favorites yet."
+  },
+  "about": {
+    "title": "About Our Recipe Blog",
+    "heroTitle": "About Our Recipe Blog",
+    "heroSubtitle": "Welcome to your culinary destination where delicious recipes meet practical cooking tips. We are passionate about sharing the best recipes to inspire your culinary journey.",
+    "missionTitle": "Our Mission",
+    "missionText": "Create a culinary community where everyone, from beginners to experienced chefs, can find inspiration, learn techniques, and share the love for home cooking.",
+    "visionTitle": "Our Vision",
+    "visionText": "To be the preferred digital destination for passionate cooks seeking reliable recipes, practical tips, and an enriching culinary experience.",
+    "offeringsTitle": "What We Offer",
+    "offering1Title": "Diverse Recipes",
+    "offering1Item1": "International cuisine",
+    "offering1Item2": "Traditional and modern dishes",
+    "offering1Item3": "Vegetarian and vegan options",
+    "offering1Item4": "Diet-specific meals",
+    "offering2Title": "For All Skill Levels",
+    "offering2Item1": "30-minute recipes",
+    "offering2Item2": "Special occasion dishes",
+    "offering2Item3": "Step-by-step tutorials",
+    "offering2Item4": "Advanced preparation tips",
+    "offering3Title": "Educational Resources",
+    "offering3Item1": "Essential cooking techniques",
+    "offering3Item2": "Ingredient guides",
+    "offering3Item3": "Presentation tips",
+    "offering3Item4": "Nutritional information",
+    "offering4Title": "For the Family",
+    "offering4Item1": "Kid-friendly recipes",
+    "offering4Item2": "Meals for gatherings",
+    "offering4Item3": "Budget-friendly preparations",
+    "offering4Item4": "Party ideas",
+    "featuresTitle": "Why Choose Us?",
+    "feature1Title": "Tested Recipes",
+    "feature1Text": "Every recipe is prepared and perfected by our team before publishing.",
+    "feature2Title": "Accessible on All Devices",
+    "feature2Text": "Enjoy our recipes on your phone, tablet, or computer.",
+    "feature3Title": "Bilingual Content",
+    "feature3Text": "Access all recipes and tips in both Spanish and English.",
+    "feature4Title": "High-Quality Photos",
+    "feature4Text": "Professional images show exactly how each dish should look.",
+    "communityTitle": "Join Our Community",
+    "communityText": "With over 50,000 active home cooks, our community is growing every day. Share your creations, get tips, and connect with other cooking enthusiasts.",
+    "recipes": "Recipes",
+    "members": "Members",
+    "comments": "Comments",
+    "support": "Support",
+    "exploreRecipes": "Explore Recipes",
+    "subscribe": "Subscribe",
+    "teamTitle": "Meet Our Team",
+    "teamMember1Name": "Maria Gonzalez",
+    "teamMember1Role": "Head Chef",
+    "teamMember1Bio": "Over 15 years of experience in traditional Mexican and international cuisine.",
+    "teamMember2Name": "Carlos Rodriguez",
+    "teamMember2Role": "Content Editor",
+    "teamMember2Bio": "Specializes in creating clear, easy-to-follow recipes for all skill levels.",
+    "teamMember3Name": "Ana Martinez",
+    "teamMember3Role": "Culinary Photographer",
+    "teamMember3Bio": "Transforms each dish into a visual masterpiece that inspires cooking.",
+    "contactTitle": "Contact Us",
+    "contactText": "Have a special recipe to share? Suggestions or questions? We'd love to hear from you!",
+    "location": "Mexico City"
+  }
 }

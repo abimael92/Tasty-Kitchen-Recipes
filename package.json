@@ -3,6 +3,8 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "check-translations": "node scripts/check-translations.js --missing-only",
+    "fix-translations": "node scripts/fix-translations.js",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
