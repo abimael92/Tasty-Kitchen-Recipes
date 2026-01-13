@@ -49,6 +49,8 @@
         "haveAccount": "Already have an account?",
         "noAccount": "Don't have an account?",
         "createOne": "Create one",
+        "loading": "Loading...",
+        "noUser": "No user information available",
         "formLabels": {
             "firstName": "First Name",
             "lastName": "Last Name",
@@ -67,9 +69,10 @@
             "loginFailed": "Login failed. Please try again.",
             "registrationFailed": "Registration failed. Please try again.",
             "profileFetchFailed": "Failed to fetch user profile.",
-            "networkProfileFetchFailed": "Network error fetching profile."
-        },
-        "loading": "Loading..."
+            "networkProfileFetchFailed": "Network error fetching profile.",
+            "noUserData": "No user data found",
+            "profileLoadFailed": "Failed to load profile"
+        }
     },
     "addRecipe": {
         "title": "Add New Recipe",
@@ -200,5 +203,45 @@
         "contactTitle": "Contact Us",
         "contactText": "Have a special recipe to share? Suggestions or questions? We'd love to hear from you!",
         "location": "Mexico City"
-    }
+    },
+    
+        "profile": {
+            "title": "Your Profile",
+            "userInfo": "User Information",
+            "name": "Name",
+            "email": "Email",
+            "role": "Role",
+            "bio": "Bio",
+            "noBio": "No bio set",
+            "phone": "Phone",
+            "location": "Location",
+            "dietPreference": "Diet Preference",
+            "allergies": "Allergies",
+            "preferredCuisine": "Preferred Cuisines",
+            "savedRecipes": "Saved Recipes",
+            "addRecipe": "+ Add Recipe",
+            "noSavedRecipes": "You have no saved recipes yet",
+            "mealSchedule": "Meal Schedule",
+            "day": "Day",
+            "monday": "Monday",
+            "tuesday": "Tuesday",
+            "wednesday": "Wednesday",
+            "thursday": "Thursday",
+            "friday": "Friday",
+            "saturday": "Saturday",
+            "sunday": "Sunday",
+            "breakfast": "Breakfast",
+            "lunch": "Lunch",
+            "dinner": "Dinner",
+            "saveSchedule": "Save Schedule",
+            "cancel": "Cancel",
+            "mealScheduleHint": "Click a meal cell to add your planned meal",
+            "pantry": "Pantry Items",
+            "addPantryItem": "+ Add Pantry Item",
+            "addPantryItemPrompt": "Add Pantry Item:",
+            "marketList": "Market Shopping List",
+            "addMarketItem": "+ Add Market Item",
+            "addMarketItemPrompt": "Add Market Item:",
+            "featureComingSoon": "Feature coming soon!"
+        }
 }
