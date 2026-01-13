@@ -559,3 +559,127 @@ textarea::placeholder {
     min-height: 44px; /* Minimum touch target size */
   }
 }
+
+/* Add to the existing CSS in your Astro component */
+
+/* Save Recipe Button Styles */
+.save-recipe-action {
+	position: static;
+	display: flex;
+	align-items: center;
+}
+
+.save-recipe-action :global(.save-recipe-btn) {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: var(--glass-bg);
+	border: 2px solid var(--glass-border);
+	color: var(--color-text);
+	border-radius: var(--radius-full);
+	cursor: pointer;
+	font-size: 0.95rem;
+	font-weight: 600;
+	transition: all var(--transition-medium);
+	backdrop-filter: var(--backdrop-blur);
+	box-shadow: var(--shadow-sm);
+	position: relative;
+	overflow: hidden;
+}
+
+.save-recipe-action :global(.save-recipe-btn:hover) {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-md);
+	border-color: var(--color-primary);
+}
+
+.save-recipe-action :global(.save-recipe-btn.saved) {
+	background: var(--color-primary);
+	color: white;
+	border-color: var(--color-primary);
+}
+
+.save-recipe-action :global(.save-recipe-btn.loading) {
+	opacity: 0.7;
+	cursor: not-allowed;
+}
+
+.save-recipe-action :global(.bookmark-icon) {
+	width: 16px;
+	height: 16px;
+	transition: transform 0.3s ease;
+}
+
+.save-recipe-action :global(.save-recipe-btn:hover .bookmark-icon) {
+	transform: scale(1.1);
+}
+
+.save-recipe-action :global(.btn-text) {
+	font-weight: 600;
+	letter-spacing: 0.02em;
+}
+
+/* Adjust recipe actions container */
+.recipe-actions {
+	position: absolute;
+	top: var(--space-lg);
+	right: var(--space-lg);
+	z-index: 10;
+	display: flex;
+	gap: var(--space-sm);
+	align-items: center;
+	background: var(--glass-bg);
+	backdrop-filter: var(--backdrop-blur);
+	padding: 8px 12px;
+	border-radius: var(--radius-full);
+	border: 1px solid var(--glass-border);
+	box-shadow: var(--shadow-md);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.recipe-actions {
+		top: var(--space-md);
+		right: var(--space-md);
+		padding: 6px 10px;
+		gap: 8px;
+	}
+	
+	.save-recipe-action :global(.save-recipe-btn) {
+		padding: 8px 12px;
+		font-size: 0.85rem;
+	}
+	
+	.save-recipe-action :global(.btn-text) {
+		display: none; /* Hide text on mobile, show only icon */
+	}
+	
+	.save-recipe-action :global(.save-recipe-btn) {
+		padding: 10px;
+		min-width: 40px;
+		justify-content: center;
+	}
+}
+
+@media (max-width: 480px) {
+	.recipe-actions {
+		flex-direction: column;
+		gap: 4px;
+		padding: 4px;
+	}
+	
+	.save-recipe-action :global(.save-recipe-btn) {
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border-radius: var(--radius-full);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	
+	.save-recipe-action :global(.bookmark-icon) {
+		margin: 0;
+	}
+}

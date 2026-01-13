@@ -6,58 +6,68 @@ export default {
   fields: [
     {
       name: 'user',
+      title: 'User',
       type: 'reference',
-      to: [{type: 'user'}],
-      validation: (Rule) => Rule.required().unique(),
+      to: [{ type: 'user' }]
     },
     {
       name: 'recipes',
-      title: 'Saved Recipes',
+      title: 'Recipes',
       type: 'array',
       of: [
         {
           type: 'object',
+          name: 'savedRecipeItem',
           fields: [
             {
               name: 'recipe',
+              title: 'Recipe',
               type: 'reference',
-              to: [{type: 'recipe'}],
-              validation: (Rule) => Rule.required(),
+              to: [{ type: 'recipe' }],
+              options: {
+                weak: true
+              }
             },
             {
               name: 'savedAt',
-              type: 'datetime',
-              initialValue: () => new Date().toISOString(),
+              title: 'Saved At',
+              type: 'datetime'
             },
             {
-              name: 'notes',
-              type: 'text',
-              rows: 3,
-              title: 'Personal Notes',
-            },
-          ],
-        },
-      ],
+              name: 'createdAt',
+              title: 'Created At',
+              type: 'datetime'
+            }
+          ]
+        }
+      ]
     },
     {
       name: 'lastUpdated',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
+      title: 'Last Updated',
+      type: 'datetime'
     },
+    {
+      name: 'createdAt',
+      title: 'Created At',
+      type: 'datetime'
+    },
+    {
+      name: 'updatedAt',
+      title: 'Updated At',
+      type: 'datetime'
+    }
   ],
   preview: {
     select: {
       userName: 'user.name',
-      recipeCount: 'recipes.length',
-      lastUpdated: 'lastUpdated',
+      recipeCount: 'recipes.length'
     },
-    prepare({userName, recipeCount, lastUpdated}) {
+    prepare({ userName, recipeCount }) {
       return {
-        title: `${userName || 'User'}'s Saved Recipes`,
-        subtitle: `${recipeCount || 0} recipes • Last updated: ${
-          lastUpdated ? new Date(lastUpdated).toLocaleDateString() : 'Never'
-        }`,
+        title: `${userName}'s Saved Recipes`,
+        subtitle: `${recipeCount || 0} recipes saved`
       }
-    },
-  },
+    }
+  }
 }
