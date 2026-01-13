@@ -12,6 +12,7 @@ import NutritionInfo from '../../components/NutritionInfo.astro';
 import RecipeChecklist from '../../components/RecipeChecklist.astro';
 import RecipeTags from '../../components/RecipeTags.astro';
 import AuthFavoriteWrapper from '../../components/AuthFavoriteWrapper';
+import AuthSaveRecipeWrapper from '../../components/AuthSaveRecipeWrapper';
 import AICookingTips from '../../components/AICookingTips.astro';
 
 import AuthRatingWrapper from '../../components/AuthRatingWrapper.jsx';
@@ -138,8 +139,15 @@ try {
 										onload="console.log('Section: Hero image loaded successfully')"
 									/>
 									<div class='image-overlay' />
-									<div class='favorite-wrapper'>
-										<AuthFavoriteWrapper recipeId={recipe._id} client:load />
+
+									{/* Add this recipe-actions container */}
+									<div class='recipe-actions'>
+										<div class='favorite-wrapper'>
+											<AuthFavoriteWrapper recipeId={recipe._id} client:load />
+										</div>
+										<div class='save-recipe-action'>
+										<AuthSaveRecipeWrapper client:only="react" recipeId={recipe._id} locale={currentLocale} />
+										</div>
 									</div>
 								</div>
 							)}
@@ -816,6 +824,90 @@ try {
 		top: var(--space-lg);
 		right: var(--space-lg);
 		z-index: 10;
+	}
+
+	/* Recipe Actions Container */
+	.recipe-actions {
+		position: absolute;
+		top: var(--space-lg);
+		right: var(--space-lg);
+		z-index: 10;
+		display: flex;
+		gap: var(--space-sm);
+		align-items: center;
+		background: var(--glass-bg);
+		backdrop-filter: var(--backdrop-blur);
+		padding: var(--space-xs) var(--space-sm);
+		border-radius: var(--radius-full);
+		border: 1px solid var(--glass-border);
+		box-shadow: var(--shadow-md);
+	}
+
+	.favorite-wrapper {
+		/* Remove absolute positioning since it's now inside .recipe-actions */
+		position: static;
+	}
+
+	.save-recipe-action {
+		position: static;
+	}
+
+	/* Button styling */
+	.favorite-wrapper :global(button),
+	.save-recipe-action :global(button) {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		border-radius: var(--radius-full);
+		background: transparent;
+		border: 2px solid var(--glass-border);
+		color: var(--color-text);
+		transition: all var(--transition-medium);
+		cursor: pointer;
+	}
+
+	.favorite-wrapper :global(button:hover),
+	.save-recipe-action :global(button:hover) {
+		background: var(--color-primary);
+		color: white;
+		border-color: var(--color-primary);
+		transform: translateY(-2px);
+	}
+
+	.favorite-wrapper :global(button.active),
+	.save-recipe-action :global(button.saved) {
+		background: var(--color-primary);
+		color: white;
+		border-color: var(--color-primary);
+	}
+
+	.favorite-wrapper :global(button svg),
+	.save-recipe-action :global(button svg) {
+		width: 20px;
+		height: 20px;
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		.recipe-actions {
+			top: var(--space-md);
+			right: var(--space-md);
+			padding: 4px;
+		}
+
+		.favorite-wrapper :global(button),
+		.save-recipe-action :global(button) {
+			width: 36px;
+			height: 36px;
+		}
+
+		.favorite-wrapper :global(button svg),
+		.save-recipe-action :global(button svg) {
+			width: 18px;
+			height: 18px;
+		}
 	}
 
 	/* Section: Recipe Title */

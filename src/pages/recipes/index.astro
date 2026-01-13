@@ -49,7 +49,7 @@ const splitRegex = currentLocale?.startsWith('es')
 
 	<h1>{t('recipes.title', currentLocale)}</h1>
 
-	<RecipeList client:load recipes={recipes} splitRegex={splitRegex} />
+	<RecipeList client:only='react' recipes={recipes} splitRegex={splitRegex} />
 </BaseLayout>
 
 <style>

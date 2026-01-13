@@ -1,5 +1,5 @@
 // pages/api/unsave-recipe.js
-import { sanityClient } from '../../lib/sanity';
+import { serverSanityClient } from '../../lib/sanity';
 
 export const POST = async ({ request }) => {
 	try {
