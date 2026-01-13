@@ -718,6 +718,7 @@ const componentStartTime = performance.now();
 		});
 	});
 
+	// Listen for login events
 	document.addEventListener('click', (e) => {
 		const btn = e.target.closest('[data-open-login]');
 		if (!btn) return;
