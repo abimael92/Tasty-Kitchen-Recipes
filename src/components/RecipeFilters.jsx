@@ -151,7 +151,7 @@ export default function RecipeFilters({ recipes, onFilter }) {
 				Clear
 			</button>
 
-			<style jsx>{`
+			<style>{`
 				.recipe-filters-bar {
 					display: flex;
 					gap: 15px;

@@ -5,18 +5,26 @@ import { t } from '../utils/i18n';
 export default function UserProfile({ locale }) {
 	const auth = useAuth();
 
+	// Add this with your other useState declarations
+	const [savedRecipes, setSavedRecipes] = useState([]);
+	const [recipesLoading, setRecipesLoading] = useState(false);
+
 	// Destructure loading, user, login, logout from auth safely
 	const loading = auth?.loading === undefined ? false : auth.loading;
-
 	const user = auth?.user ?? null;
 	const login = auth?.login ?? (() => {});
 	const logout = auth?.logout ?? (() => {});
 
+	console.log('🔍 [UserProfile] Auth user:', user);
+	console.log('🔍 [UserProfile] Loading:', loading);
+
 	const [error, setError] = useState('');
+	const [profileData, setProfileData] = useState(null);
 
 	const [showMealSchedule, setShowMealSchedule] = useState(false);
 	const [showPantry, setShowPantry] = useState(false);
 	const [showMarketList, setShowMarketList] = useState(false);
+	const [localLoading, setLocalLoading] = useState(true);
 
 	// Dummy placeholders for lists
 	const [pantryItems, setPantryItems] = useState(['Flour', 'Sugar', 'Salt']);
@@ -26,21 +34,15 @@ export default function UserProfile({ locale }) {
 		'Milk',
 	]);
 
-	// Local loading state for data fetch
-	const [localLoading, setLocalLoading] = useState(true);
-
-	useEffect(() => {
-		// console.log('Auth user updated:', user);
-	}, [user]);
-
 	useEffect(() => {
 		const abortController = new AbortController();
 		let redirectTimeout;
 
-		async function loadUser() {
+		async function loadUserProfile() {
 			try {
 				const stored = localStorage.getItem('userData');
 				if (!stored) {
+					setError(t('auth.errors.noUserData', locale) || 'No user data found');
 					redirectTimeout = setTimeout(() => {
 						window.location.href = '/';
 					}, 1000);
@@ -51,23 +53,32 @@ export default function UserProfile({ locale }) {
 				const { uid, token } = parsed;
 
 				const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
-					headers: { Authorization: `Bearer ${token}` },
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
 					signal: abortController.signal,
 				});
 
 				if (!res.ok) {
-					const text = await res.text();
-					throw new Error(`Fetch failed: ${res.status} ${text}`);
+					const data = await res.json().catch(() => ({}));
+					throw new Error(
+						data.error || `Failed to load profile: ${res.status}`
+					);
 				}
 
 				const data = await res.json();
-				login(data);
-
+				setProfileData(data);
+				login(data); // Update auth context
 				setError('');
 			} catch (err) {
 				if (err.name !== 'AbortError') {
-					console.error(err);
-					setError(err.message || 'Failed to load profile');
+					console.error('Profile load error:', err);
+					setError(
+						err.message ||
+							t('auth.errors.profileLoadFailed', locale) ||
+							'Failed to load profile'
+					);
 					redirectTimeout = setTimeout(() => {
 						window.location.href = '/';
 					}, 1500);
@@ -77,13 +88,62 @@ export default function UserProfile({ locale }) {
 			}
 		}
 
-		loadUser();
+		loadUserProfile();
 
 		return () => {
 			abortController.abort();
 			clearTimeout(redirectTimeout);
 		};
-	}, []);
+	}, [login, locale]);
+
+	// Add this useEffect AFTER the existing useEffect that loads the user profile
+	useEffect(() => {
+		if (profileData?._id) {
+			console.log(
+				'📚 [UserProfile] Fetching saved recipes for user:',
+				profileData._id
+			);
+			fetchSavedRecipes();
+		}
+	}, [profileData?._id]);
+
+	// Add this useEffect AFTER the existing useEffect that loads the user profile
+	async function fetchSavedRecipes() {
+		if (!profileData?._id) return; // Use _id instead of uid for Sanity reference
+
+		setRecipesLoading(true);
+		try {
+			const stored = localStorage.getItem('userData');
+			if (!stored) return;
+
+			const parsed = JSON.parse(stored);
+			const { token } = parsed;
+
+			// Fetch saved recipes from your API - use the user's Sanity _id
+			const res = await fetch(
+				`/api/get-saved-recipes?userId=${profileData._id}`,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+
+			if (res.ok) {
+				const data = await res.json();
+				console.log('📚 Saved recipes:', data); // Debug log
+				setSavedRecipes(data);
+			} else {
+				const errorData = await res.json();
+				console.error('Failed to fetch saved recipes:', errorData);
+			}
+		} catch (err) {
+			console.error('Error fetching saved recipes:', err);
+		} finally {
+			setRecipesLoading(false);
+		}
+	}
 
 	if (loading || localLoading) {
 		return (
@@ -93,21 +153,42 @@ export default function UserProfile({ locale }) {
 		);
 	}
 
-	if (error) return <p style={{ color: 'red' }}>{error}</p>;
-	if (!user)
+	if (error) {
+		return (
+			<div style={{ padding: '2rem', textAlign: 'center', color: 'red' }}>
+				{error}
+			</div>
+		);
+	}
+
+	if (!profileData && !user) {
 		return (
 			<p style={{ padding: '2rem', textAlign: 'center' }}>
-				{t('auth.noUser', locale) || 'No user info available.'}
+				{t('auth.noUser', locale) || 'No user information available.'}
 			</p>
 		);
+	}
+
+	// Use profileData from Sanity or fallback to auth user
+	const displayUser = profileData || user;
 
 	const handleAddPantryItem = () => {
-		const item = prompt('Add Pantry Item');
+		const item = prompt(
+			t('profile.addPantryItemPrompt', locale) || 'Add Pantry Item:'
+		);
 		if (item) setPantryItems([...pantryItems, item]);
 	};
+
 	const handleAddMarketItem = () => {
-		const item = prompt('Add Market Item');
+		const item = prompt(
+			t('profile.addMarketItemPrompt', locale) || 'Add Market Item:'
+		);
 		if (item) setMarketItems([...marketItems, item]);
+	};
+
+	const handleSaveMealSchedule = () => {
+		// TODO: Implement meal schedule save to Sanity
+		alert(t('profile.featureComingSoon', locale) || 'Feature coming soon!');
 	};
 
 	return (
@@ -129,7 +210,6 @@ export default function UserProfile({ locale }) {
 			>
 				{t('profile.title', locale) || 'Your Profile'}
 			</h1>
-
 			{/* User Info Card */}
 			<section
 				style={{
@@ -147,7 +227,7 @@ export default function UserProfile({ locale }) {
 						marginBottom: '1rem',
 					}}
 				>
-					User Information
+					{t('profile.userInfo', locale) || 'User Information'}
 				</h2>
 				<dl
 					style={{
@@ -157,46 +237,54 @@ export default function UserProfile({ locale }) {
 						fontSize: '1.1rem',
 					}}
 				>
-					<dt>Name:</dt>
+					<dt>{t('profile.name', locale) || 'Name:'}</dt>
 					<dd>
-						{user.name || ''} {user.lastname || ''}
+						{displayUser.name || ''} {displayUser.lastname || ''}
 					</dd>
 
-					<dt>Email:</dt>
-					<dd>{user.email}</dd>
+					<dt>{t('profile.email', locale) || 'Email:'}</dt>
+					<dd>{displayUser.email}</dd>
 
-					<dt>Role:</dt>
-					<dd>{user.role || '-'}</dd>
+					<dt>{t('profile.role', locale) || 'Role:'}</dt>
+					<dd>{displayUser.role || '-'}</dd>
 
-					<dt>Bio:</dt>
-					<dd style={{ fontStyle: 'italic' }}>{user.bio || 'No bio set.'}</dd>
+					<dt>{t('profile.bio', locale) || 'Bio:'}</dt>
+					<dd style={{ fontStyle: 'italic' }}>
+						{displayUser.bio || t('profile.noBio', locale) || 'No bio set.'}
+					</dd>
 
-					<dt>Phone:</dt>
-					<dd>{user.phone || '-'}</dd>
+					<dt>{t('profile.phone', locale) || 'Phone:'}</dt>
+					<dd>{displayUser.phone || '-'}</dd>
 
-					<dt>Location:</dt>
-					<dd>{user.location || '-'}</dd>
+					<dt>{t('profile.location', locale) || 'Location:'}</dt>
+					<dd>{displayUser.location || '-'}</dd>
 
-					<dt>Diet Preference:</dt>
-					<dd>{user.dietPreference || '-'}</dd>
+					<dt>{t('profile.dietPreference', locale) || 'Diet Preference:'}</dt>
+					<dd>{displayUser.dietPreference || '-'}</dd>
 
-					<dt>Allergies:</dt>
+					<dt>{t('profile.allergies', locale) || 'Allergies:'}</dt>
 					<dd>
-						{user.allergies && user.allergies.length > 0
-							? user.allergies.join(', ')
+						{displayUser.allergies && displayUser.allergies.length > 0
+							? Array.isArray(displayUser.allergies)
+								? displayUser.allergies.join(', ')
+								: displayUser.allergies
 							: '-'}
 					</dd>
 
-					<dt>Preferred Cuisines:</dt>
+					<dt>
+						{t('profile.preferredCuisine', locale) || 'Preferred Cuisines:'}
+					</dt>
 					<dd>
-						{user.preferredCuisine && user.preferredCuisine.length > 0
-							? user.preferredCuisine.join(', ')
+						{displayUser.preferredCuisine &&
+						displayUser.preferredCuisine.length > 0
+							? Array.isArray(displayUser.preferredCuisine)
+								? displayUser.preferredCuisine.join(', ')
+								: displayUser.preferredCuisine
 							: '-'}
 					</dd>
 				</dl>
 			</section>
 
-			{/* Recipes Section */}
 			<section
 				style={{
 					background: '#fff',
@@ -213,27 +301,211 @@ export default function UserProfile({ locale }) {
 						alignItems: 'center',
 					}}
 				>
-					<span>Saved Recipes</span>
+					<span>{t('profile.savedRecipes', locale) || 'Saved Recipes'}</span>
 					<button
 						style={{
 							background: 'var(--color-primary, #007bff)',
 							color: 'white',
 							border: 'none',
 							borderRadius: '6px',
-							padding: '0.3rem 0.8rem',
+							padding: '0.5rem 1rem',
 							cursor: 'pointer',
 							fontWeight: '600',
 						}}
-						onClick={() => alert('Feature coming soon!')}
+						onClick={() => (window.location.href = '/add-recipe')}
 					>
-						+ Add Recipe
+						{t('profile.addRecipe', locale) || '+ Add Recipe'}
+					</button>
+				</h2>
+				{recipesLoading ? (
+					<p style={{ fontStyle: 'italic', color: '#666' }}>
+						{t('auth.loading', locale) || 'Loading recipes...'}
+					</p>
+				) : savedRecipes.length > 0 ? (
+					<div
+						style={{
+							display: 'grid',
+							gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+							gap: '1rem',
+							marginTop: '1.5rem',
+						}}
+					>
+						{savedRecipes.map((savedRecipe) => (
+							<div
+								key={savedRecipe._id}
+								style={{
+									background: '#fff',
+									border: '1px solid #e0e0e0',
+									borderRadius: '12px',
+									padding: '1rem',
+									boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+									transition: 'all 0.3s ease',
+									position: 'relative',
+									overflow: 'hidden',
+								}}
+								onMouseEnter={(e) => {
+									e.currentTarget.style.transform = 'translateY(-4px)';
+									e.currentTarget.style.boxShadow =
+										'0 8px 16px rgba(0,0,0,0.1)';
+								}}
+								onMouseLeave={(e) => {
+									e.currentTarget.style.transform = 'translateY(0)';
+									e.currentTarget.style.boxShadow =
+										'0 2px 8px rgba(0,0,0,0.05)';
+								}}
+							>
+								{savedRecipe.recipe?.image && (
+									<img
+										src={savedRecipe.recipe.image}
+										alt={savedRecipe.recipe.title}
+										style={{
+											width: '100%',
+											height: '150px',
+											objectFit: 'cover',
+											borderRadius: '8px',
+											marginBottom: '0.75rem',
+										}}
+									/>
+								)}
+								<h3
+									style={{
+										margin: '0 0 0.5rem 0',
+										fontSize: '1.1rem',
+										color: '#333',
+									}}
+								>
+									{savedRecipe.recipe?.title || 'Untitled Recipe'}
+								</h3>
+								{savedRecipe.recipe?.description && (
+									<p
+										style={{
+											fontSize: '0.9rem',
+											color: '#666',
+											marginBottom: '0.75rem',
+											lineHeight: '1.4',
+										}}
+									>
+										{savedRecipe.recipe.description.length > 120
+											? `${savedRecipe.recipe.description.substring(0, 120)}...`
+											: savedRecipe.recipe.description}
+									</p>
+								)}
+								<div
+									style={{
+										display: 'flex',
+										justifyContent: 'space-between',
+										alignItems: 'center',
+										marginTop: '0.5rem',
+									}}
+								>
+									{savedRecipe.recipe?.slug ? (
+										<a
+											href={`/recipes/${savedRecipe.recipe.slug}`}
+											style={{
+												color: '#007bff',
+												textDecoration: 'none',
+												fontSize: '0.9rem',
+												fontWeight: '600',
+											}}
+										>
+											View Recipe →
+										</a>
+									) : (
+										<span style={{ fontSize: '0.8rem', color: '#888' }}>
+											Recipe not available
+										</span>
+									)}
+									<span
+										style={{
+											fontSize: '0.8rem',
+											color: '#888',
+											fontStyle: 'italic',
+										}}
+									>
+										{new Date(savedRecipe.savedAt).toLocaleDateString()}
+									</span>
+								</div>
+							</div>
+						))}
+					</div>
+				) : (
+					<div style={{ textAlign: 'center', padding: '2rem 0' }}>
+						<p
+							style={{
+								fontStyle: 'italic',
+								color: '#666',
+								marginBottom: '1rem',
+							}}
+						>
+							{t('profile.noSavedRecipes', locale) ||
+								'You have no saved recipes yet.'}
+						</p>
+						<button
+							onClick={() => (window.location.href = '/recipes')}
+							style={{
+								background: 'var(--color-primary, #007bff)',
+								color: 'white',
+								border: 'none',
+								borderRadius: '8px',
+								padding: '0.75rem 1.5rem',
+								cursor: 'pointer',
+								fontWeight: '600',
+								fontSize: '0.95rem',
+								transition: 'all 0.3s ease',
+							}}
+							onMouseEnter={(e) => {
+								e.currentTarget.style.transform = 'translateY(-2px)';
+								e.currentTarget.style.boxShadow =
+									'0 4px 12px rgba(0,123,255,0.3)';
+							}}
+							onMouseLeave={(e) => {
+								e.currentTarget.style.transform = 'translateY(0)';
+								e.currentTarget.style.boxShadow = 'none';
+							}}
+						>
+							{t('profile.browseRecipes', locale) || 'Browse Recipes'}
+						</button>
+					</div>
+				)}
+			</section>
+			{/* Recipes Section */}
+			{/* <section
+				style={{
+					background: '#fff',
+					padding: '1.5rem',
+					borderRadius: '12px',
+					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+					marginBottom: '2rem',
+				}}
+			>
+				<h2
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
+				>
+					<span>{t('profile.savedRecipes', locale) || 'Saved Recipes'}</span>
+					<button
+						style={{
+							background: 'var(--color-primary, #007bff)',
+							color: 'white',
+							border: 'none',
+							borderRadius: '6px',
+							padding: '0.5rem 1rem',
+							cursor: 'pointer',
+							fontWeight: '600',
+						}}
+						onClick={() => (window.location.href = '/add-recipe')}
+					>
+						{t('profile.addRecipe', locale) || '+ Add Recipe'}
 					</button>
 				</h2>
 				<p style={{ fontStyle: 'italic', color: '#666' }}>
-					You have no saved recipes yet.
+					{t('profile.noSavedRecipes', locale) ||
+						'You have no saved recipes yet.'}
 				</p>
-			</section>
-
+			</section> */}
 			{/* Meal Schedule */}
 			<section
 				style={{
@@ -245,31 +517,37 @@ export default function UserProfile({ locale }) {
 				}}
 			>
 				<h2
-					style={{ cursor: 'pointer' }}
+					style={{
+						cursor: 'pointer',
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
 					onClick={() => setShowMealSchedule(!showMealSchedule)}
 				>
-					Meal Schedule {showMealSchedule ? '▲' : '▼'}
+					<span>{t('profile.mealSchedule', locale) || 'Meal Schedule'}</span>
+					<span>{showMealSchedule ? '▲' : '▼'}</span>
 				</h2>
 				{showMealSchedule && (
-					<div style={{ marginTop: '1rem', fontSize: '1.1rem', color: '#444' }}>
+					<div style={{ marginTop: '1rem' }}>
 						<table style={{ width: '100%', borderCollapse: 'collapse' }}>
 							<thead>
 								<tr style={{ backgroundColor: '#ddd' }}>
-									<th>Day</th>
-									<th>Breakfast</th>
-									<th>Lunch</th>
-									<th>Dinner</th>
+									<th>{t('profile.day', locale) || 'Day'}</th>
+									<th>{t('profile.breakfast', locale) || 'Breakfast'}</th>
+									<th>{t('profile.lunch', locale) || 'Lunch'}</th>
+									<th>{t('profile.dinner', locale) || 'Dinner'}</th>
 								</tr>
 							</thead>
 							<tbody>
 								{[
-									'Monday',
-									'Tuesday',
-									'Wednesday',
-									'Thursday',
-									'Friday',
-									'Saturday',
-									'Sunday',
+									t('profile.monday', locale) || 'Monday',
+									t('profile.tuesday', locale) || 'Tuesday',
+									t('profile.wednesday', locale) || 'Wednesday',
+									t('profile.thursday', locale) || 'Thursday',
+									t('profile.friday', locale) || 'Friday',
+									t('profile.saturday', locale) || 'Saturday',
+									t('profile.sunday', locale) || 'Sunday',
 								].map((day) => (
 									<tr key={day} style={{ borderBottom: '1px solid #ccc' }}>
 										<td style={{ fontWeight: '600', padding: '0.5rem' }}>
@@ -281,7 +559,10 @@ export default function UserProfile({ locale }) {
 												padding: '0.5rem',
 												backgroundColor: '#fff',
 												cursor: 'text',
+												minHeight: '2rem',
 											}}
+											data-day={day.toLowerCase()}
+											data-meal='breakfast'
 										></td>
 										<td
 											contentEditable
@@ -289,7 +570,10 @@ export default function UserProfile({ locale }) {
 												padding: '0.5rem',
 												backgroundColor: '#fff',
 												cursor: 'text',
+												minHeight: '2rem',
 											}}
+											data-day={day.toLowerCase()}
+											data-meal='lunch'
 										></td>
 										<td
 											contentEditable
@@ -297,19 +581,58 @@ export default function UserProfile({ locale }) {
 												padding: '0.5rem',
 												backgroundColor: '#fff',
 												cursor: 'text',
+												minHeight: '2rem',
 											}}
+											data-day={day.toLowerCase()}
+											data-meal='dinner'
 										></td>
 									</tr>
 								))}
 							</tbody>
 						</table>
-						<small style={{ fontStyle: 'italic', color: '#666' }}>
-							Click a meal cell to add your planned meal.
+						<div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+							<button
+								onClick={handleSaveMealSchedule}
+								style={{
+									background: 'var(--color-success, #28a745)',
+									color: 'white',
+									border: 'none',
+									borderRadius: '6px',
+									padding: '0.5rem 1rem',
+									cursor: 'pointer',
+									fontWeight: '600',
+								}}
+							>
+								{t('profile.saveSchedule', locale) || 'Save Schedule'}
+							</button>
+							<button
+								onClick={() => setShowMealSchedule(false)}
+								style={{
+									background: '#6c757d',
+									color: 'white',
+									border: 'none',
+									borderRadius: '6px',
+									padding: '0.5rem 1rem',
+									cursor: 'pointer',
+								}}
+							>
+								{t('profile.cancel', locale) || 'Cancel'}
+							</button>
+						</div>
+						<small
+							style={{
+								display: 'block',
+								marginTop: '0.5rem',
+								fontStyle: 'italic',
+								color: '#666',
+							}}
+						>
+							{t('profile.mealScheduleHint', locale) ||
+								'Click a meal cell to add your planned meal.'}
 						</small>
 					</div>
 				)}
 			</section>
-
 			{/* Pantry Section */}
 			<section
 				style={{
@@ -321,10 +644,16 @@ export default function UserProfile({ locale }) {
 				}}
 			>
 				<h2
-					style={{ cursor: 'pointer' }}
+					style={{
+						cursor: 'pointer',
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
 					onClick={() => setShowPantry(!showPantry)}
 				>
-					Pantry Items {showPantry ? '▲' : '▼'}
+					<span>{t('profile.pantry', locale) || 'Pantry Items'}</span>
+					<span>{showPantry ? '▲' : '▼'}</span>
 				</h2>
 				{showPantry && (
 					<>
@@ -357,17 +686,16 @@ export default function UserProfile({ locale }) {
 								color: 'white',
 								border: 'none',
 								borderRadius: '6px',
-								padding: '0.3rem 0.8rem',
+								padding: '0.5rem 1rem',
 								cursor: 'pointer',
 								fontWeight: '600',
 							}}
 						>
-							+ Add Pantry Item
+							{t('profile.addPantryItem', locale) || '+ Add Pantry Item'}
 						</button>
 					</>
 				)}
 			</section>
-
 			{/* Market List Section */}
 			<section
 				style={{
@@ -378,10 +706,18 @@ export default function UserProfile({ locale }) {
 				}}
 			>
 				<h2
-					style={{ cursor: 'pointer' }}
+					style={{
+						cursor: 'pointer',
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
+					}}
 					onClick={() => setShowMarketList(!showMarketList)}
 				>
-					Market Shopping List {showMarketList ? '▲' : '▼'}
+					<span>
+						{t('profile.marketList', locale) || 'Market Shopping List'}
+					</span>
+					<span>{showMarketList ? '▲' : '▼'}</span>
 				</h2>
 				{showMarketList && (
 					<>
@@ -414,12 +750,12 @@ export default function UserProfile({ locale }) {
 								color: 'white',
 								border: 'none',
 								borderRadius: '6px',
-								padding: '0.3rem 0.8rem',
+								padding: '0.5rem 1rem',
 								cursor: 'pointer',
 								fontWeight: '600',
 							}}
 						>
-							+ Add Market Item
+							{t('profile.addMarketItem', locale) || '+ Add Market Item'}
 						</button>
 					</>
 				)}
