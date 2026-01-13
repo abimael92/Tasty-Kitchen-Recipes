@@ -139,7 +139,7 @@ export default function RecipeCard({ recipe, splitRegex }) {
 				</div>
 			</div>
 
-			<style jsx>{`
+			<style>{`
 				.recipe-card {
 					background: white;
 					border: 1px solid #f5c6c6;
