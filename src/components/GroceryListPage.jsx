@@ -949,7 +949,7 @@ export const GroceryListPage = ({ locale }) => {
 			</div>
 
 			{/* Enhanced Styles */}
-			<style jsx>{`
+			<style>{`
 				/* Section: Grocery Page Base */
 				.grocery-page {
 					min-height: 100vh;
