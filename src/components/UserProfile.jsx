@@ -15,9 +15,6 @@ export default function UserProfile({ locale }) {
 	const login = auth?.login ?? (() => {});
 	const logout = auth?.logout ?? (() => {});
 
-	console.log('🔍 [UserProfile] Auth user:', user);
-	console.log('🔍 [UserProfile] Loading:', loading);
-
 	const [error, setError] = useState('');
 	const [profileData, setProfileData] = useState(null);
 
@@ -33,6 +30,29 @@ export default function UserProfile({ locale }) {
 		'Chicken',
 		'Milk',
 	]);
+	
+	const [showEditModal, setShowEditModal] = useState(false);
+	const [editForm, setEditForm] = useState({
+		name: '',
+		lastname: '',
+		bio: '',
+		phone: '',
+		location: '',
+	});
+	const [saving, setSaving] = useState(false);
+
+const openEditModal = () => {
+	setEditForm({
+		name: displayUser.name || '',
+		lastname: displayUser.lastname || '',
+		bio: displayUser.bio || '',
+		phone: displayUser.phone || '',
+		location: displayUser.location || '',
+	});
+	setShowEditModal(true);
+};
+
+
 
 	useEffect(() => {
 		const abortController = new AbortController();
@@ -190,6 +210,36 @@ export default function UserProfile({ locale }) {
 		// TODO: Implement meal schedule save to Sanity
 		alert(t('profile.featureComingSoon', locale) || 'Feature coming soon!');
 	};
+	
+	const handleSaveProfile = async () => {
+		setSaving(true);
+		try {
+			const stored = JSON.parse(localStorage.getItem('userData'));
+			const res = await fetch('/api/updateUserProfile', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${stored.token}`,
+				},
+				body: JSON.stringify({
+					uid: displayUser.uid,
+					...editForm,
+				}),
+			});
+
+			if (!res.ok) throw new Error('Update failed');
+
+			const updated = await res.json();
+			setProfileData(updated);
+			login(updated);
+			setShowEditModal(false);
+		} catch (e) {
+			alert('Failed to update profile');
+		} finally {
+			setSaving(false);
+		}
+	};
+
 
 	return (
 		<div
@@ -229,6 +279,7 @@ export default function UserProfile({ locale }) {
 				>
 					{t('profile.userInfo', locale) || 'User Information'}
 				</h2>
+
 				<dl
 					style={{
 						display: 'grid',
@@ -283,6 +334,20 @@ export default function UserProfile({ locale }) {
 							: '-'}
 					</dd>
 				</dl>
+				<button
+					onClick={openEditModal}
+					style={{
+						background: '#007bff',
+						color: '#fff',
+						border: 'none',
+						borderRadius: 6,
+						padding: '0.4rem 0.8rem',
+						cursor: 'pointer',
+						fontWeight: 600,
+					}}
+				>
+					Edit
+				</button>
 			</section>
 
 			<section
@@ -758,6 +823,61 @@ export default function UserProfile({ locale }) {
 							{t('profile.addMarketItem', locale) || '+ Add Market Item'}
 						</button>
 					</>
+				)}
+
+				{showEditModal && (
+					<div
+						style={{
+							position: 'fixed',
+							inset: 0,
+							background: 'rgba(0,0,0,0.5)',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+							zIndex: 1000,
+						}}
+					>
+						<div
+							style={{
+								background: '#fff',
+								padding: '1.5rem',
+								borderRadius: 12,
+								width: 400,
+							}}
+						>
+							<h3>Edit Profile</h3>
+
+							{['name', 'lastname', 'phone', 'location'].map((f) => (
+								<input
+									key={f}
+									placeholder={f}
+									value={editForm[f]}
+									onChange={(e) =>
+										setEditForm({ ...editForm, [f]: e.target.value })
+									}
+									style={{ width: '100%', marginBottom: 8, padding: 8 }}
+								/>
+							))}
+
+							<textarea
+								placeholder='Bio'
+								value={editForm.bio}
+								onChange={(e) =>
+									setEditForm({ ...editForm, bio: e.target.value })
+								}
+								style={{ width: '100%', marginBottom: 8, padding: 8 }}
+							/>
+
+							<div
+								style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}
+							>
+								<button onClick={() => setShowEditModal(false)}>Cancel</button>
+								<button onClick={handleSaveProfile} disabled={saving}>
+									{saving ? 'Saving...' : 'Save'}
+								</button>
+							</div>
+						</div>
+					</div>
 				)}
 			</section>
 		</div>
