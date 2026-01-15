@@ -1,16 +1,18 @@
 ---
-import { t } from '../utils/i18n';
+import { t, setLocale } from '../utils/i18n';
 import LoginWrapper from '../components/LoginWrapper.jsx';
+
 const { currentLocale } = Astro;
+setLocale(currentLocale);
+---
+
 ---
 
 <nav class='navbar'>
 	<div class='nav-items'>
-		<a href='/' class='nav-link'>{t('nav.home', currentLocale)}</a>
-		<a href='/recipes' class='nav-link'
-			>{t('nav.recipes', currentLocale)}</a
-		>
-		<a href='/about' class='nav-link'>{t('nav.about', currentLocale)}</a>
+		<a href='/' class='nav-link'>{t('nav.home')}</a>
+		<a href='/recipes' class='nav-link'>{t('nav.recipes')}</a>
+		<a href='/about' class='nav-link'>{t('nav.about')}</a>
 	</div>
 	<div class='nav-login'>
 		<LoginWrapper client:load />

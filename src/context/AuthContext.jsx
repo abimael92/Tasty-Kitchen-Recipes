@@ -1,10 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { setLocale } from '../utils/i18n';
 
 const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children, locale }) {
 	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		if (locale) setLocale(locale);
+	}, [locale]);
 
 	useEffect(() => {
 		async function loadUser() {
@@ -17,7 +22,6 @@ export function AuthProvider({ children }) {
 			try {
 				const parsed = JSON.parse(stored);
 				if (!parsed.uid || !parsed.token) {
-					console.warn('Stored user data incomplete, clearing');
 					localStorage.removeItem('userData');
 					setLoading(false);
 					return;
@@ -28,7 +32,6 @@ export function AuthProvider({ children }) {
 				});
 
 				if (!res.ok) {
-					console.error('Failed to fetch user profile:', res.status);
 					localStorage.removeItem('userData');
 					setLoading(false);
 					return;
@@ -36,10 +39,8 @@ export function AuthProvider({ children }) {
 
 				const fullUser = await res.json();
 				fullUser.token = parsed.token;
-
 				setUser(fullUser);
-			} catch (err) {
-				console.error('Error loading user profile:', err);
+			} catch {
 				localStorage.removeItem('userData');
 			} finally {
 				setLoading(false);
@@ -48,45 +49,13 @@ export function AuthProvider({ children }) {
 		loadUser();
 	}, []);
 
-	const login = (data) => {
-		if (!data?.uid || !data?.token) {
-			console.error('Login data missing uid or token', data);
-			return;
-		}
-		localStorage.setItem(
-			'userData',
-			JSON.stringify({
-				uid: data.uid,
-				email: data.email,
-				token: data.token,
-			})
-		);
-
-		setUser({
-			...data,
-			uid: data.uid, // Ensure uid is set
-		});
-
-		setLoading(false);
-	};
-
-	const logout = () => {
-		localStorage.removeItem('userData');
-		setUser(null);
-		setLoading(false);
-	};
-
 	return (
-		<AuthContext.Provider value={{ user, loading, login, logout }}>
+		<AuthContext.Provider value={{ user, loading }}>
 			{children}
 		</AuthContext.Provider>
 	);
 }
 
 export function useAuth() {
-	const context = useContext(AuthContext);
-	if (context === undefined) {
-		throw new Error('useAuth must be used within AuthProvider');
-	}
-	return context;
+	return useContext(AuthContext);
 }

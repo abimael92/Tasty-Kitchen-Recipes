@@ -30,7 +30,7 @@ export default function UserProfile({ locale }) {
 		'Chicken',
 		'Milk',
 	]);
-	
+
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [editForm, setEditForm] = useState({
 		name: '',
@@ -41,18 +41,16 @@ export default function UserProfile({ locale }) {
 	});
 	const [saving, setSaving] = useState(false);
 
-const openEditModal = () => {
-	setEditForm({
-		name: displayUser.name || '',
-		lastname: displayUser.lastname || '',
-		bio: displayUser.bio || '',
-		phone: displayUser.phone || '',
-		location: displayUser.location || '',
-	});
-	setShowEditModal(true);
-};
-
-
+	const openEditModal = () => {
+		setEditForm({
+			name: displayUser.name || '',
+			lastname: displayUser.lastname || '',
+			bio: displayUser.bio || '',
+			phone: displayUser.phone || '',
+			location: displayUser.location || '',
+		});
+		setShowEditModal(true);
+	};
 
 	useEffect(() => {
 		const abortController = new AbortController();
@@ -210,7 +208,7 @@ const openEditModal = () => {
 		// TODO: Implement meal schedule save to Sanity
 		alert(t('profile.featureComingSoon', locale) || 'Feature coming soon!');
 	};
-	
+
 	const handleSaveProfile = async () => {
 		setSaving(true);
 		try {
@@ -263,7 +261,7 @@ const openEditModal = () => {
 			{/* User Info Card */}
 			<section
 				style={{
-					background: '#f9f9f9',
+					background: '#fff',
 					padding: '1.5rem',
 					borderRadius: '12px',
 					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -272,12 +270,29 @@ const openEditModal = () => {
 			>
 				<h2
 					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						alignItems: 'center',
 						borderBottom: '2px solid #eee',
-						paddingBottom: '0.5rem',
 						marginBottom: '1rem',
 					}}
 				>
-					{t('profile.userInfo', locale) || 'User Information'}
+					<span>{t('profile.userInfo', locale) || 'User Information'}</span>
+
+					<button
+						onClick={openEditModal}
+						style={{
+							background: '#007bff',
+							color: '#fff',
+							border: 'none',
+							borderRadius: 6,
+							padding: '0.4rem 0.8rem',
+							cursor: 'pointer',
+							fontWeight: 600,
+						}}
+					>
+						Edit
+					</button>
 				</h2>
 
 				<dl
@@ -334,20 +349,6 @@ const openEditModal = () => {
 							: '-'}
 					</dd>
 				</dl>
-				<button
-					onClick={openEditModal}
-					style={{
-						background: '#007bff',
-						color: '#fff',
-						border: 'none',
-						borderRadius: 6,
-						padding: '0.4rem 0.8rem',
-						cursor: 'pointer',
-						fontWeight: 600,
-					}}
-				>
-					Edit
-				</button>
 			</section>
 
 			<section
