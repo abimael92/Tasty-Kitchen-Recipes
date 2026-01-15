@@ -47,7 +47,7 @@ const { currentLocale } = Astro;
 		<Header />
 
 		<main class='content-wrapper'>
-			<AuthProvider>
+			<AuthProvider client:load locale={currentLocale}>
 				<slot />
 			</AuthProvider>
 		</main>

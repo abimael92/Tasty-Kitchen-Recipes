@@ -1,22 +1,25 @@
 import en from '../locales/en.json';
 import es from '../locales/es.json';
 
-const translations: Record<string, any> = {
-	en,
-	es,
-};
+const translations = { en, es };
 
-export function t(key: string, locale: string = 'es'): string {
+let currentLocale = 'es';
+
+export function setLocale(locale: 'en' | 'es') {
+	currentLocale = locale;
+}
+
+export function getLocale() {
+	return currentLocale;
+}
+
+export function t(key: string): string {
 	const parts = key.split('.');
-	let result: any = translations[locale];
+	let result: any = translations[currentLocale];
 
 	for (const part of parts) {
-		if (!result || !result.hasOwnProperty(part)) {
-			// Log missing translations in development
-			if (process.env.NODE_ENV === 'development') {
-				console.warn(`Missing translation: ${key} for locale ${locale}`);
-			}
-			return key; // Return the key as fallback
+		if (!result || !Object.prototype.hasOwnProperty.call(result, part)) {
+			return key;
 		}
 		result = result[part];
 	}

@@ -264,6 +264,11 @@
   "enableDelivery": "Habilitar entrega",
   "deliveryDescription": "Ofrecer servicio de entrega",
   "saveChanges": "Guardar cambios",
+  "nav": {
+    "home": "Inicio",
+    "recipes": "Restaurantes",
+    "about": "Sobre nosotros"
+  },
   "profile": {
     "title": "Tu Perfil",
     "userInfo": "Información del Usuario",
