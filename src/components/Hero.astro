@@ -1,23 +1,9 @@
 ---
-/* Section: Transformed Hero Page Component */
-/* Converted from Tailwind to Global CSS Variables with enhanced UI/UX features */
-
-import { t } from '../utils/i18n';
+import { t, setLocale } from '../utils/i18n';
 const { currentLocale } = Astro;
-import HeroButton from './HeroButton.jsx';
-import { AuthProvider } from '../context/AuthContext.jsx';
 
-// Debugging and performance monitoring
-console.log('🎨 Hero Component Initializing - Using Global CSS Variables');
-console.log('📱 Current Locale:', currentLocale);
-console.log('🎯 Loading i18n keys:', {
-	title: t('hero.title', currentLocale),
-	subtitle: t('hero.subtitle', currentLocale),
-	cta: t('hero.cta', currentLocale),
-});
+setLocale(currentLocale);
 
-// Performance tracking
-const componentStartTime = performance.now();
 ---
 
 <section class='hero-section'>
@@ -45,12 +31,12 @@ const componentStartTime = performance.now();
 
 				<!-- Main Title with gradient animation -->
 				<h1 class='hero-title animate-fade-in' data-delay='0.1s'>
-					{t('hero.title', currentLocale)}
+					{t('hero.title')}
 				</h1>
 
 				<!-- Subtitle with staggered animation -->
 				<p class='hero-subtitle animate-fade-in' data-delay='0.3s'>
-					{t('hero.subtitle', currentLocale)}
+					{t('hero.subtitle')}
 				</p>
 
 				<!-- Call to Action Buttons -->
@@ -60,7 +46,7 @@ const componentStartTime = performance.now();
 						class='button primary-button'
 						aria-label='Browse all recipes'
 					>
-						{t('hero.cta', currentLocale)}
+						{t('hero.cta')}
 						<svg
 							class='button-icon'
 							viewBox='0 0 24 24'
@@ -677,8 +663,7 @@ const componentStartTime = performance.now();
 </style>
 
 <script>
-	// Section: Interactive JavaScript Enhancements
-	console.log('🚀 Hero Page Interactive Features Loading');
+	const componentStartTime = performance.now();
 
 	// Add staggered animation delays
 	document.addEventListener('DOMContentLoaded', () => {
@@ -697,7 +682,7 @@ const componentStartTime = performance.now();
 
 		// Add hover effects to interactive elements
 		const interactiveElements = document.querySelectorAll(
-			'.hero-badge, .button'
+			'.hero-badge, .button',
 		);
 		interactiveElements.forEach((el) => {
 			el.addEventListener('mouseenter', () => {
