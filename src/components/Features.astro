@@ -1,34 +1,34 @@
 ---
+import { t, setLocale } from '../utils/i18n';
+const { currentLocale } = Astro;
+
+setLocale(currentLocale);
+
+// Define features using translations
 const features = [
 	{
-		title: 'Gestión de Recetas',
-		description:
-			'Guarda, organiza y personaliza tus recetas favoritas con información nutricional completa',
+		title: t('features.recipeManagement.title'),
+		description: t('features.recipeManagement.description'),
 	},
 	{
-		title: 'Planificador Semanal',
-		description:
-			'Planifica tus comidas de la semana y mantén el control de tu alimentación',
+		title: t('features.weeklyPlanner.title'),
+		description: t('features.weeklyPlanner.description'),
 	},
 	{
-		title: 'Lista de Compras',
-		description:
-			'Genera automáticamente tu lista de supermercado desde tus recetas planificadas',
+		title: t('features.shoppingList.title'),
+		description: t('features.shoppingList.description'),
 	},
 	{
-		title: 'Análisis Nutricional',
-		description:
-			'Controla calorías, macros y alcanza tus objetivos nutricionales fácilmente',
+		title: t('features.nutritionAnalysis.title'),
+		description: t('features.nutritionAnalysis.description'),
 	},
 	{
-		title: 'Inventario de Despensa',
-		description:
-			'Mantén un registro de tus ingredientes y evita compras innecesarias',
+		title: t('features.pantryInventory.title'),
+		description: t('features.pantryInventory.description'),
 	},
 	{
-		title: 'Importar Recetas',
-		description:
-			'Importa recetas desde cualquier URL y guárdalas en tu colección personal',
+		title: t('features.recipeImport.title'),
+		description: t('features.recipeImport.description'),
 	},
 ];
 ---
@@ -36,11 +36,8 @@ const features = [
 <section id='features' class='features-section'>
 	<div class='container'>
 		<div class='features-header'>
-			<h2>Todo lo que necesitas</h2>
-			<p>
-				Herramientas profesionales para organizar tu cocina y disfrutar
-				cocinando
-			</p>
+			<h2>{t('features.title')}</h2>
+			<p>{t('features.subtitle')}</p>
 		</div>
 		<div class='features-grid'>
 			{
