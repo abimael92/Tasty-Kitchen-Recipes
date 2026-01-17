@@ -2,9 +2,12 @@
 import Navbar from './Navbar.astro';
 import Logo from './Logo.astro';
 import LanguageSelector from './LanguageSelector.astro';
-import { t } from '../utils/i18n';
+import { t, setLocale } from '../utils/i18n'; // ✅ Import setLocale
 
 const { currentLocale } = Astro;
+
+// ✅ Set the locale before using translations
+setLocale(currentLocale);
 ---
 
 <header class='header'>
@@ -15,12 +18,11 @@ const { currentLocale } = Astro;
 				<Logo />
 			</div>
 			<div class='header-title-wrapper'>
-				<h1 class='blog-title'>{t('title', currentLocale)}</h1>
+				<h1 class='blog-title'>{t('title')}</h1>
+				<!-- ✅ No second parameter -->
 				<p class='blog-tagline'>
-					{
-						t('subtitle', currentLocale) ||
-							'Delicious recipes from around the world'
-					}
+					{t('subtitle')}
+					<!-- ✅ No second parameter, no fallback logic needed -->
 				</p>
 			</div>
 		</div>
@@ -67,9 +69,13 @@ const { currentLocale } = Astro;
 					<input
 						type='search'
 						class='search-input'
-						placeholder={t('search.placeholder', currentLocale) ||
-							'Search recipes...'}
-						aria-label='Search recipes'
+						placeholder={t('search.placeholder')}
+						<!--
+						✅
+						No
+						second
+						parameter
+						--
 					/>
 				</div>
 			</div>
@@ -174,7 +180,6 @@ const { currentLocale } = Astro;
 </script>
 
 <style>
-	/* Section: Header Base */
 	.header {
 		background: linear-gradient(
 			135deg,
