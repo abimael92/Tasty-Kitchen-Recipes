@@ -148,6 +148,9 @@
   "callCustomer": "Llamar al Cliente",
   "title": "Panel de Control",
   "subtitle": "¡Bienvenido de nuevo! Aquí está lo que pasa en tu restaurante.",
+  "search": {
+    "placeholder": "Buscar recetas..."
+  },
   "todaysOrders": "Pedidos de Hoy",
   "avgOrder": "Pedido Promedio",
   "rating": "Calificación",
@@ -315,5 +318,33 @@
       "noUserData": "No se encontraron datos de usuario",
       "profileLoadFailed": "No se pudo cargar el perfil"
     }
-  }
+  },
+    "features": {
+      "title": "Todo lo que necesitas",
+      "subtitle": "Herramientas profesionales para organizar tu cocina y disfrutar cocinando",
+      "recipeManagement": {
+        "title": "Gestión de Recetas",
+        "description": "Guarda, organiza y personaliza tus recetas favoritas con información nutricional completa"
+      },
+      "weeklyPlanner": {
+        "title": "Planificador Semanal",
+        "description": "Planifica tus comidas de la semana y mantén el control de tu alimentación"
+      },
+      "shoppingList": {
+        "title": "Lista de Compras",
+        "description": "Genera automáticamente tu lista de supermercado desde tus recetas planificadas"
+      },
+      "nutritionAnalysis": {
+        "title": "Análisis Nutricional",
+        "description": "Controla calorías, macros y alcanza tus objetivos nutricionales fácilmente"
+      },
+      "pantryInventory": {
+        "title": "Inventario de Despensa",
+        "description": "Mantén un registro de tus ingredientes y evita compras innecesarias"
+      },
+      "recipeImport": {
+        "title": "Importar Recetas",
+        "description": "Importa recetas desde cualquier URL y guárdalas en tu colección personal"
+      }
+    }
 }
