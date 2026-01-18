@@ -112,7 +112,12 @@ export default function LoginModal({
 								marginBottom: isRegistering ? '0.5rem' : 0,
 							}}
 						>
-							<label htmlFor='email'>{t('auth.email', locale)}</label>
+							<label
+								htmlFor='email'
+								style={{ color: 'black', padding: '0.5rem' }}
+							>
+								{t('auth.email', locale)}
+							</label>
 							<input
 								type='email'
 								id='email'
@@ -282,7 +287,12 @@ export default function LoginModal({
 						</div>
 
 						<div style={{ width: '585px' }}>
-							<label htmlFor='password'>{t('auth.password', locale)}</label>
+							<label
+								htmlFor='password'
+								style={{ color: 'black', padding: '0.5rem' }}
+							>
+								{t('auth.password', locale)}
+							</label>
 							<input
 								type='password'
 								id='password'
@@ -331,8 +341,8 @@ export default function LoginModal({
 										? t('auth.registering', locale) || 'Registering...'
 										: t('auth.loggingIn', locale) || 'Logging in...'
 									: isRegistering
-									? t('auth.register', locale) || 'Register'
-									: t('auth.login', locale) || 'Login'}
+										? t('auth.register', locale) || 'Register'
+										: t('auth.login', locale) || 'Login'}
 							</button>
 						</div>
 					</form>
