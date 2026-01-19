@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { t } from '../utils/i18n';
 
 export default function UserProfile({ locale }) {
 	const auth = useAuth();
+	const hasLoadedRef = useRef(false);
 
-	// Add this with your other useState declarations
 	const [savedRecipes, setSavedRecipes] = useState([]);
 	const [recipesLoading, setRecipesLoading] = useState(false);
 
-	// Destructure loading, user, login, logout from auth safely
 	const loading = auth?.loading === undefined ? false : auth.loading;
 	const user = auth?.user ?? null;
 	const login = auth?.login ?? (() => {});
@@ -22,6 +21,14 @@ export default function UserProfile({ locale }) {
 	const [showPantry, setShowPantry] = useState(false);
 	const [showMarketList, setShowMarketList] = useState(false);
 	const [localLoading, setLocalLoading] = useState(true);
+	const [showBMIModal, setShowBMIModal] = useState(false);
+	const [bmiData, setBmiData] = useState({
+		weight: '',
+		height: '',
+		age: '',
+		gender: 'male',
+	});
+	const [bmiResult, setBmiResult] = useState(null);
 
 	// Dummy placeholders for lists
 	const [pantryItems, setPantryItems] = useState(['Flour', 'Sugar', 'Salt']);
@@ -52,11 +59,18 @@ export default function UserProfile({ locale }) {
 		setShowEditModal(true);
 	};
 
+
 	useEffect(() => {
 		const abortController = new AbortController();
 		let redirectTimeout;
 
 		async function loadUserProfile() {
+			// Skip if already loaded
+			if (hasLoadedRef.current) {
+				setLocalLoading(false);
+				return;
+			}
+
 			try {
 				const stored = localStorage.getItem('userData');
 				if (!stored) {
@@ -81,13 +95,14 @@ export default function UserProfile({ locale }) {
 				if (!res.ok) {
 					const data = await res.json().catch(() => ({}));
 					throw new Error(
-						data.error || `Failed to load profile: ${res.status}`
+						data.error || `Failed to load profile: ${res.status}`,
 					);
 				}
 
 				const data = await res.json();
 				setProfileData(data);
 				login(data); // Update auth context
+				hasLoadedRef.current = true; // Mark as loaded
 				setError('');
 			} catch (err) {
 				if (err.name !== 'AbortError') {
@@ -95,7 +110,7 @@ export default function UserProfile({ locale }) {
 					setError(
 						err.message ||
 							t('auth.errors.profileLoadFailed', locale) ||
-							'Failed to load profile'
+							'Failed to load profile',
 					);
 					redirectTimeout = setTimeout(() => {
 						window.location.href = '/';
@@ -114,18 +129,16 @@ export default function UserProfile({ locale }) {
 		};
 	}, [login, locale]);
 
-	// Add this useEffect AFTER the existing useEffect that loads the user profile
 	useEffect(() => {
 		if (profileData?._id) {
 			console.log(
 				'📚 [UserProfile] Fetching saved recipes for user:',
-				profileData._id
+				profileData._id,
 			);
 			fetchSavedRecipes();
 		}
 	}, [profileData?._id]);
 
-	// Add this useEffect AFTER the existing useEffect that loads the user profile
 	async function fetchSavedRecipes() {
 		if (!profileData?._id) return; // Use _id instead of uid for Sanity reference
 
@@ -145,7 +158,7 @@ export default function UserProfile({ locale }) {
 						Authorization: `Bearer ${token}`,
 						'Content-Type': 'application/json',
 					},
-				}
+				},
 			);
 
 			if (res.ok) {
@@ -192,14 +205,14 @@ export default function UserProfile({ locale }) {
 
 	const handleAddPantryItem = () => {
 		const item = prompt(
-			t('profile.addPantryItemPrompt', locale) || 'Add Pantry Item:'
+			t('profile.addPantryItemPrompt', locale) || 'Add Pantry Item:',
 		);
 		if (item) setPantryItems([...pantryItems, item]);
 	};
 
 	const handleAddMarketItem = () => {
 		const item = prompt(
-			t('profile.addMarketItemPrompt', locale) || 'Add Market Item:'
+			t('profile.addMarketItemPrompt', locale) || 'Add Market Item:',
 		);
 		if (item) setMarketItems([...marketItems, item]);
 	};
@@ -238,6 +251,57 @@ export default function UserProfile({ locale }) {
 		}
 	};
 
+	const calculateBMI = () => {
+		const weight = parseFloat(bmiData.weight);
+		const height = parseFloat(bmiData.height) / 100; // convert cm to meters
+
+		if (!weight || !height || height === 0) {
+			setBmiResult({ error: 'Please enter valid weight and height' });
+			return;
+		}
+
+		const bmi = weight / (height * height);
+		let category = '';
+		let color = '';
+
+		if (bmi < 18.5) {
+			category = 'Underweight';
+			color = '#3498db'; // Blue
+		} else if (bmi < 25) {
+			category = 'Normal weight';
+			color = '#27ae60'; // Green
+		} else if (bmi < 30) {
+			category = 'Overweight';
+			color = '#f39c12'; // Orange
+		} else {
+			category = 'Obese';
+			color = '#e74c3c'; // Red
+		}
+
+		setBmiResult({
+			bmi: bmi.toFixed(1),
+			category,
+			color,
+			weight,
+			height: bmiData.height,
+		});
+	};
+
+	// Replace the resetImcCalculator function with this:
+	const resetBMICalculator = () => {
+		setBmiData({
+			weight: '',
+			height: '',
+			age: '',
+			gender: 'male',
+		});
+		setBmiResult(null);
+	};
+
+	const openBMIModal = () => {
+		resetBMICalculator();
+		setShowBMIModal(true);
+	};
 
 	return (
 		<div
@@ -279,20 +343,37 @@ export default function UserProfile({ locale }) {
 				>
 					<span>{t('profile.userInfo', locale) || 'User Information'}</span>
 
-					<button
-						onClick={openEditModal}
-						style={{
-							background: '#007bff',
-							color: '#fff',
-							border: 'none',
-							borderRadius: 6,
-							padding: '0.4rem 0.8rem',
-							cursor: 'pointer',
-							fontWeight: 600,
-						}}
-					>
-						Edit
-					</button>
+					<div style={{ display: 'flex', gap: '0.5rem' }}>
+						<button
+							onClick={openBMIModal}
+							style={{
+								background: '#27ae60',
+								color: '#fff',
+								border: 'none',
+								borderRadius: 6,
+								padding: '0.4rem 0.8rem',
+								cursor: 'pointer',
+								fontWeight: 600,
+							}}
+						>
+							{t('profile.calculateBMI', locale) || 'Calculate BMI'}
+						</button>
+
+						<button
+							onClick={openEditModal}
+							style={{
+								background: '#007bff',
+								color: '#fff',
+								border: 'none',
+								borderRadius: 6,
+								padding: '0.4rem 0.8rem',
+								cursor: 'pointer',
+								fontWeight: 600,
+							}}
+						>
+							Edit
+						</button>
+					</div>
 				</h2>
 
 				<dl
@@ -881,6 +962,366 @@ export default function UserProfile({ locale }) {
 					</div>
 				)}
 			</section>
+
+			{/* IMC Calculator Modal */}
+			{/* BMI Calculator Modal */}
+			{showBMIModal && (
+				<div
+					style={{
+						position: 'fixed',
+						top: 0,
+						left: 0,
+						right: 0,
+						bottom: 0,
+						backgroundColor: 'rgba(0, 0, 0, 0.5)',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						zIndex: 1000,
+						padding: '1rem',
+					}}
+					onClick={(e) => {
+						if (e.target === e.currentTarget) setShowBMIModal(false);
+					}}
+				>
+					<div
+						style={{
+							backgroundColor: 'white',
+							borderRadius: '12px',
+							padding: '2rem',
+							maxWidth: '500px',
+							width: '100%',
+							maxHeight: '90vh',
+							overflowY: 'auto',
+							boxShadow: '0 10px 40px rgba(0,0,0,0.2)',
+						}}
+					>
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+								marginBottom: '1.5rem',
+								borderBottom: '2px solid #f0f0f0',
+								paddingBottom: '0.5rem',
+							}}
+						>
+							<h2 style={{ margin: 0, color: '#2c3e50' }}>
+								{t('profile.bmiCalculator', locale) || 'BMI Calculator'}
+							</h2>
+							<button
+								onClick={() => setShowBMIModal(false)}
+								style={{
+									background: 'none',
+									border: 'none',
+									fontSize: '1.5rem',
+									cursor: 'pointer',
+									color: '#7f8c8d',
+								}}
+							>
+								×
+							</button>
+						</div>
+
+						<div style={{ marginBottom: '1.5rem' }}>
+							<label
+								style={{
+									display: 'block',
+									marginBottom: '0.5rem',
+									fontWeight: '600',
+									color: '#2c3e50',
+								}}
+							>
+								{t('profile.gender', locale) || 'Gender'}
+							</label>
+							<div
+								style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}
+							>
+								{['male', 'female'].map((g) => (
+									<label
+										key={g}
+										style={{
+											display: 'flex',
+											alignItems: 'center',
+											gap: '0.5rem',
+											cursor: 'pointer',
+										}}
+									>
+										<input
+											type='radio'
+											name='gender'
+											value={g}
+											checked={bmiData.gender === g}
+											onChange={(e) =>
+												setBmiData({ ...bmiData, gender: e.target.value })
+											}
+											style={{ cursor: 'pointer' }}
+										/>
+										<span style={{ textTransform: 'capitalize' }}>
+											{t(
+												`profile.gender${g.charAt(0).toUpperCase() + g.slice(1)}`,
+												locale,
+											) || g}
+										</span>
+									</label>
+								))}
+							</div>
+
+							<div
+								style={{
+									display: 'grid',
+									gridTemplateColumns: '1fr 1fr',
+									gap: '1rem',
+								}}
+							>
+								<div>
+									<label
+										style={{
+											display: 'block',
+											marginBottom: '0.5rem',
+											fontWeight: '600',
+											color: '#2c3e50',
+										}}
+									>
+										{t('profile.age', locale) || 'Age'} (years)
+									</label>
+									<input
+										type='number'
+										value={bmiData.age}
+										onChange={(e) =>
+											setBmiData({ ...bmiData, age: e.target.value })
+										}
+										min='1'
+										max='120'
+										style={{
+											width: '100%',
+											padding: '0.75rem',
+											border: '2px solid #e0e0e0',
+											borderRadius: '8px',
+											fontSize: '1rem',
+											transition: 'border-color 0.3s',
+										}}
+										onFocus={(e) => (e.target.style.borderColor = '#3498db')}
+										onBlur={(e) => (e.target.style.borderColor = '#e0e0e0')}
+									/>
+								</div>
+
+								<div>
+									<label
+										style={{
+											display: 'block',
+											marginBottom: '0.5rem',
+											fontWeight: '600',
+											color: '#2c3e50',
+										}}
+									>
+										{t('profile.weight', locale) || 'Weight'} (kg)
+									</label>
+									<input
+										type='number'
+										value={bmiData.weight}
+										onChange={(e) =>
+											setBmiData({ ...bmiData, weight: e.target.value })
+										}
+										step='0.1'
+										min='20'
+										max='300'
+										style={{
+											width: '100%',
+											padding: '0.75rem',
+											border: '2px solid #e0e0e0',
+											borderRadius: '8px',
+											fontSize: '1rem',
+											transition: 'border-color 0.3s',
+										}}
+										onFocus={(e) => (e.target.style.borderColor = '#3498db')}
+										onBlur={(e) => (e.target.style.borderColor = '#e0e0e0')}
+									/>
+								</div>
+							</div>
+
+							<div style={{ marginTop: '1rem' }}>
+								<label
+									style={{
+										display: 'block',
+										marginBottom: '0.5rem',
+										fontWeight: '600',
+										color: '#2c3e50',
+									}}
+								>
+									{t('profile.height', locale) || 'Height'} (cm)
+								</label>
+								<input
+									type='number'
+									value={bmiData.height}
+									onChange={(e) =>
+										setBmiData({ ...bmiData, height: e.target.value })
+									}
+									min='50'
+									max='250'
+									style={{
+										width: '100%',
+										padding: '0.75rem',
+										border: '2px solid #e0e0e0',
+										borderRadius: '8px',
+										fontSize: '1rem',
+										transition: 'border-color 0.3s',
+									}}
+									onFocus={(e) => (e.target.style.borderColor = '#3498db')}
+									onBlur={(e) => (e.target.style.borderColor = '#e0e0e0')}
+								/>
+							</div>
+						</div>
+
+						{bmiResult?.error && (
+							<div
+								style={{
+									backgroundColor: '#ffeaea',
+									color: '#e74c3c',
+									padding: '1rem',
+									borderRadius: '8px',
+									marginBottom: '1rem',
+									border: '1px solid #fadbd8',
+								}}
+							>
+								{bmiResult.error}
+							</div>
+						)}
+
+						{bmiResult && !bmiResult.error && (
+							<div
+								style={{
+									backgroundColor: '#f8f9fa',
+									padding: '1.5rem',
+									borderRadius: '10px',
+									marginBottom: '1.5rem',
+									border: '2px solid #e9ecef',
+									textAlign: 'center',
+								}}
+							>
+								<h3 style={{ marginTop: 0, color: '#2c3e50' }}>
+									{t('profile.bmiResult', locale) || 'BMI Result'}
+								</h3>
+								<div
+									style={{
+										fontSize: '3rem',
+										fontWeight: 'bold',
+										margin: '1rem 0',
+										color: bmiResult.color,
+									}}
+								>
+									{bmiResult.bmi}
+								</div>
+								<div
+									style={{
+										fontSize: '1.2rem',
+										fontWeight: '600',
+										color: bmiResult.color,
+										marginBottom: '0.5rem',
+									}}
+								>
+									{bmiResult.category}
+								</div>
+								<div style={{ color: '#7f8c8d', fontSize: '0.9rem' }}>
+									{t('profile.weight', locale) || 'Weight'}: {bmiResult.weight}{' '}
+									kg | {t('profile.height', locale) || 'Height'}:{' '}
+									{bmiResult.height} cm
+								</div>
+							</div>
+						)}
+
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								gap: '1rem',
+								marginTop: '1.5rem',
+							}}
+						>
+							<button
+								onClick={resetBMICalculator}
+								style={{
+									flex: 1,
+									padding: '0.75rem',
+									backgroundColor: '#95a5a6',
+									color: 'white',
+									border: 'none',
+									borderRadius: '8px',
+									cursor: 'pointer',
+									fontWeight: '600',
+									fontSize: '1rem',
+									transition: 'all 0.3s',
+								}}
+								onMouseEnter={(e) =>
+									(e.currentTarget.style.backgroundColor = '#7f8c8d')
+								}
+								onMouseLeave={(e) =>
+									(e.currentTarget.style.backgroundColor = '#95a5a6')
+								}
+							>
+								{t('profile.reset', locale) || 'Reset'}
+							</button>
+
+							<button
+								onClick={calculateBMI}
+								style={{
+									flex: 1,
+									padding: '0.75rem',
+									backgroundColor: '#3498db',
+									color: 'white',
+									border: 'none',
+									borderRadius: '8px',
+									cursor: 'pointer',
+									fontWeight: '600',
+									fontSize: '1rem',
+									transition: 'all 0.3s',
+								}}
+								onMouseEnter={(e) =>
+									(e.currentTarget.style.backgroundColor = '#2980b9')
+								}
+								onMouseLeave={(e) =>
+									(e.currentTarget.style.backgroundColor = '#3498db')
+								}
+							>
+								{t('profile.calculate', locale) || 'Calculate'}
+							</button>
+						</div>
+
+						<div
+							style={{
+								marginTop: '1.5rem',
+								padding: '1rem',
+								backgroundColor: '#f8f9fa',
+								borderRadius: '8px',
+								fontSize: '0.85rem',
+								color: '#7f8c8d',
+								borderLeft: '4px solid #3498db',
+							}}
+						>
+							<strong style={{ color: '#2c3e50' }}>
+								{t('profile.bmiInfo', locale) || 'BMI Information:'}
+							</strong>
+							<ul style={{ margin: '0.5rem 0 0 1rem', padding: 0 }}>
+								<li>
+									{'< 18.5'} -{' '}
+									{t('profile.underweight', locale) || 'Underweight'}
+								</li>
+								<li>
+									{'18.5 - 24.9'} -{' '}
+									{t('profile.normalWeight', locale) || 'Normal weight'}
+								</li>
+								<li>
+									{'25 - 29.9'} -{' '}
+									{t('profile.overweight', locale) || 'Overweight'}
+								</li>
+								<li>
+									{'≥ 30'} - {t('profile.obese', locale) || 'Obese'}
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
