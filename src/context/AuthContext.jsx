@@ -27,7 +27,7 @@ export function AuthProvider({ children, locale }) {
 					return;
 				}
 
-				const res = await fetch(`/api/getUserProfile?uid=${parsed.uid}`, {
+				const res = await fetch(`/api/get-user-profile?uid=${parsed.uid}`, {
 					headers: { Authorization: `Bearer ${parsed.token}` },
 				});
 
