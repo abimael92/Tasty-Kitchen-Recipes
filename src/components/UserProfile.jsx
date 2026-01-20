@@ -59,7 +59,6 @@ export default function UserProfile({ locale }) {
 		setShowEditModal(true);
 	};
 
-
 	useEffect(() => {
 		const abortController = new AbortController();
 		let redirectTimeout;
@@ -84,7 +83,7 @@ export default function UserProfile({ locale }) {
 				const parsed = JSON.parse(stored);
 				const { uid, token } = parsed;
 
-				const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
+				const res = await fetch(`/api/get-user-profile?uid=${uid}`, {
 					headers: {
 						Authorization: `Bearer ${token}`,
 						'Content-Type': 'application/json',
@@ -132,12 +131,30 @@ export default function UserProfile({ locale }) {
 	useEffect(() => {
 		if (profileData?._id) {
 			console.log(
-				'📚 [UserProfile] Fetching saved recipes for user:',
+				' [UserProfile] Fetching saved recipes for user:',
 				profileData._id,
 			);
 			fetchSavedRecipes();
 		}
 	}, [profileData?._id]);
+
+	useEffect(() => {
+		if (profileData?.bmiHistory) {
+			console.log('BMI History loaded:', profileData.bmiHistory);
+		}
+	}, [profileData?.bmiHistory]);
+
+	// Agrega este useEffect después de los otros useEffects
+	useEffect(() => {
+		if (!showBMIModal && bmiResult && !bmiResult.error) {
+			// El modal se cerró con un resultado exitoso, recargar datos
+			const timer = setTimeout(() => {
+				refreshProfileData();
+			}, 1000);
+
+			return () => clearTimeout(timer);
+		}
+	}, [showBMIModal, bmiResult]);
 
 	async function fetchSavedRecipes() {
 		if (!profileData?._id) return; // Use _id instead of uid for Sanity reference
@@ -163,7 +180,6 @@ export default function UserProfile({ locale }) {
 
 			if (res.ok) {
 				const data = await res.json();
-				console.log('📚 Saved recipes:', data); // Debug log
 				setSavedRecipes(data);
 			} else {
 				const errorData = await res.json();
@@ -253,38 +269,202 @@ export default function UserProfile({ locale }) {
 
 	const calculateBMI = () => {
 		const weight = parseFloat(bmiData.weight);
-		const height = parseFloat(bmiData.height) / 100; // convert cm to meters
+		const height = parseFloat(bmiData.height) / 100;
+		const age = parseInt(bmiData.age);
 
 		if (!weight || !height || height === 0) {
-			setBmiResult({ error: 'Please enter valid weight and height' });
+			setBmiResult({
+				error:
+					t('profile.enterValidData', locale) ||
+					'Please enter valid weight and height',
+			});
 			return;
 		}
 
 		const bmi = weight / (height * height);
+
+		// Determinar categoría
 		let category = '';
 		let color = '';
+		let recommendations = [];
+		let warnings = [];
 
 		if (bmi < 18.5) {
-			category = 'Underweight';
-			color = '#3498db'; // Blue
+			category = t('profile.underweight', locale) || 'Underweight';
+			color = '#3498db';
+			recommendations = [
+				'Aumenta gradualmente la ingesta calórica',
+				'Incluye alimentos ricos en proteínas',
+				'Considera entrenamiento de fuerza',
+				'Come comidas frecuentes y más pequeñas',
+			];
+			warnings = [
+				'Puede indicar deficiencias nutricionales',
+				'Mayor riesgo de osteoporosis',
+				'Consulta a un profesional de la salud',
+			];
 		} else if (bmi < 25) {
-			category = 'Normal weight';
-			color = '#27ae60'; // Green
+			category = t('profile.normalWeight', locale) || 'Normal weight';
+			color = '#27ae60';
+			recommendations = [
+				'Mantén dieta equilibrada y ejercicio regular',
+				'Continúa con hábitos alimenticios saludables',
+				'Mantente físicamente activo',
+				'Monitorea tu peso periódicamente',
+			];
+			warnings = ['Mantén tu estilo de vida para prevenir aumento de peso'];
 		} else if (bmi < 30) {
-			category = 'Overweight';
-			color = '#f39c12'; // Orange
+			category = t('profile.overweight', locale) || 'Overweight';
+			color = '#f39c12';
+			recommendations = [
+				'Reduce la ingesta calórica en 300-500 calorías/día',
+				'Aumenta actividad física a 150 minutos/semana',
+				'Enfócate en alimentos integrales',
+				'Controla el tamaño de las porciones',
+			];
+			warnings = [
+				'Mayor riesgo de enfermedad cardíaca',
+				'Mayor probabilidad de diabetes tipo 2',
+				'Riesgo de presión arterial alta',
+			];
 		} else {
-			category = 'Obese';
-			color = '#e74c3c'; // Red
+			category = t('profile.obese', locale) || 'Obese';
+			color = '#e74c3c';
+			recommendations = [
+				'Consulta a un profesional de la salud',
+				'Objetivo de 0.5-1 kg de pérdida por semana',
+				'Considera trabajar con un nutricionista',
+				'Comienza con ejercicio de bajo impacto',
+			];
+			warnings = [
+				'Alto riesgo de enfermedad cardiovascular',
+				'Mayor probabilidad de apnea del sueño',
+				'Riesgo de problemas articulares',
+				'Mayor probabilidad de ciertos tipos de cáncer',
+			];
 		}
 
-		setBmiResult({
+		// Agregar recomendaciones por edad
+		if (age > 50) {
+			recommendations.push('Considera suplementos para la salud ósea');
+			recommendations.push('Se recomiendan chequeos regulares');
+		}
+
+		if (age < 25) {
+			recommendations.push('Enfócate en construir hábitos saludables');
+		}
+
+		const result = {
 			bmi: bmi.toFixed(1),
 			category,
 			color,
 			weight,
 			height: bmiData.height,
+			age: bmiData.age,
+			gender: bmiData.gender,
+			recommendations,
+			warnings,
+			date: new Date().toISOString(),
+		};
+
+		setBmiResult(result);
+
+		// Guardar en la base de datos
+		saveBMIResult(result);
+	};
+
+	// Agrega esta función después de saveBMIResult
+const refreshProfileData = async () => {
+	try {
+		const stored = localStorage.getItem('userData');
+		if (!stored) {
+			console.log('No user data found in localStorage');
+			return;
+		}
+
+		const parsed = JSON.parse(stored);
+		const { uid, token } = parsed;
+
+
+		const res = await fetch(`/api/get-user-profile?uid=${uid}`, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+				'Content-Type': 'application/json',
+			},
 		});
+
+		if (res.ok) {
+			const data = await res.json();
+
+			setProfileData(data);
+			login(data);
+		} else {
+			console.error('Failed to refresh profile:', res.status);
+		}
+	} catch (error) {
+		console.error('Error refreshing profile:', error);
+	}
+};
+
+	const saveBMIResult = async (result) => {
+		try {
+			const stored = JSON.parse(localStorage.getItem('userData'));
+			if (!stored || !stored.token) {
+				console.error('No token found');
+				return;
+			}
+
+			const response = await fetch('/api/save-bmi', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${stored.token}`,
+				},
+				body: JSON.stringify({
+					userId: displayUser._id,
+					bmiData: result,
+				}),
+			});
+
+			const responseData = await response.json();
+
+			if (response.ok) {
+				console.log('BMI saved successfully');
+
+				if (responseData.user) {
+					setProfileData(responseData.user);
+					login(responseData.user);
+				} else {
+					const newBMIEntry = {
+						...result,
+						_key: `bmi_${Date.now()}`,
+					};
+
+					setProfileData((prev) => ({
+						...prev,
+						bmiHistory: [...(prev.bmiHistory || []), newBMIEntry],
+						latestBMI: parseFloat(result.bmi),
+						bmiCategory: result.category,
+					}));
+				}
+
+				setTimeout(() => {
+					setShowBMIModal(false);
+				}, 1500);
+			} else {
+				console.error('Failed to save BMI:', responseData);
+				alert(
+					t('profile.bmiSaveError', locale) ||
+						'Failed to save BMI. Please try again.',
+				);
+			}
+		} catch (error) {
+			console.error('Error saving BMI:', error);
+			alert(
+				t('profile.bmiSaveError', locale) ||
+					'Failed to save BMI. Please try again.',
+			);
+		}
 	};
 
 	// Replace the resetImcCalculator function with this:
@@ -296,6 +476,16 @@ export default function UserProfile({ locale }) {
 			gender: 'male',
 		});
 		setBmiResult(null);
+	};
+
+	const handleCloseBMIModal = () => {
+		setShowBMIModal(false);
+		if (bmiResult && !bmiResult.error) {
+			// Forzar un refresh después de guardar exitosamente
+			setTimeout(() => {
+				refreshProfileData();
+			}, 500);
+		}
 	};
 
 	const openBMIModal = () => {
@@ -430,6 +620,166 @@ export default function UserProfile({ locale }) {
 							: '-'}
 					</dd>
 				</dl>
+			</section>
+
+			{/* Historial de BMI */}
+			<section
+				style={{
+					background: '#fff',
+					padding: '1.5rem',
+					borderRadius: '12px',
+					boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+					marginBottom: '2rem',
+				}}
+			>
+				<h2
+					style={{
+						borderBottom: '2px solid #eee',
+						paddingBottom: '0.5rem',
+						marginBottom: '1rem',
+					}}
+				>
+					BMI History
+				</h2>
+
+				{profileData?.latestBMI || profileData?.bmiCategory ? (
+					<div
+						style={{
+							padding: '0.75rem',
+							background: '#f8f9fa',
+							borderRadius: '8px',
+							borderLeft: '4px solid #e74c3c',
+							marginBottom: '1rem',
+						}}
+					>
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+								marginBottom: '0.25rem',
+							}}
+						>
+							<span style={{ fontWeight: '600', fontSize: '1.1rem' }}>
+								{profileData.latestBMI}
+								{profileData.latestBMI
+									? parseFloat(profileData.latestBMI).toFixed(1)
+									: 'N/A'}{' '}
+								- {profileData.bmiCategory || 'No category'}
+							</span>
+							<span style={{ color: '#7f8c8d', fontSize: '0.85rem' }}>
+								Último cálculo
+							</span>
+						</div>
+						<div style={{ color: '#5d6d7e', fontSize: '0.9rem' }}>
+							{profileData?.healthGoals?.length > 0 && (
+								<div>
+									<strong>Health Goals:</strong>
+									<ul style={{ margin: '0.5rem 0 0 1rem', padding: 0 }}>
+										{profileData.healthGoals.map((goal, idx) => (
+											<li key={idx}>{goal}</li>
+										))}
+									</ul>
+								</div>
+							)}
+						</div>
+					</div>
+				) : null}
+
+				{/* LUEGO EL HISTORIAL SI EXISTE */}
+				{profileData?.bmiHistory &&
+				Array.isArray(profileData.bmiHistory) &&
+				profileData.bmiHistory.length > 0 ? (
+					<div
+						style={{
+							display: 'flex',
+							flexDirection: 'column',
+							gap: '0.75rem',
+							maxHeight: '300px',
+							overflowY: 'auto',
+							padding: '0.5rem',
+						}}
+					>
+						{profileData.bmiHistory
+							.filter((entry) => entry !== null)
+							.slice()
+							.reverse()
+							.map((entry, index) => {
+								let borderColor = '#3498db';
+								const category = String(entry.category || '').toLowerCase();
+
+								if (
+									category.includes('bajo') ||
+									category.includes('underweight')
+								) {
+									borderColor = '#3498db';
+								} else if (
+									category.includes('normal') ||
+									category.includes('peso normal')
+								) {
+									borderColor = '#27ae60';
+								} else if (
+									category.includes('sobrepeso') ||
+									category.includes('overweight')
+								) {
+									borderColor = '#f39c12';
+								} else if (
+									category.includes('obeso') ||
+									category.includes('obesity') ||
+									category.includes('obesidad')
+								) {
+									borderColor = '#e74c3c';
+								}
+
+								return (
+									<div
+										key={entry._key || index}
+										style={{
+											padding: '0.75rem',
+											background: '#f8f9fa',
+											borderRadius: '8px',
+											borderLeft: `4px solid ${borderColor}`,
+										}}
+									>
+										<div
+											style={{
+												display: 'flex',
+												justifyContent: 'space-between',
+												alignItems: 'center',
+												marginBottom: '0.25rem',
+											}}
+										>
+											<span style={{ fontWeight: '600', fontSize: '1.1rem' }}>
+												{entry.bmi ? parseFloat(entry.bmi).toFixed(1) : 'N/A'} -{' '}
+												{entry.category || 'No category'}
+											</span>
+											<span style={{ color: '#7f8c8d', fontSize: '0.85rem' }}>
+												{entry.date
+													? new Date(entry.date).toLocaleDateString()
+													: 'No date'}
+											</span>
+										</div>
+										<div style={{ color: '#5d6d7e', fontSize: '0.9rem' }}>
+											Peso: {entry.weight || 'N/A'}kg | Altura:{' '}
+											{entry.height || 'N/A'}cm | Edad: {entry.age || 'N/A'} |
+											Género: {entry.gender || 'N/A'}
+										</div>
+									</div>
+								);
+							})}
+					</div>
+				) : (
+					<div
+						style={{
+							textAlign: 'center',
+							padding: '2rem',
+							color: '#7f8c8d',
+							fontStyle: 'italic',
+						}}
+					>
+						No hay historial de BMI. ¡Calcula tu primer BMI!
+					</div>
+				)}
 			</section>
 
 			<section
@@ -1195,7 +1545,7 @@ export default function UserProfile({ locale }) {
 									padding: '1.5rem',
 									borderRadius: '10px',
 									marginBottom: '1.5rem',
-									border: '2px solid #e9ecef',
+									border: `2px solid ${bmiResult.color}40`,
 									textAlign: 'center',
 								}}
 							>
@@ -1225,7 +1575,66 @@ export default function UserProfile({ locale }) {
 								<div style={{ color: '#7f8c8d', fontSize: '0.9rem' }}>
 									{t('profile.weight', locale) || 'Weight'}: {bmiResult.weight}{' '}
 									kg | {t('profile.height', locale) || 'Height'}:{' '}
-									{bmiResult.height} cm
+									{bmiResult.height} cm | {t('profile.age', locale) || 'Age'}:{' '}
+									{bmiResult.age}
+								</div>
+
+								{/* Banner de alerta con color */}
+								<div
+									style={{
+										marginTop: '1rem',
+										padding: '0.75rem',
+										backgroundColor: `${bmiResult.color}20`,
+										borderLeft: `4px solid ${bmiResult.color}`,
+										borderRadius: '4px',
+										textAlign: 'left',
+									}}
+								>
+									<strong style={{ color: bmiResult.color }}>
+										{t('profile.healthStatus', locale) || 'Health Status:'}
+									</strong>
+									<ul
+										style={{
+											margin: '0.5rem 0 0 1rem',
+											padding: 0,
+											fontSize: '0.9rem',
+										}}
+									>
+										{bmiResult.warnings.map((warning, index) => (
+											<li key={index} style={{ marginBottom: '0.25rem' }}>
+												⚠️ {warning}
+											</li>
+										))}
+									</ul>
+								</div>
+
+								{/* Recomendaciones */}
+								<div
+									style={{
+										marginTop: '1rem',
+										padding: '0.75rem',
+										backgroundColor: '#e8f4fd',
+										borderLeft: '4px solid #3498db',
+										borderRadius: '4px',
+										textAlign: 'left',
+									}}
+								>
+									<strong style={{ color: '#2c3e50' }}>
+										{t('profile.recommendations', locale) || 'Recommendations:'}
+									</strong>
+									<ul
+										style={{
+											margin: '0.5rem 0 0 1rem',
+											padding: 0,
+											fontSize: '0.9rem',
+										}}
+									>
+										{bmiResult.recommendations.map((rec, index) => (
+											<li key={index} style={{ marginBottom: '0.25rem' }}>
+												✅ {rec}
+											</li>
+										))}
+									</ul>
 								</div>
 							</div>
 						)}
@@ -1285,6 +1694,33 @@ export default function UserProfile({ locale }) {
 							>
 								{t('profile.calculate', locale) || 'Calculate'}
 							</button>
+
+							{/* Agrega este botón OK/Cerrar */}
+							{bmiResult && !bmiResult.error && (
+								<button
+									onClick={handleCloseBMIModal}
+									style={{
+										flex: 1,
+										padding: '0.75rem',
+										backgroundColor: '#27ae60',
+										color: 'white',
+										border: 'none',
+										borderRadius: '8px',
+										cursor: 'pointer',
+										fontWeight: '600',
+										fontSize: '1rem',
+										transition: 'all 0.3s',
+									}}
+									onMouseEnter={(e) =>
+										(e.currentTarget.style.backgroundColor = '#219653')
+									}
+									onMouseLeave={(e) =>
+										(e.currentTarget.style.backgroundColor = '#27ae60')
+									}
+								>
+									{t('profile.okSave', locale) || 'OK & Save'}
+								</button>
+							)}
 						</div>
 
 						<div
