@@ -16,5 +16,50 @@ export default {
     {name: 'preferredCuisine', type: 'array', of: [{type: 'string'}]},
     {name: 'joinedAt', title: 'Joined At', type: 'datetime'},
     {name: 'profileImage', title: 'Profile Image', type: 'image'},
+    {
+      name: 'bmiHistory',
+      title: 'BMI History',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {name: 'bmi', type: 'number', title: 'BMI Value'},
+            {name: 'category', type: 'string', title: 'Category'},
+            {name: 'weight', type: 'number', title: 'Weight (kg)'},
+            {name: 'height', type: 'number', title: 'Height (cm)'},
+            {name: 'age', type: 'number', title: 'Age'},
+            {name: 'gender', type: 'string', title: 'Gender'},
+            {name: 'date', type: 'datetime', title: 'Date'},
+            {name: 'notes', type: 'text', title: 'Notes'},
+          ],
+        },
+      ],
+    },
+    {
+      name: 'latestBMI',
+      title: 'Latest BMI',
+      type: 'number',
+    },
+    {
+      name: 'bmiCategory',
+      title: 'BMI Category',
+      type: 'string',
+    },
+    {
+      name: 'healthGoals',
+      title: 'Health Goals',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {
+        list: [
+          {title: 'Lose weight', value: 'lose_weight'},
+          {title: 'Gain weight', value: 'gain_weight'},
+          {title: 'Maintain weight', value: 'maintain_weight'},
+          {title: 'Build muscle', value: 'build_muscle'},
+          {title: 'Improve health', value: 'improve_health'},
+        ],
+      },
+    },
   ],
 }

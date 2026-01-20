@@ -104,7 +104,7 @@ export default function LoginWrapper({ locale }) {
 
 	async function fetchUserProfile(uid, token) {
 		try {
-			const res = await fetch(`/api/getUserProfile?uid=${uid}`, {
+			const res = await fetch(`/api/get-user-profile?uid=${uid}`, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 			if (!res.ok) throw new Error(t('auth.errors.profileFetchFailed', locale));

@@ -31,7 +31,6 @@ export const GET: APIRoute = async ({ request }) => {
 			});
 		}
 
-		// Query Sanity for user data
 		const query = `*[_type == "user" && uid == $uid][0]{
       _id,
       uid,
@@ -46,7 +45,11 @@ export const GET: APIRoute = async ({ request }) => {
       allergies,
       preferredCuisine,
       profileImage,
-      joinedAt
+      joinedAt,
+      bmiHistory,
+      latestBMI,
+      bmiCategory,
+      healthGoals
     }`;
 
 		const user = await sanity.fetch(query, { uid });
@@ -58,7 +61,17 @@ export const GET: APIRoute = async ({ request }) => {
 			});
 		}
 
-		return new Response(JSON.stringify(user), {
+		const userWithDefaults = {
+			...user,
+			bmiHistory: user.bmiHistory || [], // ← Si es null/undefined, pon array vacío
+			latestBMI: user.latestBMI || null,
+			bmiCategory: user.bmiCategory || null,
+			healthGoals: user.healthGoals || [],
+		};
+
+		console.log('User con defaults:', userWithDefaults); // Para debug
+
+		return new Response(JSON.stringify(userWithDefaults), {
 			status: 200,
 			headers: { 'Content-Type': 'application/json' },
 		});
@@ -71,7 +84,7 @@ export const GET: APIRoute = async ({ request }) => {
 			{
 				status: 500,
 				headers: { 'Content-Type': 'application/json' },
-			}
+			},
 		);
 	}
 };
