@@ -267,9 +267,10 @@
   "enableDelivery": "Habilitar entrega",
   "deliveryDescription": "Ofrecer servicio de entrega",
   "saveChanges": "Guardar cambios",
+  "loadMoreRecipes": "Cargar Más Recetas",
   "nav": {
     "home": "Inicio",
-    "recipes": "Restaurantes",
+    "recipes": "Recetas",
     "about": "Sobre nosotros"
   },
   "profile": {
@@ -401,5 +402,12 @@
         "title": "Importar Recetas",
         "description": "Importa recetas desde cualquier URL y guárdalas en tu colección personal"
       }
-    }
+    },
+      "common": {
+        "back": "Volver"
+      },
+      "recipes": {
+        "title": "Recetas",
+        "addNew": "Agregar Nueva Receta"
+      }
 }
