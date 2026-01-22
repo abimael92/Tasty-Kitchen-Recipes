@@ -375,6 +375,7 @@
   },
     "features": {
       "title": "Todo lo que necesitas",
+      "badge": "Características",
       "subtitle": "Herramientas profesionales para organizar tu cocina y disfrutar cocinando",
       "recipeManagement": {
         "title": "Gestión de Recetas",
