@@ -1004,6 +1004,7 @@ const refreshProfileData = async () => {
 				</p>
 			</section> */}
 			{/* Meal Schedule */}
+			{/* Meal Schedule */}
 			<section
 				style={{
 					background: '#f9f9f9',
@@ -1019,75 +1020,558 @@ const refreshProfileData = async () => {
 						display: 'flex',
 						justifyContent: 'space-between',
 						alignItems: 'center',
+						marginBottom: '1rem',
 					}}
 					onClick={() => setShowMealSchedule(!showMealSchedule)}
 				>
 					<span>{t('profile.mealSchedule', locale) || 'Meal Schedule'}</span>
 					<span>{showMealSchedule ? '▲' : '▼'}</span>
 				</h2>
+
 				{showMealSchedule && (
-					<div style={{ marginTop: '1rem' }}>
-						<table style={{ width: '100%', borderCollapse: 'collapse' }}>
+					<div style={{ marginTop: '1rem', overflowX: 'auto' }}>
+						<div
+							style={{
+								fontSize: '0.9rem',
+								color: '#666',
+								marginBottom: '1rem',
+								fontStyle: 'italic',
+							}}
+						>
+							{t('profile.mealScheduleHint', locale) ||
+								'Sample meal plan - click cells to customize'}
+						</div>
+
+						<table
+							style={{
+								width: '100%',
+								borderCollapse: 'collapse',
+								fontSize: '0.85rem',
+								minWidth: '800px', // Ensures table doesn't get too small on mobile
+							}}
+						>
 							<thead>
-								<tr style={{ backgroundColor: '#ddd' }}>
-									<th>{t('profile.day', locale) || 'Day'}</th>
-									<th>{t('profile.breakfast', locale) || 'Breakfast'}</th>
-									<th>{t('profile.lunch', locale) || 'Lunch'}</th>
-									<th>{t('profile.dinner', locale) || 'Dinner'}</th>
+								<tr
+									style={{
+										backgroundColor: '#2c3e50',
+										color: 'white',
+									}}
+								>
+									<th
+										style={{
+											padding: '0.75rem',
+											textAlign: 'left',
+											fontWeight: 'bold',
+											border: '1px solid #34495e',
+										}}
+									>
+										Horario
+									</th>
+									{[
+										'Lunes',
+										'Martes',
+										'Miércoles',
+										'Jueves',
+										'Viernes',
+										'Sábado',
+										'Domingo',
+									].map((day) => (
+										<th
+											key={day}
+											style={{
+												padding: '0.75rem',
+												textAlign: 'center',
+												fontWeight: 'bold',
+												border: '1px solid #34495e',
+											}}
+										>
+											{day}
+										</th>
+									))}
 								</tr>
 							</thead>
 							<tbody>
-								{[
-									t('profile.monday', locale) || 'Monday',
-									t('profile.tuesday', locale) || 'Tuesday',
-									t('profile.wednesday', locale) || 'Wednesday',
-									t('profile.thursday', locale) || 'Thursday',
-									t('profile.friday', locale) || 'Friday',
-									t('profile.saturday', locale) || 'Saturday',
-									t('profile.sunday', locale) || 'Sunday',
-								].map((day) => (
-									<tr key={day} style={{ borderBottom: '1px solid #ccc' }}>
-										<td style={{ fontWeight: '600', padding: '0.5rem' }}>
-											{day}
-										</td>
-										<td
-											contentEditable
-											style={{
-												padding: '0.5rem',
-												backgroundColor: '#fff',
-												cursor: 'text',
-												minHeight: '2rem',
-											}}
-											data-day={day.toLowerCase()}
-											data-meal='breakfast'
-										></td>
-										<td
-											contentEditable
-											style={{
-												padding: '0.5rem',
-												backgroundColor: '#fff',
-												cursor: 'text',
-												minHeight: '2rem',
-											}}
-											data-day={day.toLowerCase()}
-											data-meal='lunch'
-										></td>
-										<td
-											contentEditable
-											style={{
-												padding: '0.5rem',
-												backgroundColor: '#fff',
-												cursor: 'text',
-												minHeight: '2rem',
-											}}
-											data-day={day.toLowerCase()}
-											data-meal='dinner'
-										></td>
-									</tr>
-								))}
+								{/* Morning Drink - 9:00 AM */}
+								<tr>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8f9fa',
+											fontWeight: 'bold',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										<div style={{ fontWeight: 'bold' }}>
+											9:00 Bebida matutina
+										</div>
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Jugo manzana ½ + zanahoria ½ + canela.{' '}
+										<strong>Caliente</strong>.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Jugo papaya + apio + jengibre. Caliente.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Jugo piña + pepino + cúrcuma.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+											fontStyle: 'italic',
+										}}
+									>
+										Repite lunes
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+											fontStyle: 'italic',
+										}}
+									>
+										Repite martes
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+											fontStyle: 'italic',
+										}}
+									>
+										Repite miércoles
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e8f5e9',
+											border: '1px solid #dee2e6',
+											fontStyle: 'italic',
+										}}
+									>
+										Repite lunes
+									</td>
+								</tr>
+
+								{/* Breakfast - 10:00 AM */}
+								<tr>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8f9fa',
+											fontWeight: 'bold',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										<div style={{ fontWeight: 'bold' }}>10:00 Desayuno</div>
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Avena 40 g + huevo 1 + panela 30 g. <strong>Café</strong>{' '}
+										caliente.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Omelette espinaca + avena 30 g. Café.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Huevos 2 + avena 30 g. Café.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Avena 40 g + panela 40 g.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Omelette pavo + avena 30 g.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Huevos con nopales + avena 30 g.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#fff3cd',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Avena + panela.
+									</td>
+								</tr>
+
+								{/* Mid-morning Snack - 12:00 PM */}
+								<tr>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8f9fa',
+											fontWeight: 'bold',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										<div style={{ fontWeight: 'bold' }}>12:00 Colación</div>
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Chocolate 15 g + té.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Gelatina + té.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Yogur + canela.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Chocolate 15 g.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Gelatina.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Yogur.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#d1ecf1',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Chocolate.
+									</td>
+								</tr>
+
+								{/* Lunch - 2:00 PM */}
+								<tr>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8f9fa',
+											fontWeight: 'bold',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										<div style={{ fontWeight: 'bold' }}>14:00 COMIDA</div>
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Cerdo 120 g + verduras + <strong>tortillas 1–2</strong> +
+										salsa.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Pollo 120 g + verduras + tortillas 2.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Bistec 120 g + nopales + tortillas 2.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Pescado 120 g + chayote + tortillas 2.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Pollo caldo + tortillas 2.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Carne molida + verduras + tortillas 2.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8d7da',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Pollo + verduras + tortillas 2.
+									</td>
+								</tr>
+
+								{/* Afternoon Snack - 5:30 PM */}
+								<tr>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8f9fa',
+											fontWeight: 'bold',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										<div style={{ fontWeight: 'bold' }}>17:30 Snack</div>
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Sabritas 25 g + té caliente.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Elote ½ pza + té.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Manzana ½ + té.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Sabritas 25 g.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Elote ½.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Manzana ½.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#e2e3e5',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Sabritas 25 g.
+									</td>
+								</tr>
+
+								{/* Dinner - 7:30 PM */}
+								<tr>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#f8f9fa',
+											fontWeight: 'bold',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										<div style={{ fontWeight: 'bold' }}>19:30 Cena</div>
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Crema verduras 1 tz. <strong>Té lavanda</strong>.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Caldo ligero 1½ tz. Té.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Sopa avena 30 g.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Crema chayote.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Caldo.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Crema.
+									</td>
+									<td
+										style={{
+											padding: '0.75rem',
+											backgroundColor: '#cce5ff',
+											border: '1px solid #dee2e6',
+										}}
+									>
+										Caldo.
+									</td>
+								</tr>
 							</tbody>
 						</table>
-						<div style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+
+						<div
+							style={{
+								marginTop: '1rem',
+								display: 'flex',
+								gap: '0.5rem',
+								flexWrap: 'wrap',
+							}}
+						>
 							<button
 								onClick={handleSaveMealSchedule}
 								style={{
@@ -1098,6 +1582,8 @@ const refreshProfileData = async () => {
 									padding: '0.5rem 1rem',
 									cursor: 'pointer',
 									fontWeight: '600',
+									flex: '1',
+									minWidth: '120px',
 								}}
 							>
 								{t('profile.saveSchedule', locale) || 'Save Schedule'}
@@ -1111,6 +1597,8 @@ const refreshProfileData = async () => {
 									borderRadius: '6px',
 									padding: '0.5rem 1rem',
 									cursor: 'pointer',
+									flex: '1',
+									minWidth: '120px',
 								}}
 							>
 								{t('profile.cancel', locale) || 'Cancel'}
@@ -1125,11 +1613,12 @@ const refreshProfileData = async () => {
 							}}
 						>
 							{t('profile.mealScheduleHint', locale) ||
-								'Click a meal cell to add your planned meal.'}
+								'Sample meal plan. Click Save to customize for your needs.'}
 						</small>
 					</div>
 				)}
 			</section>
+
 			{/* Pantry Section */}
 			<section
 				style={{

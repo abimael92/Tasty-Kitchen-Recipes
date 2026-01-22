@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import RecipeFilters from './RecipeFilters.jsx';
 import RecipeCard from './RecipeCard.jsx';
+import { t, getLocale } from '../utils/i18n.js';
 
 export default function RecipeList({ recipes, splitRegex }) {
 	const [filtered, setFiltered] = useState(recipes);
-	const [visibleCount, setVisibleCount] = useState(9); // Show first recipes
+	const [visibleCount, setVisibleCount] = useState(9);
 
 	const loadMore = () => {
 		setVisibleCount((prev) => prev + 3);
@@ -12,6 +13,9 @@ export default function RecipeList({ recipes, splitRegex }) {
 
 	const visibleRecipes = filtered.slice(0, visibleCount);
 	const hasMore = visibleRecipes.length < filtered.length;
+
+	// Get the current locale
+	const currentLocale = getLocale();
 
 	return (
 		<div>
@@ -30,7 +34,7 @@ export default function RecipeList({ recipes, splitRegex }) {
 			{hasMore && (
 				<div className='load-more-container'>
 					<button className='load-more-button' onClick={loadMore}>
-						Load More Recipes
+						{t('loadMoreRecipes')}
 					</button>
 				</div>
 			)}
