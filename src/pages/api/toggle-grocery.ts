@@ -1,9 +1,20 @@
 import type { APIRoute } from 'astro';
 import { serverSanityClient } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
-		const { userId, recipeId, items } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
+
+		const { recipeId, items } = await request.json();
+		const user = await requireSanityUserByUid(auth.uid);
+		if (!user) {
+			return new Response(JSON.stringify({ error: 'User not found' }), {
+				status: 404,
+			});
+		}
 
 		// Get existing grocery list - DON'T create new one if exists
 		let groceryList = await serverSanityClient.fetch(
@@ -12,14 +23,14 @@ export const POST: APIRoute = async ({ request }) => {
         items,
         recipes
       }`,
-			{ userId }
+			{ userId: user._id }
 		);
 
 		const recipeExists = groceryList?.recipes?.some((r) => r._ref === recipeId);
 
 		if (recipeExists) {
 			// Remove recipe
-			await client
+			await serverSanityClient
 				.patch(groceryList._id)
 				.set({
 					recipes: groceryList.recipes.filter((r) => r._ref !== recipeId),
@@ -31,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
 				// Only create if it doesn't exist
 				groceryList = await serverSanityClient.create({
 					_type: 'groceryList',
-					user: { _type: 'reference', _ref: userId },
+					user: { _type: 'reference', _ref: user._id },
 					items: [],
 					recipes: [],
 				});

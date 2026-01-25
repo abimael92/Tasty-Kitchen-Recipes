@@ -71,23 +71,9 @@ export default function UserProfile({ locale }) {
 			}
 
 			try {
-				const stored = localStorage.getItem('userData');
-				if (!stored) {
-					setError(t('auth.errors.noUserData', locale) || 'No user data found');
-					redirectTimeout = setTimeout(() => {
-						window.location.href = '/';
-					}, 1000);
-					return;
-				}
-
-				const parsed = JSON.parse(stored);
-				const { uid, token } = parsed;
-
-				const res = await fetch(`/api/get-user-profile?uid=${uid}`, {
-					headers: {
-						Authorization: `Bearer ${token}`,
-						'Content-Type': 'application/json',
-					},
+				const res = await fetch('/api/get-user-profile', {
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'same-origin',
 					signal: abortController.signal,
 				});
 
@@ -161,21 +147,12 @@ export default function UserProfile({ locale }) {
 
 		setRecipesLoading(true);
 		try {
-			const stored = localStorage.getItem('userData');
-			if (!stored) return;
-
-			const parsed = JSON.parse(stored);
-			const { token } = parsed;
-
-			// Fetch saved recipes from your API - use the user's Sanity _id
 			const res = await fetch(
 				`/api/get-saved-recipes?userId=${profileData._id}`,
 				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						'Content-Type': 'application/json',
-					},
-				},
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'same-origin',
+				}
 			);
 
 			if (res.ok) {
@@ -241,15 +218,13 @@ export default function UserProfile({ locale }) {
 	const handleSaveProfile = async () => {
 		setSaving(true);
 		try {
-			const stored = JSON.parse(localStorage.getItem('userData'));
 			const res = await fetch('/api/updateUserProfile', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${stored.token}`,
 				},
+				credentials: 'same-origin',
 				body: JSON.stringify({
-					uid: displayUser.uid,
 					...editForm,
 				}),
 			});
@@ -376,21 +351,9 @@ export default function UserProfile({ locale }) {
 	// Agrega esta función después de saveBMIResult
 const refreshProfileData = async () => {
 	try {
-		const stored = localStorage.getItem('userData');
-		if (!stored) {
-			console.log('No user data found in localStorage');
-			return;
-		}
-
-		const parsed = JSON.parse(stored);
-		const { uid, token } = parsed;
-
-
-		const res = await fetch(`/api/get-user-profile?uid=${uid}`, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				'Content-Type': 'application/json',
-			},
+		const res = await fetch('/api/get-user-profile', {
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
 		});
 
 		if (res.ok) {
@@ -406,25 +369,18 @@ const refreshProfileData = async () => {
 	}
 };
 
-	const saveBMIResult = async (result) => {
-		try {
-			const stored = JSON.parse(localStorage.getItem('userData'));
-			if (!stored || !stored.token) {
-				console.error('No token found');
-				return;
-			}
-
-			const response = await fetch('/api/save-bmi', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${stored.token}`,
-				},
-				body: JSON.stringify({
-					userId: displayUser._id,
-					bmiData: result,
-				}),
-			});
+const saveBMIResult = async (result) => {
+	try {
+		const response = await fetch('/api/save-bmi', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			credentials: 'same-origin',
+			body: JSON.stringify({
+				bmiData: result,
+			}),
+		});
 
 			const responseData = await response.json();
 

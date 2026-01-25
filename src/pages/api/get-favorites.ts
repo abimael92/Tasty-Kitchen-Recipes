@@ -1,16 +1,20 @@
-import { publicSanityClient } from '../../lib/sanity.js';
+import { serverSanityClient } from '../../lib/sanity.js';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export async function POST({ request }) {
-	const { userId } = await request.json();
-
-	if (!userId) {
-		return new Response(JSON.stringify({ error: 'Missing userId' }), {
-			status: 400,
-		});
-	}
+	const auth = await requireAuth(request);
+	if (!auth.ok) return auth.response;
 
 	try {
-		const collection = await publicSanityClient.fetch(
+		const user = await requireSanityUserByUid(auth.uid);
+		if (!user) {
+			return new Response(JSON.stringify({ error: 'User not found' }), {
+				status: 404,
+			});
+		}
+
+		const collection = await serverSanityClient.fetch(
 			`*[_type == "collection" && user._ref == $userId][0]{
         _id,
         title,
@@ -21,7 +25,7 @@ export async function POST({ request }) {
           slug
         }
       }`,
-			{ userId }
+			{ userId: user._id }
 		);
 
 		if (!collection) {

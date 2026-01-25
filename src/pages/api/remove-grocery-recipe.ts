@@ -1,9 +1,21 @@
 import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
-		const { userId, recipeId } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
+
+		const { recipeId } = await request.json();
+
+		const user = await requireSanityUserByUid(auth.uid);
+		if (!user) {
+			return new Response(JSON.stringify({ error: 'User not found' }), {
+				status: 404,
+			});
+		}
 
 		// Get grocery list for user
 		const groceryList = await client.fetch(
@@ -12,7 +24,7 @@ export const POST: APIRoute = async ({ request }) => {
         items,
         recipes
       }`,
-			{ userId }
+			{ userId: user._id }
 		);
 
 		if (!groceryList) {

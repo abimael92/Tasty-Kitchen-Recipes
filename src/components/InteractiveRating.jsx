@@ -14,9 +14,9 @@ export const InteractiveRating = ({ recipeId }) => {
 
 		async function fetchUserRating() {
 			try {
-				const res = await fetch(
-					`/api/get-user-rating?recipeId=${cleanId}&userId=${user._id}`
-				);
+				const res = await fetch(`/api/get-user-rating?recipeId=${cleanId}`, {
+					credentials: 'same-origin',
+				});
 				const data = await res.json();
 				if (data.rating != null) {
 					setRating(data.rating);
@@ -40,7 +40,8 @@ export const InteractiveRating = ({ recipeId }) => {
 			await fetch('/api/submit-rating', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ recipeId, rating: newRating, userId: user._id }),
+				credentials: 'same-origin',
+				body: JSON.stringify({ recipeId, rating: newRating }),
 			});
 		} catch (error) {
 			console.error('Failed to submit rating:', error);

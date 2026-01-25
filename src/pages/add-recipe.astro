@@ -1022,7 +1022,15 @@ const formLabels = {
 					const res = await fetch('/api/submit-recipe', {
 						method: 'POST',
 						body: formData,
+						credentials: 'same-origin',
 					});
+					if (res.status === 401) {
+						statusEl.textContent =
+							'❌ Please log in to submit a recipe.';
+						statusEl.setAttribute('data-status', 'error');
+						window.dispatchEvent(new Event('open-login'));
+						return;
+					}
 					const data = await res.json();
 
 					if (data.success) {

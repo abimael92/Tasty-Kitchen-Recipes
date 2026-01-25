@@ -424,7 +424,9 @@ export const GroceryListPage = ({ locale }) => {
 		}
 
 		try {
-			const res = await fetch(`/api/grocery-list?uid=${currentUser._id}`);
+			const res = await fetch(`/api/grocery-list?uid=${currentUser._id}`, {
+				credentials: 'same-origin',
+			});
 			if (!res.ok) throw new Error('Failed to fetch grocery list');
 
 			const data = await res.json();
@@ -446,8 +448,8 @@ export const GroceryListPage = ({ locale }) => {
 			const res = await fetch('/api/toggle-item', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
-					userId: currentUser._id,
 					itemKey,
 				}),
 			});
@@ -523,8 +525,8 @@ export const GroceryListPage = ({ locale }) => {
 			const res = await fetch('/api/add-grocery-item', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
-					userId: currentUser._id,
 					item: newItemObj,
 				}),
 			});
@@ -556,8 +558,8 @@ export const GroceryListPage = ({ locale }) => {
 			const res = await fetch('/api/delete-grocery-item', {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
-					userId: currentUser._id,
 					itemKey,
 				}),
 			});

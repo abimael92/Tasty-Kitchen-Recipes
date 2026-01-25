@@ -22,6 +22,7 @@
     "busboy": "^1.6.0",
     "eventsource": "^4.0.0",
     "firebase": "^11.10.0",
+    "firebase-admin": "^13.6.0",
     "formidable": "^3.5.4",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.555.0",

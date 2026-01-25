@@ -17,8 +17,6 @@ export const GET: APIRoute = async ({ url }) => {
 			);
 		}
 
-		console.log('🔍 Fetching comments for Sanity recipe ID:', recipeId);
-
 		// Only fetch 1 level deep initially
 		const query = `*[_type == "comment" && recipe._ref == $recipeId && !defined(parentComment)] | order(publishedAt desc){
       _id,
@@ -53,8 +51,6 @@ export const GET: APIRoute = async ({ url }) => {
     }`;
 
 		const comments = await serverSanityClient.fetch(query, { recipeId });
-		console.log('✅ Found comments:', comments?.length || 0);
-
 		return new Response(
 			JSON.stringify({
 				success: true,

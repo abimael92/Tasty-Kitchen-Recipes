@@ -21,5 +21,4 @@ export const GET: APIRoute = async ({ request }) => {
 export function broadcastToRecipe(recipeId: string, data: any) {
 	const message = `data: ${JSON.stringify(data)}\n\n`;
 	// In a real implementation, you'd send to all connected clients for this recipe
-	console.log(`Broadcasting to recipe ${recipeId}:`, data);
 }

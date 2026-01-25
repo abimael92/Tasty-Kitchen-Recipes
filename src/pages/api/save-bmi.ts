@@ -1,20 +1,15 @@
 import { serverSanityClient } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export const POST = async ({ request }) => {
 	try {
-		const authHeader = request.headers.get('Authorization');
-		if (!authHeader?.startsWith('Bearer ')) {
-			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-				status: 401,
-				headers: { 'Content-Type': 'application/json' },
-			});
-		}
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		const { userId, bmiData } = await request.json();
+		const { bmiData } = await request.json();
 
-		// Buscar usuario actual
-		const userQuery = `*[_type == "user" && _id == $userId][0]`;
-		const currentUser = await serverSanityClient.fetch(userQuery, { userId });
+		const currentUser = await requireSanityUserByUid(auth.uid);
 
 		if (!currentUser) {
 			return new Response(JSON.stringify({ error: 'User not found' }), {
@@ -38,7 +33,7 @@ export const POST = async ({ request }) => {
 
 		// **CORRECCIÓN IMPORTANTE**: Usar patch con inc para actualizar solo los campos necesarios
 		await serverSanityClient
-			.patch(userId)
+			.patch(currentUser._id)
 			.setIfMissing({ bmiHistory: [] })
 			.insert('after', 'bmiHistory[-1]', [newBMIEntry])
 			.set({
@@ -48,7 +43,10 @@ export const POST = async ({ request }) => {
 			.commit();
 
 		// **ACTUALIZACIÓN**: Obtener el usuario actualizado para devolver todos los datos
-		const updatedUser = await serverSanityClient.fetch(userQuery, { userId });
+		const userQuery = `*[_type == "user" && _id == $userId][0]`;
+		const updatedUser = await serverSanityClient.fetch(userQuery, {
+			userId: currentUser._id,
+		});
 
 		return new Response(
 			JSON.stringify({

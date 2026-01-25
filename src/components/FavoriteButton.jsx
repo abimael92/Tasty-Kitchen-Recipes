@@ -15,7 +15,8 @@ export default function FavoriteButton({ recipeId }) {
 				const res = await fetch('/api/get-favorites', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ userId: user._id }),
+					credentials: 'same-origin',
+					body: JSON.stringify({}),
 				});
 				const data = await res.json();
 
@@ -38,7 +39,8 @@ export default function FavoriteButton({ recipeId }) {
 			await fetch('/api/toggle-favorite', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ userId: user._id, recipeId }),
+				credentials: 'same-origin',
+				body: JSON.stringify({ recipeId }),
 			});
 
 			setIsFavorite((prev) => !prev); // Flip visual after success

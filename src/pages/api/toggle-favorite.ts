@@ -1,20 +1,32 @@
 import { nanoid } from 'nanoid';
 import { serverSanityClient } from '../../lib/sanity.js';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export async function POST({ request }) {
-	const { userId, recipeId } = await request.json();
+	const auth = await requireAuth(request);
+	if (!auth.ok) return auth.response;
 
-	if (!userId || !recipeId) {
+	const { recipeId } = await request.json();
+
+	if (!recipeId) {
 		return new Response(
-			JSON.stringify({ error: 'Missing userId or recipeId' }),
+			JSON.stringify({ error: 'Missing recipeId' }),
 			{ status: 400 }
 		);
 	}
 
 	try {
+		const user = await requireSanityUserByUid(auth.uid);
+		if (!user) {
+			return new Response(JSON.stringify({ error: 'User not found' }), {
+				status: 404,
+			});
+		}
+
 		const existingCollection = await serverSanityClient.fetch(
 			`*[_type == "collection" && user._ref == $userId][0]{ _id, recipes[] }`,
-			{ userId }
+			{ userId: user._id }
 		);
 
 		let updatedRecipes = existingCollection?.recipes || [];
@@ -38,16 +50,12 @@ export async function POST({ request }) {
 				.set({ recipes: updatedRecipes })
 				.commit();
 		} else {
-			const user = await serverSanityClient.fetch(
-				`*[_type == "user" && _id == $userId][0]{ name }`,
-				{ userId }
-			);
 			const userName = user?.name || 'User';
 
 			await serverSanityClient.create({
 				_type: 'collection',
 				title: `${userName}'s Favorites List`,
-				user: { _type: 'reference', _ref: userId },
+				user: { _type: 'reference', _ref: user._id },
 				recipes: [
 					{
 						_type: 'reference',

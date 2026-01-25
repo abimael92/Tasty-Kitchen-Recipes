@@ -3,15 +3,23 @@ import type { APIRoute } from 'astro';
 import { contentModerator } from '../../utils/contentModeration';
 import { serverSanityClient as client } from '../../lib/sanity';
 import { broadcastToRecipeClients } from './comments-stream';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { RateLimiter } from '../../utils/rateLimiter';
+
+const rateLimiter = new RateLimiter();
+const MAX_ATTEMPTS = 10;
+const WINDOW_MS = 60 * 1000;
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
-		const { content, recipeId, parentCommentId, userId } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		console.log('Received comment submission:', { content, recipeId, userId });
+		const { content, recipeId, parentCommentId } = await request.json();
 
 		// Basic validation
-		if (!content || !recipeId || !userId) {
+		if (!content || !recipeId) {
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -33,19 +41,16 @@ export const POST: APIRoute = async ({ request }) => {
 			);
 		}
 
-		// VERIFY USER EXISTS IN SANITY
-		const userQuery = `*[_type == "user" && uid == $userId][0]{
-			_id,
-			name,
-			lastname,
-			email,
-			image
-		}`;
+		if (rateLimiter.isRateLimited(auth.uid, 'submit-comment', MAX_ATTEMPTS, WINDOW_MS)) {
+			return new Response(
+				JSON.stringify({ success: false, error: 'Too many requests' }),
+				{ status: 429 }
+			);
+		}
 
-		const sanityUser = await client.fetch(userQuery, { userId });
+		const sanityUser = await requireSanityUserByUid(auth.uid);
 
 		if (!sanityUser) {
-			console.error('User not found in Sanity:', userId);
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -54,8 +59,6 @@ export const POST: APIRoute = async ({ request }) => {
 				{ status: 404 }
 			);
 		}
-
-		console.log('Found user in Sanity:', sanityUser._id);
 
 		// Check profanity for auto-moderation
 		const profanityCheck = contentModerator.checkForProfanity(content);
@@ -75,9 +78,7 @@ export const POST: APIRoute = async ({ request }) => {
 			}),
 		};
 
-		console.log('Creating comment in Sanity:', commentData);
 		const result = await client.create(commentData);
-		console.log('Comment created successfully:', result._id);
 
 		// Prepare comment for real-time broadcast
 		const broadcastComment = {
@@ -97,7 +98,6 @@ export const POST: APIRoute = async ({ request }) => {
 
 		// Broadcast real-time update for approved comments
 		if (!requiresModeration) {
-			console.log('Broadcasting comment to clients...');
 			broadcastToRecipeClients(recipeId, {
 				type: 'NEW_COMMENT',
 				comment: broadcastComment,

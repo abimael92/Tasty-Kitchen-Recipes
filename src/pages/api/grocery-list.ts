@@ -1,18 +1,25 @@
 import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
-export const GET: APIRoute = async ({ request }) => {
-	const url = new URL(request.url);
-	const userId = url.searchParams.get('uid');
+export const GET: APIRoute = async ({ request, url }) => {
+	const auth = await requireAuth(request);
+	if (!auth.ok) return auth.response;
 
-	if (!userId) {
-		// console.log('No userId provided');
-		return new Response(JSON.stringify([]), { status: 400 });
+	const user = await requireSanityUserByUid(auth.uid);
+	if (!user) {
+		return new Response(JSON.stringify([]), { status: 404 });
+	}
+
+	const userIdParam = url.searchParams.get('uid');
+	if (userIdParam && userIdParam !== user._id) {
+		return new Response(JSON.stringify([]), { status: 403 });
 	}
 
 	const result = await client.fetch(
 		`*[_type == "groceryList" && user._ref == $userId][0]{ items }`,
-		{ userId }
+		{ userId: user._id }
 	);
 
 	return new Response(JSON.stringify(result?.items || []), {

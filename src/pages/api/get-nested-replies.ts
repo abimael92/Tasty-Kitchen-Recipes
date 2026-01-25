@@ -16,8 +16,6 @@ export const GET: APIRoute = async ({ url }) => {
 			);
 		}
 
-		console.log('🔍 Fetching nested replies for comment:', parentCommentId);
-
 		// Fetch nested replies for a specific comment
 		const query = `*[_type == "comment" && parentComment._ref == $parentCommentId] | order(publishedAt asc){
       _id,
@@ -39,10 +37,6 @@ export const GET: APIRoute = async ({ url }) => {
 		const nestedReplies = await publicSanityClient.fetch(query, {
 			parentCommentId,
 		});
-		console.log(
-			`✅ Found ${nestedReplies.length} nested replies for ${parentCommentId}`
-		);
-
 		return new Response(
 			JSON.stringify({
 				success: true,

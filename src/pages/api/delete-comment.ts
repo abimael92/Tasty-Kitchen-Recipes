@@ -1,12 +1,16 @@
 // src/pages/api/delete-comment.ts
 import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
 
 export const DELETE: APIRoute = async ({ request }) => {
 	try {
-		const { commentId, userId } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		if (!commentId || !userId) {
+		const { commentId } = await request.json();
+
+		if (!commentId) {
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -15,8 +19,6 @@ export const DELETE: APIRoute = async ({ request }) => {
 				{ status: 400 }
 			);
 		}
-
-		console.log('🔍 Deleting comment:', { commentId, userId });
 
 		// Fetch the comment with author's uid field
 		const query = `*[_type == "comment" && _id == $commentId][0]{
@@ -40,11 +42,7 @@ export const DELETE: APIRoute = async ({ request }) => {
 		}
 
 		// Check if user is authorized to delete - compare with uid field
-		if (!comment.author || comment.author.uid !== userId) {
-			console.log('❌ Authorization failed:', {
-				commentAuthorUid: comment.author?.uid,
-				requestUserId: userId,
-			});
+		if (!comment.author || comment.author.uid !== auth.uid) {
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -56,8 +54,6 @@ export const DELETE: APIRoute = async ({ request }) => {
 
 		// Delete the comment
 		await client.delete(commentId);
-		console.log('✅ Comment deleted successfully');
-
 		return new Response(
 			JSON.stringify({
 				success: true,
@@ -66,7 +62,7 @@ export const DELETE: APIRoute = async ({ request }) => {
 			{ status: 200 }
 		);
 	} catch (error) {
-		console.error('❌ Error deleting comment:', error);
+		console.error('Error deleting comment:', error);
 		return new Response(
 			JSON.stringify({
 				success: false,
