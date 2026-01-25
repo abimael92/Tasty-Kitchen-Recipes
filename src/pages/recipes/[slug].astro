@@ -7,7 +7,7 @@ import { publicSanityClient as sanityClient } from '../../lib/sanity.js';
 import { t } from '../../utils/i18n.js';
 
 import AuthorMeta from '../../components/AuthorMeta.astro';
-import RecipeRatingDisplay from '../../components/RecipeRatingDisplay';
+import RecipeRatingDisplay from '../../features/ratings/components/RecipeRatingDisplay.jsx';
 import NutritionInfo from '../../components/NutritionInfo.astro';
 import RecipeChecklist from '../../components/RecipeChecklist.astro';
 import RecipeTags from '../../components/RecipeTags.astro';
@@ -15,11 +15,11 @@ import AuthFavoriteWrapper from '../../features/favorites/components/AuthFavorit
 import AuthSaveRecipeWrapper from '../../components/AuthSaveRecipeWrapper';
 import AICookingTips from '../../components/AICookingTips.astro';
 
-import AuthRatingWrapper from '../../components/AuthRatingWrapper.jsx';
+import AuthRatingWrapper from '../../features/ratings/components/AuthRatingWrapper.jsx';
 import CommentsSectionWrapper from '../../features/comments/components/CommentsSectionWrapper.jsx';
 
 import { SimpleRating } from '../../components/SimpleRating.jsx';
-import AuthGroceryWrapper from '../../components/AuthGroceryWrapper';
+import AuthGroceryWrapper from '../../features/grocery/components/AuthGroceryWrapper.jsx';
 
 const { slug, currentLocale } = Astro.params;
 
