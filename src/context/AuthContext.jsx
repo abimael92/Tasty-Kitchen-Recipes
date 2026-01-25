@@ -12,45 +12,46 @@ export function AuthProvider({ children, locale }) {
 	}, [locale]);
 
 	useEffect(() => {
-		async function loadUser() {
-			const stored = localStorage.getItem('userData');
-			if (!stored) {
-				setLoading(false);
-				return;
-			}
-
+		const loadUser = async () => {
 			try {
-				const parsed = JSON.parse(stored);
-				if (!parsed.uid || !parsed.token) {
-					localStorage.removeItem('userData');
-					setLoading(false);
-					return;
-				}
-
-				const res = await fetch(`/api/get-user-profile?uid=${parsed.uid}`, {
-					headers: { Authorization: `Bearer ${parsed.token}` },
+				const res = await fetch('/api/get-user-profile', {
+					credentials: 'same-origin',
 				});
 
 				if (!res.ok) {
-					localStorage.removeItem('userData');
-					setLoading(false);
+					setUser(null);
 					return;
 				}
 
 				const fullUser = await res.json();
-				fullUser.token = parsed.token;
 				setUser(fullUser);
 			} catch {
-				localStorage.removeItem('userData');
+				setUser(null);
 			} finally {
 				setLoading(false);
 			}
-		}
+		};
+
 		loadUser();
 	}, []);
 
+	const login = (userData) => {
+		setUser(userData);
+	};
+
+	const logout = async () => {
+		try {
+			await fetch('/api/logout', {
+				method: 'POST',
+				credentials: 'same-origin',
+			});
+		} finally {
+			setUser(null);
+		}
+	};
+
 	return (
-		<AuthContext.Provider value={{ user, loading }}>
+		<AuthContext.Provider value={{ user, loading, login, logout }}>
 			{children}
 		</AuthContext.Provider>
 	);

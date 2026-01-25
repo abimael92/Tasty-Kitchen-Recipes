@@ -1,33 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import LoginModal from './LoginModal';
 import { t } from '../utils/i18n';
+import { useAuth } from '../context/AuthContext.jsx';
 
 export default function LoginWrapper({ locale }) {
+	const { user, login, logout: logoutFromContext } = useAuth();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [isRegistering, setIsRegistering] = useState(false);
-	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
-
-	useEffect(() => {
-		async function loadUser() {
-			const userData = localStorage.getItem('userData');
-			if (userData) {
-				try {
-					const parsed = JSON.parse(userData);
-					const fullUser = await fetchUserProfile(parsed.uid, parsed.token);
-					setUser(fullUser);
-					setIsLoggedIn(true);
-				} catch (err) {
-					console.error(err);
-					logout();
-				}
-			}
-		}
-		loadUser();
-	}, []);
 
 	useEffect(() => {
 		const open = () => setIsModalOpen(true);
@@ -45,18 +27,14 @@ export default function LoginWrapper({ locale }) {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
 				},
+				credentials: 'same-origin',
 				body: JSON.stringify({ email, password }),
 			});
 			const data = await response.json();
 			if (!response.ok)
 				throw new Error(data.error || t('auth.errors.loginFailed', locale));
-			localStorage.setItem(
-				'userData',
-				JSON.stringify({ uid: data.uid, email: data.email, token: data.token })
-			);
-			const fullUser = await fetchUserProfile(data.uid, data.token);
-			setUser(fullUser);
-			setIsLoggedIn(true);
+			const fullUser = await fetchUserProfile();
+			login(fullUser);
 			setIsModalOpen(false);
 		} catch (err) {
 			console.error('Login error:', err);
@@ -76,6 +54,7 @@ export default function LoginWrapper({ locale }) {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
 				},
+				credentials: 'same-origin',
 				body: JSON.stringify(userData),
 			});
 			const data = await response.json();
@@ -94,18 +73,16 @@ export default function LoginWrapper({ locale }) {
 	};
 
 	const logout = () => {
-		localStorage.removeItem('userData');
-		setUser(null);
-		setIsLoggedIn(false);
+		logoutFromContext();
 		setLoading(false);
 		setError('');
 		setIsDropdownOpen(false);
 	};
 
-	async function fetchUserProfile(uid, token) {
+	async function fetchUserProfile() {
 		try {
-			const res = await fetch(`/api/get-user-profile?uid=${uid}`, {
-				headers: { Authorization: `Bearer ${token}` },
+			const res = await fetch('/api/get-user-profile', {
+				credentials: 'same-origin',
 			});
 			if (!res.ok) throw new Error(t('auth.errors.profileFetchFailed', locale));
 			return await res.json();
@@ -135,7 +112,7 @@ export default function LoginWrapper({ locale }) {
 
 	return (
 		<>
-			{isLoggedIn ? (
+			{user ? (
 				<div
 					id='userDropdown'
 					style={{ position: 'relative', display: 'inline-block' }}

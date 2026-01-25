@@ -18,11 +18,12 @@ export default function FavoritesFetcher({ locale = 'es' }) {
 				setError(null);
 
 				try {
-					const res = await fetch('/api/get-favorites', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ userId: user._id }),
-					});
+				const res = await fetch('/api/get-favorites', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					credentials: 'same-origin',
+					body: JSON.stringify({}),
+				});
 
 					if (!res.ok) {
 						throw new Error(`Failed to fetch: ${res.status}`);

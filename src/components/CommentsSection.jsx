@@ -143,9 +143,9 @@ export default function CommentsSection({ recipeId }) {
 			const response = await fetch('/api/edit-comment', {
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
 					commentId: commentId,
-					userId: user._id,
 					content: editContent.trim(),
 				}),
 			});
@@ -182,9 +182,9 @@ export default function CommentsSection({ recipeId }) {
 			const response = await fetch('/api/delete-comment', {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
 					commentId: comment._id,
-					userId: user._id,
 				}),
 			});
 
@@ -308,11 +308,11 @@ export default function CommentsSection({ recipeId }) {
 			const response = await fetch('/api/submit-comment', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
 					content: newComment,
 					recipeId,
 					parentCommentId: replyingTo,
-					userId: user._id,
 				}),
 			});
 

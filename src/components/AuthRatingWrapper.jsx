@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthProvider, useAuth } from '../context/AuthContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 import { InteractiveRating } from './InteractiveRating.jsx';
 
 function InnerRating({ recipeId }) {
@@ -47,10 +47,6 @@ function InnerRating({ recipeId }) {
 }
 
 export default function AuthRatingWrapper({ recipeId }) {
-	return (
-		<AuthProvider>
-			<InnerRating recipeId={recipeId} />
-		</AuthProvider>
-	);
+	return <InnerRating recipeId={recipeId} />;
 }
 

@@ -19,7 +19,8 @@ export default function GroceryListToggleButton({
 				const res = await fetch('/api/check-grocery', {
 					method: 'POST',
 					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ userId: user._id, recipeId }),
+					credentials: 'same-origin',
+					body: JSON.stringify({ recipeId }),
 				});
 				const data = await res.json();
 				if (data?.success && Array.isArray(data?.recipes)) {
@@ -76,8 +77,8 @@ export default function GroceryListToggleButton({
 			const res = await fetch('/api/toggle-grocery', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
 				body: JSON.stringify({
-					userId: user._id,
 					recipeId,
 					items: parsedItems, // Empty array when removing
 				}),
