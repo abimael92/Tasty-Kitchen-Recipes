@@ -1,22 +1,24 @@
 import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
-		const { items, recipeId, userId } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		if (!items || !Array.isArray(items) || !recipeId || !userId) {
+		const { items, recipeId } = await request.json();
+
+		if (!items || !Array.isArray(items) || !recipeId) {
 			return new Response(JSON.stringify({ error: 'Invalid input' }), {
 				status: 400,
 			});
 		}
 
-		const userExists = await client.fetch(
-			`count(*[_type == "user" && _id == $userId])`,
-			{ userId }
-		);
+		const user = await requireSanityUserByUid(auth.uid);
 
-		if (!userExists) {
+		if (!user) {
 			return new Response(JSON.stringify({ error: 'User not found' }), {
 				status: 404,
 			});
@@ -24,13 +26,13 @@ export const POST: APIRoute = async ({ request }) => {
 
 		let groceryList = await client.fetch(
 			`*[_type == "groceryList" && user._ref == $userId][0]{ _id, items, recipes }`,
-			{ userId }
+			{ userId: user._id }
 		);
 
 		if (!groceryList) {
 			groceryList = await client.create({
 				_type: 'groceryList',
-				user: { _type: 'reference', _ref: userId },
+				user: { _type: 'reference', _ref: user._id },
 				items: [],
 				recipes: [],
 			});

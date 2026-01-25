@@ -1,58 +1,23 @@
 import type { APIRoute } from 'astro';
-import { createClient } from '@sanity/client';
-
-const sanity = createClient({
-	projectId: import.meta.env.SANITY_PROJECT_ID,
-	dataset: import.meta.env.SANITY_DATASET || 'production',
-	apiVersion: import.meta.env.SANITY_API_VERSION || '2023-07-01',
-	token: import.meta.env.SANITY_API_TOKEN,
-	useCdn: false,
-});
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { fetchSanityUserByUid } from '../../shared/services/sanity/users';
 
 export const GET: APIRoute = async ({ request }) => {
 	try {
-		// Get token from Authorization header
-		const authHeader = request.headers.get('Authorization');
-		if (!authHeader || !authHeader.startsWith('Bearer ')) {
-			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-				status: 401,
-				headers: { 'Content-Type': 'application/json' },
-			});
-		}
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		// Get UID from query params
 		const url = new URL(request.url);
-		const uid = url.searchParams.get('uid');
+		const uidParam = url.searchParams.get('uid');
 
-		if (!uid) {
-			return new Response(JSON.stringify({ error: 'UID is required' }), {
-				status: 400,
+		if (uidParam && uidParam !== auth.uid) {
+			return new Response(JSON.stringify({ error: 'Forbidden' }), {
+				status: 403,
 				headers: { 'Content-Type': 'application/json' },
 			});
 		}
 
-		const query = `*[_type == "user" && uid == $uid][0]{
-      _id,
-      uid,
-      name,
-      lastname,
-      email,
-      role,
-      bio,
-      location,
-      phone,
-      dietPreference,
-      allergies,
-      preferredCuisine,
-      profileImage,
-      joinedAt,
-      bmiHistory,
-      latestBMI,
-      bmiCategory,
-      healthGoals
-    }`;
-
-		const user = await sanity.fetch(query, { uid });
+		const user = await fetchSanityUserByUid(auth.uid);
 
 		if (!user) {
 			return new Response(JSON.stringify({ error: 'User not found' }), {
@@ -68,8 +33,6 @@ export const GET: APIRoute = async ({ request }) => {
 			bmiCategory: user.bmiCategory || null,
 			healthGoals: user.healthGoals || [],
 		};
-
-		console.log('User con defaults:', userWithDefaults); // Para debug
 
 		return new Response(JSON.stringify(userWithDefaults), {
 			status: 200,

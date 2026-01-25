@@ -1,26 +1,36 @@
 // pages/api/unsave-recipe.js
 import { serverSanityClient } from '../../lib/sanity';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
+import { requireSanityUserByUid } from '../../shared/services/sanity/users';
 
 export const POST = async ({ request }) => {
 	try {
-		const { userId, recipeId } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		if (!userId || !recipeId) {
+		const { recipeId } = await request.json();
+
+		if (!recipeId) {
 			return new Response(
-				JSON.stringify({ error: 'Missing userId or recipeId' }),
+				JSON.stringify({ error: 'Missing recipeId' }),
 				{ status: 400 }
 			);
 		}
 
-		console.log('🗑️ Un-saving recipe:', { userId, recipeId });
+		const user = await requireSanityUserByUid(auth.uid);
+		if (!user) {
+			return new Response(JSON.stringify({ error: 'User not found' }), {
+				status: 404,
+			});
+		}
 
 		// 1. Find the user's savedRecipe document
-		const savedDoc = await sanityClient.fetch(
+		const savedDoc = await serverSanityClient.fetch(
 			`*[_type == "savedRecipe" && user._ref == $userId][0]{
         _id,
         recipes
       }`,
-			{ userId }
+			{ userId: user._id }
 		);
 
 		if (!savedDoc) {
@@ -31,13 +41,11 @@ export const POST = async ({ request }) => {
 		}
 
 		// 2. Remove the specific recipe from the array
-		await sanityClient
+		await serverSanityClient
 			.patch(savedDoc._id)
 			.unset([`recipes[recipe._ref == "${recipeId}"]`])
 			.set({ lastUpdated: new Date().toISOString() })
 			.commit();
-
-		console.log('✅ Recipe removed from saved recipes array');
 
 		return new Response(
 			JSON.stringify({
@@ -47,7 +55,7 @@ export const POST = async ({ request }) => {
 			{ status: 200 }
 		);
 	} catch (error) {
-		console.error('❌ Error unsaving recipe:', error);
+		console.error('Error unsaving recipe:', error);
 		return new Response(
 			JSON.stringify({
 				error: error.message || 'Failed to unsave recipe',

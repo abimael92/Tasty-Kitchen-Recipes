@@ -2,12 +2,16 @@
 import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
 import { contentModerator } from '../../utils/contentModeration';
+import { requireAuth } from '../../shared/services/auth/requireAuth';
 
 export const PUT: APIRoute = async ({ request }) => {
 	try {
-		const { commentId, userId, content } = await request.json();
+		const auth = await requireAuth(request);
+		if (!auth.ok) return auth.response;
 
-		if (!commentId || !userId || !content) {
+		const { commentId, content } = await request.json();
+
+		if (!commentId || !content) {
 			return new Response(
 				JSON.stringify({
 					success: false,
@@ -52,11 +56,7 @@ export const PUT: APIRoute = async ({ request }) => {
 		}
 
 		// Check authorization using uid field
-		if (!comment.author || comment.author.uid !== userId) {
-			console.log('❌ Authorization failed:', {
-				commentAuthorUid: comment.author?.uid,
-				requestUserId: userId,
-			});
+		if (!comment.author || comment.author.uid !== auth.uid) {
 			return new Response(
 				JSON.stringify({
 					success: false,

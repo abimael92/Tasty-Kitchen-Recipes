@@ -22,8 +22,6 @@ export const GET: APIRoute = async ({ request, url }) => {
 			const clientId = Math.random().toString(36).substring(2, 11);
 			clients.set(clientId, { controller, recipeId });
 
-			console.log(`Client ${clientId} connected to recipe ${recipeId}`);
-
 			// Send initial connection message
 			const encoder = new TextEncoder();
 			controller.enqueue(
@@ -38,14 +36,12 @@ export const GET: APIRoute = async ({ request, url }) => {
 
 			// Cleanup on client disconnect
 			request.signal.addEventListener('abort', () => {
-				console.log(`Client ${clientId} disconnected`);
 				clients.delete(clientId);
 			});
 		},
 
 		cancel() {
 			// Cleanup when stream is cancelled
-			console.log('Stream cancelled');
 		},
 	});
 
@@ -74,14 +70,9 @@ export function broadcastToRecipeClients(recipeId: string, data: any) {
 				client.controller.enqueue(encodedMessage);
 				connectedClients++;
 			} catch (error) {
-				console.log(`Client ${clientId} disconnected, removing...`);
 				// Remove disconnected client
 				clients.delete(clientId);
 			}
 		}
 	});
-
-	console.log(
-		`Broadcasted to ${connectedClients} clients for recipe ${recipeId}`
-	);
 }
