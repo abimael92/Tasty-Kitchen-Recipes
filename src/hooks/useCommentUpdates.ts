@@ -1,1 +1,1 @@
-export * from '../shared/hooks/useCommentUpdates';
+export * from '../features/comments/hooks/useCommentUpdates';
