@@ -1,15 +1,13 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { createClient } from '@sanity/client';
 import { firebaseConfig } from '../../lib/firebase';
+import { serverSanityClient } from '../../lib/sanity';
+import { RateLimiter } from '../../utils/rateLimiter';
+import { buildSessionCookie } from '../../shared/services/auth/sessionCookie';
 
-const sanity = createClient({
-	projectId: import.meta.env.SANITY_PROJECT_ID,
-	dataset: import.meta.env.SANITY_DATASET,
-	apiVersion: import.meta.env.SANITY_API_VERSION,
-	token: import.meta.env.SANITY_API_TOKEN,
-	useCdn: false,
-});
+const rateLimiter = new RateLimiter();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 10 * 60 * 1000;
 
 async function syncUserToSanity(firebaseUser) {
 	const docId = `user_${firebaseUser.uid}`;
@@ -20,7 +18,7 @@ async function syncUserToSanity(firebaseUser) {
 		email: firebaseUser.email,
 		name: firebaseUser.displayName || '',
 	};
-	await sanity.createOrReplace(userDoc);
+	await serverSanityClient.createOrReplace(userDoc);
 }
 
 export const POST = async ({ request }) => {
@@ -35,6 +33,13 @@ export const POST = async ({ request }) => {
 	}
 
 	try {
+		const rateKey = request.headers.get('x-forwarded-for') || 'anonymous';
+		if (rateLimiter.isRateLimited(rateKey, 'login', MAX_ATTEMPTS, WINDOW_MS)) {
+			return new Response(JSON.stringify({ error: 'Too many attempts' }), {
+				status: 429,
+			});
+		}
+
 		const auth = getAuth();
 		const userCredential = await signInWithEmailAndPassword(
 			auth,
@@ -52,7 +57,13 @@ export const POST = async ({ request }) => {
 				email: userCredential.user.email,
 				token,
 			}),
-			{ status: 200 }
+			{
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Set-Cookie': buildSessionCookie(token),
+				},
+			}
 		);
 	} catch (error) {
 		return new Response(JSON.stringify({ error: error.message }), {

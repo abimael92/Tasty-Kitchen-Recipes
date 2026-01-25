@@ -5,27 +5,16 @@ import {
 	createUserWithEmailAndPassword,
 	updateProfile,
 } from 'firebase/auth';
-import { createClient } from '@sanity/client';
-
-const firebaseConfig = {
-	apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-	authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-	projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-	storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-	messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-	appId: import.meta.env.VITE_FIREBASE_APP_ID,
-	measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
-};
-
-const sanity = createClient({
-	projectId: import.meta.env.SANITY_PROJECT_ID,
-	dataset: 'production',
-	apiVersion: '2023-07-01',
-	token: import.meta.env.SANITY_API_TOKEN,
-	useCdn: false,
-});
+import { firebaseConfig } from '../../lib/firebase';
+import { serverSanityClient } from '../../lib/sanity';
+import { RateLimiter } from '../../utils/rateLimiter';
+import { buildSessionCookie } from '../../shared/services/auth/sessionCookie';
 
 export const config = { runtime: 'nodejs' };
+
+const rateLimiter = new RateLimiter();
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 10 * 60 * 1000;
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
@@ -51,6 +40,13 @@ export const POST: APIRoute = async ({ request }) => {
 			throw new Error('Missing required registration fields');
 		}
 
+		const rateKey = request.headers.get('x-forwarded-for') || 'anonymous';
+		if (rateLimiter.isRateLimited(rateKey, 'register', MAX_ATTEMPTS, WINDOW_MS)) {
+			return new Response(JSON.stringify({ error: 'Too many attempts' }), {
+				status: 429,
+			});
+		}
+
 		const userCred = await createUserWithEmailAndPassword(
 			auth,
 			email,
@@ -60,7 +56,7 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const uid = userCred.user.uid;
 
-		await sanity.create({
+		await serverSanityClient.create({
 			_type: 'user',
 			uid,
 			name,
@@ -86,7 +82,13 @@ export const POST: APIRoute = async ({ request }) => {
 				role,
 				token,
 			}),
-			{ status: 200 }
+			{
+				status: 200,
+				headers: {
+					'Content-Type': 'application/json',
+					'Set-Cookie': buildSessionCookie(token),
+				},
+			}
 		);
 	} catch (err) {
 		return new Response(
