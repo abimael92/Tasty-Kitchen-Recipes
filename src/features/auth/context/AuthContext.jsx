@@ -1,7 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { setLocale } from '../../../shared/utils/i18n';
 
-const AuthContext = createContext();
+const AuthContext = createContext({
+	user: null,
+	loading: true,
+	login: () => {},
+	logout: async () => {},
+});
 
 export function AuthProvider({ children, locale }) {
 	const [user, setUser] = useState(null);
@@ -58,5 +63,15 @@ export function AuthProvider({ children, locale }) {
 }
 
 export function useAuth() {
-	return useContext(AuthContext);
+	const context = useContext(AuthContext);
+	if (!context) {
+		// Fallback if context is undefined (shouldn't happen, but safety check)
+		return {
+			user: null,
+			loading: true,
+			login: () => {},
+			logout: async () => {},
+		};
+	}
+	return context;
 }
