@@ -75,8 +75,7 @@ setLocale(currentLocale);
 						loading='lazy'
 						width='800'
 						height='900'
-						onload="console.log('🖼️ Hero image loaded successfully')"
-						onerror="console.error('❌ Hero image failed to load')"
+						data-hero-image='true'
 					/>
 				</div>
 
@@ -696,6 +695,17 @@ setLocale(currentLocale);
 
 		// Lazy loading for images
 		const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+		const heroImage = document.querySelector('img[data-hero-image="true"]');
+		
+		if (heroImage) {
+			heroImage.addEventListener('load', () => {
+				console.log('🖼️ Hero image loaded successfully');
+			});
+			heroImage.addEventListener('error', () => {
+				console.error('❌ Hero image failed to load');
+			});
+		}
+		
 		lazyImages.forEach((img) => {
 			img.addEventListener('load', () => {
 				console.log(`Image loaded: ${img.alt || 'No alt text'}`);

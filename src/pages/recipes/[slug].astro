@@ -61,18 +61,26 @@ try {
 
 	recipe = localRecipe?.data || sanityRecipe || null;
 
-	if (!recipe) {
-		console.error('Section: Recipe not found in any source');
-		throw new Error('Recipe not found');
+	// Ensure recipe has required fields with fallbacks
+	if (recipe) {
+		// Add _id if missing (for local recipes)
+		if (!recipe._id && localRecipe) {
+			recipe._id = localRecipe.id || slug;
+		}
+		// Ensure required fields exist
+		recipe.title = recipe.title || 'Untitled Recipe';
+		recipe.ingredients = recipe.ingredients || [];
+		recipe.instructions = recipe.instructions || [];
 	}
 } catch (err) {
 	console.error('Section: Error loading recipe:', err);
+	recipe = null;
 }
 ---
 
 {
-	recipe ? (
-		<BaseLayout title={recipe.title}>
+	recipe && recipe._id ? (
+		<BaseLayout title={recipe.title || 'Recipe'}>
 			{/* Section: Header Navigation */}
 			<header class='recipe-header'>
 				<div class='container'>
@@ -136,7 +144,7 @@ try {
 										alt={recipe.title}
 										class='hero-img lazy-image'
 										loading='lazy'
-										onload="console.log('Section: Hero image loaded successfully')"
+										data-recipe-hero-image='true'
 									/>
 									<div class='image-overlay' />
 
@@ -634,6 +642,17 @@ try {
           });
           
           lazyImages.forEach(img => imageObserver.observe(img));
+          
+          // Hero image load handler
+          const recipeHeroImage = document.querySelector('img[data-recipe-hero-image="true"]');
+          if (recipeHeroImage) {
+            recipeHeroImage.addEventListener('load', () => {
+              console.log('Section: Hero image loaded successfully');
+            });
+            recipeHeroImage.addEventListener('error', () => {
+              console.error('Section: Hero image failed to load');
+            });
+          }
           
           // Step completion tracking
           document.querySelectorAll('.step-check').forEach(checkbox => {
