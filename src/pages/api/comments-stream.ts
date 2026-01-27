@@ -1,33 +1,43 @@
 // src/pages/api/comments-stream.ts
 import type { APIRoute } from 'astro';
 
-// Simple in-memory store for demo (use Redis in production)
+// In-memory store for SSE clients (use Redis in production for scale)
 const clients = new Map<
 	string,
-	{ 
-		controller: ReadableStreamDefaultController; 
+	{
+		controller: ReadableStreamDefaultController;
 		recipeId: string;
 		connectedAt: number;
-		timeoutId: NodeJS.Timeout;
+		timeoutId: ReturnType<typeof setTimeout>;
+		heartbeatId: ReturnType<typeof setInterval>;
 	}
 >();
 
-// Connection timeout: 30 minutes
-const CONNECTION_TIMEOUT_MS = 30 * 60 * 1000;
+const CONNECTION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
+const CLEANUP_INTERVAL_MS = 5 * 60 * 1000;    // 5 minutes
+const HEARTBEAT_INTERVAL_MS = 60 * 1000;      // 1 minute
 
-// Cleanup interval: every 5 minutes
-const CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
+let cleanupInterval: ReturnType<typeof setInterval> | null = null;
 
-// Periodic cleanup to remove stale connections
-let cleanupInterval: NodeJS.Timeout | null = null;
+function cleanupClient(clientId: string): void {
+	const client = clients.get(clientId);
+	if (!client) return;
 
-function startCleanup() {
+	try {
+		if (client.timeoutId) clearTimeout(client.timeoutId);
+		if (client.heartbeatId) clearInterval(client.heartbeatId);
+		client.controller.close();
+	} catch {
+		// Controller already closed, ignore
+	}
+	clients.delete(clientId);
+}
+
+function startCleanup(): void {
 	if (cleanupInterval) return;
-	
 	cleanupInterval = setInterval(() => {
 		const now = Date.now();
 		for (const [clientId, client] of clients.entries()) {
-			// Remove connections older than timeout
 			if (now - client.connectedAt > CONNECTION_TIMEOUT_MS) {
 				cleanupClient(clientId);
 			}
@@ -35,50 +45,44 @@ function startCleanup() {
 	}, CLEANUP_INTERVAL_MS);
 }
 
-function cleanupClient(clientId: string) {
+function sendHeartbeat(clientId: string): void {
 	const client = clients.get(clientId);
-	if (client) {
-		try {
-			// Clear timeout if it exists
-			if (client.timeoutId) {
-				clearTimeout(client.timeoutId);
-			}
-			// Try to close the stream gracefully
-			client.controller.close();
-		} catch (error) {
-			// Stream may already be closed, ignore
-		}
-		clients.delete(clientId);
+	if (!client) return;
+	try {
+		const encoder = new TextEncoder();
+		client.controller.enqueue(
+			encoder.encode(`data: ${JSON.stringify({ type: 'ping', ts: Date.now() })}\n\n`)
+		);
+	} catch {
+		cleanupClient(clientId);
 	}
 }
 
-// Start cleanup on module load
 startCleanup();
 
-// Export the GET handler for the SSE endpoint
 export const GET: APIRoute = async ({ request, url }) => {
 	const recipeId = url.searchParams.get('recipeId');
-
 	if (!recipeId) {
 		return new Response('Recipe ID required', { status: 400 });
 	}
 
-	// Create a new SSE stream
+	const clientId = Math.random().toString(36).substring(2, 11);
+	const encoder = new TextEncoder();
+
 	const stream = new ReadableStream({
 		start(controller) {
-			// Store the controller for this client
-			const clientId = Math.random().toString(36).substring(2, 11);
 			const connectedAt = Date.now();
-			
-			// Set up timeout to auto-close connection
-			const timeoutId = setTimeout(() => {
-				cleanupClient(clientId);
-			}, CONNECTION_TIMEOUT_MS);
+			const timeoutId = setTimeout(() => cleanupClient(clientId), CONNECTION_TIMEOUT_MS);
+			const heartbeatId = setInterval(() => sendHeartbeat(clientId), HEARTBEAT_INTERVAL_MS);
 
-			clients.set(clientId, { controller, recipeId, connectedAt, timeoutId });
+			clients.set(clientId, {
+				controller,
+				recipeId,
+				connectedAt,
+				timeoutId,
+				heartbeatId,
+			});
 
-			// Send initial connection message
-			const encoder = new TextEncoder();
 			try {
 				controller.enqueue(
 					encoder.encode(
@@ -89,22 +93,16 @@ export const GET: APIRoute = async ({ request, url }) => {
 						})}\n\n`
 					)
 				);
-			} catch (error) {
-				// Stream may be closed, cleanup
+			} catch {
 				cleanupClient(clientId);
 				return;
 			}
 
-			// Cleanup on client disconnect
-			request.signal.addEventListener('abort', () => {
-				cleanupClient(clientId);
-			});
+			request.signal.addEventListener('abort', () => cleanupClient(clientId));
 		},
 
 		cancel() {
-			// Cleanup when stream is cancelled - find and remove this client
-			// Note: We can't identify which client this is from cancel(), 
-			// but abort handler should catch most cases
+			cleanupClient(clientId);
 		},
 	});
 
