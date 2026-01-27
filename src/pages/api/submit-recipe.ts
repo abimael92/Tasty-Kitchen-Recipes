@@ -11,6 +11,25 @@ const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm'];
 
+const MAX_TITLE_LEN = 200;
+const MAX_INGREDIENTS_LEN = 50_000;
+const MAX_INSTRUCTIONS_LEN = 50_000;
+const MAX_TEXT_TOTAL_LEN = 60_000;
+
+function sanitize(str: string): string {
+	const s = String(str || '').trim();
+	return s
+		.replace(/<[^>]*>/g, '')
+		.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g, '');
+}
+
+function err(message: string, status: number) {
+	return new Response(JSON.stringify({ success: false, message }), {
+		status,
+		headers: { 'Content-Type': 'application/json' },
+	});
+}
+
 export const prerender = false;
 
 export const POST = async ({ request }) => {
@@ -27,15 +46,33 @@ export const POST = async ({ request }) => {
 
 		const formData = await request.formData();
 
-		const title = String(formData.get('title') || '');
-		const ingredients = String(formData.get('ingredients') || '');
-		const instructions = String(formData.get('instructions') || '');
+		const rawTitle = String(formData.get('title') ?? '').trim();
+		const rawIngredients = String(formData.get('ingredients') ?? '');
+		const rawInstructions = String(formData.get('instructions') ?? '');
+
+		if (!rawTitle) {
+			return err('Missing title', 400);
+		}
+		if (rawTitle.length > MAX_TITLE_LEN) {
+			return err(`Title must be at most ${MAX_TITLE_LEN} characters`, 400);
+		}
+		if (rawIngredients.length > MAX_INGREDIENTS_LEN) {
+			return err(`Ingredients must be at most ${MAX_INGREDIENTS_LEN} characters`, 400);
+		}
+		if (rawInstructions.length > MAX_INSTRUCTIONS_LEN) {
+			return err(`Instructions must be at most ${MAX_INSTRUCTIONS_LEN} characters`, 400);
+		}
+		const totalLen = rawTitle.length + rawIngredients.length + rawInstructions.length;
+		if (totalLen > MAX_TEXT_TOTAL_LEN) {
+			return err('Total text size exceeds limit', 413);
+		}
+
+		const title = sanitize(rawTitle);
+		const ingredients = sanitize(rawIngredients);
+		const instructions = sanitize(rawInstructions);
 
 		if (!title) {
-			return new Response(
-				JSON.stringify({ success: false, message: 'Missing title' }),
-				{ status: 400 }
-			);
+			return err('Title is required and cannot be empty after sanitization', 400);
 		}
 
 		let imageRef = null;
@@ -109,8 +146,8 @@ export const POST = async ({ request }) => {
 		return new Response(JSON.stringify({ success: true, id: created._id }), {
 			status: 200,
 		});
-	} catch (err) {
-		console.error('SUBMIT RECIPE ERROR:', err);
+	} catch (e) {
+		console.error('SUBMIT RECIPE ERROR:', e);
 		return new Response(
 			JSON.stringify({ success: false, message: 'Server error' }),
 			{ status: 500 }

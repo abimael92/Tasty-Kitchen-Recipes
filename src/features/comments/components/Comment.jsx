@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import EmojiPicker from './EmojiPicker';
 
+function stripHtml(str) {
+	if (str == null || typeof str !== 'string') return '';
+	return str.replace(/<[^>]*>/g, '');
+}
+
 const Comment = ({
 	comment,
 	depth = 0,
@@ -152,12 +157,13 @@ const Comment = ({
 					<div className='comment-author'>
 						<img
 							src={comment.author?.image || '/default-avatar.png'}
-							alt={comment.author?.name}
+							alt={stripHtml(comment.author?.name) || 'User'}
 							className='comment-avatar'
 						/>
 						<div className='comment-author-info'>
 							<span className='comment-author-name'>
-								{comment.author?.name} {comment.author?.lastname || 'User'}
+								{stripHtml(comment.author?.name)}{' '}
+								{stripHtml(comment.author?.lastname) || 'User'}
 							</span>
 							<span className='comment-timestamp'>
 								{formatDate(comment.publishedAt)}
@@ -247,7 +253,7 @@ const Comment = ({
 							</div>
 						</div>
 					) : (
-						<p className='comment-content'>{comment.content}</p>
+						<p className='comment-content'>{stripHtml(comment.content)}</p>
 					)}
 				</div>
 
