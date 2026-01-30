@@ -9,6 +9,8 @@ import { firebaseConfig } from '../../lib/firebase';
 import { serverSanityClient } from '../../lib/sanity';
 import { RateLimiter } from '../../utils/rateLimiter';
 import { buildSessionCookie } from '../../shared/services/auth/sessionCookie';
+import { getRateLimitKey } from '../../shared/utils/requestIp';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export const config = { runtime: 'nodejs' };
 
@@ -40,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
 			throw new Error('Missing required registration fields');
 		}
 
-		const rateKey = request.headers.get('x-forwarded-for') || 'anonymous';
+		const rateKey = getRateLimitKey(request);
 		if (rateLimiter.isRateLimited(rateKey, 'register', MAX_ATTEMPTS, WINDOW_MS)) {
 			return new Response(JSON.stringify({ error: 'Too many attempts' }), {
 				status: 429,
@@ -91,12 +93,10 @@ export const POST: APIRoute = async ({ request }) => {
 			}
 		);
 	} catch (err) {
-		return new Response(
-			JSON.stringify({
-				error: err.message,
-				code: err.code || 'register/failed',
-			}),
-			{ status: 500 }
-		);
+		return toSafeErrorResponse(err, {
+			status: 500,
+			context: 'registerUser',
+			defaultMessage: 'Registration failed',
+		});
 	}
 };

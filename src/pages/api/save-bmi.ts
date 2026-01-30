@@ -1,6 +1,7 @@
 import { serverSanityClient } from '../../lib/sanity';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export const POST = async ({ request }) => {
 	try {
@@ -61,15 +62,10 @@ export const POST = async ({ request }) => {
 			},
 		);
 	} catch (error) {
-		console.error('Error saving BMI:', error);
-		return new Response(
-			JSON.stringify({
-				error: error.message || 'Failed to save BMI',
-			}),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			},
-		);
+		return toSafeErrorResponse(error, {
+			status: 500,
+			context: 'save-bmi',
+			defaultMessage: 'Failed to save BMI',
+		});
 	}
 };

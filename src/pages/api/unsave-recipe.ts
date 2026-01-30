@@ -1,7 +1,8 @@
-// pages/api/unsave-recipe.js
+// pages/api/unsave-recipe.ts
 import { serverSanityClient } from '../../lib/sanity';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export const POST = async ({ request }) => {
 	try {
@@ -55,12 +56,10 @@ export const POST = async ({ request }) => {
 			{ status: 200 }
 		);
 	} catch (error) {
-		console.error('Error unsaving recipe:', error);
-		return new Response(
-			JSON.stringify({
-				error: error.message || 'Failed to unsave recipe',
-			}),
-			{ status: 500 }
-		);
+		return toSafeErrorResponse(error, {
+			status: 500,
+			context: 'unsave-recipe',
+			defaultMessage: 'Failed to unsave recipe',
+		});
 	}
 };

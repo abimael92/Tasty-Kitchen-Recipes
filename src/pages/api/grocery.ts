@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
@@ -74,7 +75,10 @@ export const POST: APIRoute = async ({ request }) => {
 
 		return new Response(JSON.stringify({ success: true }), { status: 200 });
 	} catch (e) {
-		console.error('Grocery list error:', e);
-		return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+		return toSafeErrorResponse(e, {
+			status: 500,
+			context: 'grocery',
+			defaultMessage: 'Failed to update grocery list',
+		});
 	}
 };
