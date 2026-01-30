@@ -1,6 +1,7 @@
 import { serverSanityClient } from '../../lib/sanity';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export async function GET({ request, url }) {
 	const auth = await requireAuth(request);
@@ -48,10 +49,10 @@ export async function GET({ request, url }) {
 			headers: { 'Content-Type': 'application/json' },
 		});
 	} catch (error) {
-		console.error('Error:', error);
-		return new Response(JSON.stringify({ error: error.message }), {
+		return toSafeErrorResponse(error, {
 			status: 500,
-			headers: { 'Content-Type': 'application/json' },
+			context: 'get-saved-recipes',
+			defaultMessage: 'Failed to fetch saved recipes',
 		});
 	}
 }

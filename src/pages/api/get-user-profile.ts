@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { fetchSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export const GET: APIRoute = async ({ request }) => {
 	try {
@@ -38,16 +39,11 @@ export const GET: APIRoute = async ({ request }) => {
 			status: 200,
 			headers: { 'Content-Type': 'application/json' },
 		});
-	} catch (error: any) {
-		console.error('Error fetching user profile:', error);
-		return new Response(
-			JSON.stringify({
-				error: error.message || 'Failed to fetch user profile',
-			}),
-			{
-				status: 500,
-				headers: { 'Content-Type': 'application/json' },
-			},
-		);
+	} catch (error) {
+		return toSafeErrorResponse(error, {
+			status: 500,
+			context: 'get-user-profile',
+			defaultMessage: 'Failed to fetch user profile',
+		});
 	}
 };

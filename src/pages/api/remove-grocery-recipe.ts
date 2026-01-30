@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { serverSanityClient as client } from '../../lib/sanity';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export const POST: APIRoute = async ({ request }) => {
 	try {
@@ -56,8 +57,11 @@ export const POST: APIRoute = async ({ request }) => {
 			.commit();
 
 		return new Response(JSON.stringify({ success: true }), { status: 200 });
-	} catch (e: any) {
-		console.error('Error removing recipe from grocery list:', e);
-		return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+	} catch (e) {
+		return toSafeErrorResponse(e, {
+			status: 500,
+			context: 'remove-grocery-recipe',
+			defaultMessage: 'Failed to remove recipe from grocery list',
+		});
 	}
 };

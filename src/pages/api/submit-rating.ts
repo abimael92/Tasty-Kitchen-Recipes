@@ -2,6 +2,7 @@
 import { serverSanityClient } from '../../lib/sanity';
 import { requireAuth } from '../../shared/services/auth/requireAuth';
 import { requireSanityUserByUid } from '../../shared/services/sanity/users';
+import { toSafeErrorResponse } from '../../shared/utils/apiError';
 
 export async function POST({ request }) {
 	const auth = await requireAuth(request);
@@ -54,13 +55,10 @@ export async function POST({ request }) {
 			headers: { 'Content-Type': 'application/json' },
 		});
 	} catch (error) {
-		console.error('Sanity create/update rating failed:', error);
-		return new Response(
-			JSON.stringify({
-				message: 'Failed to submit rating',
-				error: error.message,
-			}),
-			{ status: 500 }
-		);
+		return toSafeErrorResponse(error, {
+			status: 500,
+			context: 'submit-rating',
+			defaultMessage: 'Failed to submit rating',
+		});
 	}
 }
