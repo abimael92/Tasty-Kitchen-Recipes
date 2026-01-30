@@ -36,11 +36,11 @@ export const POST = async ({ request }) => {
 
 	try {
 		const rateKey = getRateLimitKey(request);
-		if (rateLimiter.isRateLimited(rateKey, 'login', MAX_ATTEMPTS, WINDOW_MS)) {
-			return new Response(JSON.stringify({ error: 'Too many attempts' }), {
-				status: 429,
-			});
-		}
+		// if (rateLimiter.isRateLimited(rateKey, 'login', MAX_ATTEMPTS, WINDOW_MS)) {
+		// 	return new Response(JSON.stringify({ error: 'Too many attempts' }), {
+		// 		status: 429,
+		// 	});
+		// }
 
 		const auth = getAuth();
 		const userCredential = await signInWithEmailAndPassword(
@@ -53,19 +53,18 @@ export const POST = async ({ request }) => {
 		// Sync user to Sanity here
 		await syncUserToSanity(userCredential.user);
 
+		const headers = new Headers({
+			'Content-Type': 'application/json',
+			'Set-Cookie': buildSessionCookie(token),
+		});
+
 		return new Response(
 			JSON.stringify({
 				uid: userCredential.user.uid,
 				email: userCredential.user.email,
 				token,
 			}),
-			{
-				status: 200,
-				headers: {
-					'Content-Type': 'application/json',
-					'Set-Cookie': buildSessionCookie(token),
-				},
-			}
+			{ status: 200, headers }
 		);
 	} catch (error) {
 		return toSafeErrorResponse(error, {

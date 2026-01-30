@@ -43,11 +43,11 @@ export const POST: APIRoute = async ({ request }) => {
 		}
 
 		const rateKey = getRateLimitKey(request);
-		if (rateLimiter.isRateLimited(rateKey, 'register', MAX_ATTEMPTS, WINDOW_MS)) {
-			return new Response(JSON.stringify({ error: 'Too many attempts' }), {
-				status: 429,
-			});
-		}
+		// if (rateLimiter.isRateLimited(rateKey, 'register', MAX_ATTEMPTS, WINDOW_MS)) {
+		// 	return new Response(JSON.stringify({ error: 'Too many attempts' }), {
+		// 		status: 429,
+		// 	});
+		// }
 
 		const userCred = await createUserWithEmailAndPassword(
 			auth,
@@ -76,6 +76,11 @@ export const POST: APIRoute = async ({ request }) => {
 
 		const token = await userCred.user.getIdToken();
 
+		const headers = new Headers({
+			'Content-Type': 'application/json',
+			'Set-Cookie': buildSessionCookie(token),
+		});
+
 		return new Response(
 			JSON.stringify({
 				uid,
@@ -84,13 +89,7 @@ export const POST: APIRoute = async ({ request }) => {
 				role,
 				token,
 			}),
-			{
-				status: 200,
-				headers: {
-					'Content-Type': 'application/json',
-					'Set-Cookie': buildSessionCookie(token),
-				},
-			}
+			{ status: 200, headers }
 		);
 	} catch (err) {
 		return toSafeErrorResponse(err, {

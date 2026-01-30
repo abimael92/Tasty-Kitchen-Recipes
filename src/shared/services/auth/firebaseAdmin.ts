@@ -35,10 +35,14 @@ const getFirebaseAdminApp = () => {
 				'FIREBASE_SERVICE_ACCOUNT is required in production. Set it in your environment variables.'
 			);
 		} else {
-			// Development: fall back to applicationDefault (e.g. GOOGLE_APPLICATION_CREDENTIALS)
+			// Development: fall back to applicationDefault (requires GOOGLE_APPLICATION_CREDENTIALS)
+			// Or set FIREBASE_SERVICE_ACCOUNT in .env for token verification to work
+			const projectId =
+				import.meta.env.FIREBASE_PROJECT_ID ??
+				import.meta.env.VITE_FIREBASE_PROJECT_ID;
 			initializeApp({
 				credential: applicationDefault(),
-				projectId: import.meta.env.FIREBASE_PROJECT_ID,
+				...(projectId && { projectId }),
 			});
 		}
 	}
