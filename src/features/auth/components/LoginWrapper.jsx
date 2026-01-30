@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import LoginModal from './LoginModal';
 import { t } from '../../../shared/utils/i18n';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useAuthStore } from '../../../shared/store/useAuthStore';
 
 export default function LoginWrapper({ locale }) {
-	const { user, login, logout: logoutFromContext } = useAuth();
+	const { user, setUser } = useAuthStore();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [isRegistering, setIsRegistering] = useState(false);
@@ -27,14 +27,14 @@ export default function LoginWrapper({ locale }) {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
 				},
-				credentials: 'same-origin',
+				credentials: 'include',
 				body: JSON.stringify({ email, password }),
 			});
 			const data = await response.json();
 			if (!response.ok)
 				throw new Error(data.error || t('auth.errors.loginFailed', locale));
-			const fullUser = await fetchUserProfile();
-			login(fullUser);
+			const fullUser = await fetchUserProfile(data, data.token);
+			setUser(fullUser);
 			setIsModalOpen(false);
 		} catch (err) {
 			console.error('Login error:', err);
@@ -54,7 +54,7 @@ export default function LoginWrapper({ locale }) {
 					'Content-Type': 'application/json',
 					Accept: 'application/json',
 				},
-				credentials: 'same-origin',
+				credentials: 'include',
 				body: JSON.stringify(userData),
 			});
 			const data = await response.json();
@@ -62,6 +62,11 @@ export default function LoginWrapper({ locale }) {
 				throw new Error(
 					data.error || t('auth.errors.registrationFailed', locale)
 				);
+			const fullUser = await fetchUserProfile(
+				{ uid: data.uid, email: data.email, name: data.name, lastname: data.lastname },
+				data.token
+			);
+			login(fullUser);
 			setIsRegistering(false);
 			setIsModalOpen(false);
 		} catch (err) {
@@ -72,24 +77,48 @@ export default function LoginWrapper({ locale }) {
 		}
 	};
 
-	const logout = () => {
-		logoutFromContext();
+	const logout = async () => {
+		try {
+			await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+		} finally {
+			setUser(null);
+		}
 		setLoading(false);
 		setError('');
 		setIsDropdownOpen(false);
 	};
 
-	async function fetchUserProfile() {
+	async function fetchUserProfile(loginData, token) {
 		try {
+			const headers = {};
+			if (token) headers['Authorization'] = `Bearer ${token}`;
 			const res = await fetch('/api/get-user-profile', {
-				credentials: 'same-origin',
+				credentials: 'include',
+				headers,
 			});
-			if (!res.ok) throw new Error(t('auth.errors.profileFetchFailed', locale));
-			return await res.json();
+			if (res.ok) {
+				return await res.json();
+			}
+			// Fallback to login response if profile fetch fails (e.g. Sanity sync delay)
+			if (loginData?.uid) {
+				return {
+					uid: loginData.uid,
+					email: loginData.email,
+					name: loginData.name || '',
+					lastname: loginData.lastname || '',
+				};
+			}
+			throw new Error(t('auth.errors.profileFetchFailed', locale));
 		} catch (err) {
-			throw new Error(
-				err.message || t('auth.errors.networkProfileFetchFailed', locale)
-			);
+			if (loginData?.uid) {
+				return {
+					uid: loginData.uid,
+					email: loginData.email,
+					name: loginData.name || '',
+					lastname: loginData.lastname || '',
+				};
+			}
+			throw err;
 		}
 	}
 

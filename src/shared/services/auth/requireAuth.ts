@@ -28,6 +28,10 @@ export const requireAuth = async (request: Request): Promise<AuthResult> => {
 	const token = bearerToken || cookieToken;
 
 	if (!token) {
+		if (import.meta.env.DEV) {
+			const hasCookie = !!request.headers.get('cookie');
+			console.warn('[requireAuth] No token. Has cookie header:', hasCookie);
+		}
 		return {
 			ok: false,
 			response: new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -41,6 +45,9 @@ export const requireAuth = async (request: Request): Promise<AuthResult> => {
 		const decoded = await getAdminAuth().verifyIdToken(token);
 		return { ok: true, uid: decoded.uid };
 	} catch (error) {
+		if (import.meta.env.DEV) {
+			console.warn('[requireAuth] Token verification failed:', (error as Error).message);
+		}
 		return {
 			ok: false,
 			response: new Response(JSON.stringify({ error: 'Unauthorized' }), {
