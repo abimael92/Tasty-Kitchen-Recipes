@@ -21,13 +21,21 @@ const getServiceAccount = (): ServiceAccount | null => {
 const getFirebaseAdminApp = () => {
 	if (!getApps().length) {
 		const serviceAccount = getServiceAccount();
+		const isProd = import.meta.env.PROD;
+
 		if (serviceAccount) {
 			initializeApp({
 				credential: cert(serviceAccount),
 				projectId:
 					import.meta.env.FIREBASE_PROJECT_ID ?? serviceAccount.project_id,
 			});
+		} else if (isProd) {
+			// In production, require explicit service account - never use applicationDefault
+			throw new Error(
+				'FIREBASE_SERVICE_ACCOUNT is required in production. Set it in your environment variables.'
+			);
 		} else {
+			// Development: fall back to applicationDefault (e.g. GOOGLE_APPLICATION_CREDENTIALS)
 			initializeApp({
 				credential: applicationDefault(),
 				projectId: import.meta.env.FIREBASE_PROJECT_ID,
