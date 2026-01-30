@@ -73,7 +73,7 @@ export default function UserProfile({ locale }) {
 			try {
 				const res = await fetch('/api/get-user-profile', {
 					headers: { 'Content-Type': 'application/json' },
-					credentials: 'same-origin',
+					credentials: 'include',
 					signal: abortController.signal,
 				});
 
@@ -353,7 +353,7 @@ const refreshProfileData = async () => {
 	try {
 		const res = await fetch('/api/get-user-profile', {
 			headers: { 'Content-Type': 'application/json' },
-			credentials: 'same-origin',
+			credentials: 'include',
 		});
 
 		if (res.ok) {

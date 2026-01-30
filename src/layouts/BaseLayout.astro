@@ -43,16 +43,14 @@ const { currentLocale } = Astro;
 		<link rel='manifest' href='/images/favicon/site.webmanifest' />
 	</head>
 	<body>
-		<CookieBanner />
-		<Header />
-
-		<main class='content-wrapper'>
-			<AuthProvider client:load locale={currentLocale}>
+		<AuthProvider client:load locale={currentLocale}>
+			<CookieBanner />
+			<Header />
+			<main class='content-wrapper'>
 				<slot />
-			</AuthProvider>
-		</main>
-
-		<Footer />
+			</main>
+			<Footer />
+		</AuthProvider>
 	</body>
 </html>
 
