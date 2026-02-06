@@ -25,6 +25,8 @@ Permite a usuarios **descubrir, guardar y cocinar recetas** con una experiencia 
 
 ## Funcionalidades principales
 
+> **Checklist detallado:** Ver [FEATURES.md](./FEATURES.md) para el estado de cada funcionalidad (hecho / parcial / pendiente) y el backlog "good to have".
+
 - **Recetas**: listado desde markdown (Content Collections) y Sanity CMS; detalle con ingredientes, instrucciones, imagen/vídeo, etiquetas y consejos.
 - **Autenticación**: registro e inicio de sesión con Firebase; sesión con cookie HttpOnly y estado compartido entre islas (Astro).
 - **Comentarios**: hilos anidados, moderación de contenido, actualizaciones en tiempo real vía SSE; edición/borrado con comprobación de autoría.
